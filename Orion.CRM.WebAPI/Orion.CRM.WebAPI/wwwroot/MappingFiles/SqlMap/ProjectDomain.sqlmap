@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+
+    <SqlMapDetail>
+      <SqlName>GetProjectsByOrgId</SqlName>
+      <OriginalSqlString>
+        select * from Project where OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据OrgId获取组织下的项目</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetProjectById</SqlName>
+      <OriginalSqlString>
+        select * from Project where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Id获取项目</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertProject</SqlName>
+      <OriginalSqlString>
+        insert into Project(OrgId,ProjectName,CreateTime,UpdateTime)
+        values(@OrgId,@ProjectName,@CreateTime,@UpdateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增项目</Description>
+    </SqlMapDetail>
+    
+    
+    <SqlMapDetail>
+      <SqlName>UpdateProject</SqlName>
+      <OriginalSqlString>
+        update Project set OrgId=@OrgId,ProjectName=@ProjectName,UpdateTime=@UpdateTime where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改项目</Description>
+    </SqlMapDetail>
+	</SqlMapConfigurations>
+</SqlMap>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>D:\workplace\Orion.CRM\Orion.Bins\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Orion.CRM.DataAccess\Orion.CRM.DataAccess.csproj" />
+    <ProjectReference Include="..\Orion.CRM.Entity\Orion.CRM.Entity.csproj" />
+  </ItemGroup>
+
+</Project>

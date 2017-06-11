@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <!-- 关于角色表的操作 -->
+    <SqlMapDetail>
+      <SqlName>GetRoleById</SqlName>
+      <OriginalSqlString>
+        select * from [Role] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色Id获取角色</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertRole</SqlName>
+      <OriginalSqlString>
+        insert into [Role](RoleName,CreateTime,UpdateTime,OrgId) values(@RoleName,@CreateTime,@UpdateTime,@OrgId);;select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增角色</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>UpdateRole</SqlName>
+      <OriginalSqlString>
+        update [Role] set RoleName=@RoleName,UpdateTime=@UpdateTime where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改角色</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRole</SqlName>
+      <OriginalSqlString>
+        delete from [Role] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除角色</Description>
+    </SqlMapDetail>
+    
+    
+    <!-- 关于RoleMenu，RolePage两张表的操作-->
+    <SqlMapDetail>
+      <SqlName>InsertRoleMenu</SqlName>
+      <OriginalSqlString>
+        insert into RoleMenu(RoleId,MenuId,CreateTime) values(@RoleId,@MenuId,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增角色和菜单关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail TableName="RoleMenu">
+      <SqlName>RoleMenuBatchInsert</SqlName>
+      <OriginalSqlString />
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量新增角色和菜单关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>InsertRolePage</SqlName>
+      <OriginalSqlString>
+        insert into RolePage(RoleId,PageId,CreateTime) values(@RoleId,@PageId,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增角色和页面关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRoleMenuById</SqlName>
+      <OriginalSqlString>
+        delete from RoleMenu where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按主键删除一条RoleMenu记录</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRoleMenuByRoleId</SqlName>
+      <OriginalSqlString>
+        delete from RoleMenu where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按RoleId删除角色下的所有菜单关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRoleMenuByMenuId</SqlName>
+      <OriginalSqlString>
+        delete from RoleMenu where MenuId=@MenuId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按MenuId删除和菜单有关的角色关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRolePageByRoleId</SqlName>
+      <OriginalSqlString>
+        delete from RolePage where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按RoleId删除角色下的所有页面关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteRolePageByPageId</SqlName>
+      <OriginalSqlString>
+        delete from RolePage where PageId=@PageId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按PageId删除和页面有关的角色关系</Description>
+    </SqlMapDetail>
+    
+    
+    <!-- 查询 -->
+    <SqlMapDetail>
+      <SqlName>GetRoles</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * 
+          from
+          (
+            select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
+		        (
+			        select A.*,B.OrgName from [Role] A inner join Organization B on A.OrgId=B.Id
+		        )as temp
+          )as A 
+        where RowNumber > $PageSize*($PageIndex-1)
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取角色Role</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRoleCount</SqlName>
+      <OriginalSqlString>
+        select count(1) from [Role]
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色Role总记录数</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRolesByOrgId</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * 
+          from
+          (
+            select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
+		        (
+			        select A.*,B.OrgName from [Role] A inner join Organization B on A.OrgId=B.Id where A.OrgId=$OrgId
+		        )as temp
+          )as A 
+        where RowNumber > $PageSize*($PageIndex-1)
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取角色Role</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRoleCountByOrgId</SqlName>
+      <OriginalSqlString>
+        select count(1) from [Role] where OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色Role总记录数</Description>
+    </SqlMapDetail>
+ 
+    <SqlMapDetail>
+      <SqlName>GetRoleMenusByRoleId</SqlName>
+      <OriginalSqlString>
+        select * from RoleMenu where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和菜单之间的关系(根据RoleId)</Description>
+    </SqlMapDetail>
+
+    <!--<SqlMapDetail>
+      <SqlName>GetComplexRoleMenusByRoleId</SqlName>
+      <OriginalSqlString>
+        select A.UserId,A.RoleId,B.MenuId,C.MenuName,C.Icon,C.URL,C.SortNo,C.Parent,
+        (select MenuName from SystemMenu where Id=C.Parent) as ParentMenuName,
+        (select SortNo from SystemMenu where Id=C.Parent) as ParentSortNo from UserRole A
+        inner join RoleMenu B on A.RoleId=B.RoleId
+        inner join SystemMenu C on B.MenuId=C.Id
+        where A.RoleId=@RoleId order by SortNo,ParentSortNo
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和菜单之间的关系(根据RoleId)</Description>
+    </SqlMapDetail>-->
+
+    <SqlMapDetail>
+      <SqlName>GetComplexRoleMenusByRoleId</SqlName>
+      <OriginalSqlString>
+        select A.RoleId,A.MenuId,B.MenuName,B.Icon,B.URL,B.SortNo,B.Parent from RoleMenu A
+        inner join SystemMenu B on A.MenuId=B.ID
+        where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和菜单之间的关系(根据RoleId)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllComplexRoleMenus</SqlName>
+      <OriginalSqlString>
+        select A.RoleId,A.MenuId,B.MenuName,B.Icon,B.URL,B.SortNo,B.Parent from RoleMenu A
+        inner join SystemMenu B on A.MenuId=B.ID
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有角色和菜单之间的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllRoleMenus</SqlName>
+      <OriginalSqlString>
+        select A.UserId,A.RoleId,B.MenuId,C.MenuName,C.Icon,C.URL,C.SortNo,C.Parent,
+        (select MenuName from SystemMenu where Id=C.Parent) as ParentMenuName,
+        (select SortNo from SystemMenu where Id=C.Parent) as ParentSortNo from UserRole A
+        inner join RoleMenu B on A.RoleId=B.RoleId
+        inner join SystemMenu C on B.MenuId=C.Id
+        order by SortNo,ParentSortNo
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有角色和菜单之间的关系，返回一个复合对象</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRoleMenusByOrgId</SqlName>
+      <OriginalSqlString>
+        select B.RoleId,B.MenuId from [Role] A
+        inner join RoleMenu B on A.Id=B.RoleId where A.OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和菜单之间的关系(根据OrgId)</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetRoleMenusByMenuId</SqlName>
+      <OriginalSqlString>
+        select * from RoleMenu where MenuId=@MenuId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和菜单之间的关系(根据MenuId)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRolePagesByRoleId</SqlName>
+      <OriginalSqlString>
+        select * from RolePage where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和页面之间的关系(根据RoleId)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRolePagesByPageId</SqlName>
+      <OriginalSqlString>
+        select * from RolePage where PageId=@PageId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色和页面之间的关系(根据PageId)</Description>
+    </SqlMapDetail>
+
+	</SqlMapConfigurations>
+</SqlMap>

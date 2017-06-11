@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+
+    <SqlMapDetail>
+      <SqlName>GetOrganizationById</SqlName>
+      <OriginalSqlString>
+        select * from Organization where Id=@Id and DeleteFlag=0
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Id获取组织机构(不包括已删除的)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllOrganizations</SqlName>
+      <OriginalSqlString>
+        select * from Organization
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有组织机构(包括已删除)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertOrganization</SqlName>
+      <OriginalSqlString>
+        insert into Organization(OrgName,OrgCode,Type,CreateTime,DeleteFlag)
+        values(@OrgName,@OrgCode,@Type,@CreateTime,@DeleteFlag);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增组织机构</Description>
+    </SqlMapDetail>
+    
+    
+    <SqlMapDetail>
+      <SqlName>UpdateOrganization</SqlName>
+      <OriginalSqlString>
+        update Organization set OrgName=@OrgName,OrgCode=@OrgCode,Type=@Type,DeleteFlag=@DeleteFlag where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改组织机构</Description>
+    </SqlMapDetail>
+	</SqlMapConfigurations>
+</SqlMap>

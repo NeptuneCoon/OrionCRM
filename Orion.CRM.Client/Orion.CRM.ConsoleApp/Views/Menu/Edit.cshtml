@@ -1,0 +1,106 @@
+﻿@model Orion.CRM.ConsoleApp.Models.Menu.MenuEditViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<ol class="breadcrumb">
+    <li><a href="/Menu/MenuList">菜单管理</a></li>
+    <li class="active">编辑菜单</li>
+</ol>
+
+<div class="alert" style="display:none">
+    <span></span><i class="glyphicon glyphicon-remove"></i>
+</div>
+
+
+<form action="/Menu/EditHandler" method="post">
+    <input type="hidden" id="Type" value="@Model.Type" />
+    <input type="hidden" id="Menu.Id" name="Menu.Id" value="@Model.Menu.Id" />
+
+    <div class="panel panel-default" style="width:700px">
+        <div class="panel-heading">
+            <h3 class="panel-title">编辑@(Model.Type == 1 ? "一级菜单" : "二级子菜单")</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered">
+                @if (Model.Type == 2) {
+                    <tr>
+                        <td>主菜单</td>
+                        <td>
+                            <select name="Menu.Parent" style="padding:5px">
+                                @if (Model.ParentMenus != null) {
+                                    foreach (var menu in Model.ParentMenus) {
+                                        <option value="@menu.Id" @(Model.Menu.Parent == menu.Id ? "selected=selected" : "")>@menu.MenuName</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td>菜单名称<span class="required">*</span></td>
+                    <td><input type="text" id="Menu.MenuName" name="Menu.MenuName" value="@Model.Menu.MenuName" reg="regString" maxlength="20" /></td>
+                </tr>
+                <tr>
+                    <td>ICON</td>
+                    <td><input type="text" id="Menu.Icon" name="Menu.Icon" value="@Model.Menu.Icon" reg="regString" maxlength="20" /></td>
+                </tr>
+                @if (Model.Type == 2) {
+                    <tr>
+                        <td>URL</td>
+                        <td><input type="text" id="Menu.URL" name="Menu.URL" value="@Model.Menu.URL" maxlength="64" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td>排序<span class="required">*</span></td>
+                    <td><input type="text" id="Menu.SortNo" name="Menu.SortNo" value="@Model.Menu.SortNo" reg="regNum" maxlength="2" /></td>
+                </tr>
+                <tr>
+                    <td>描述</td>
+                    <td>
+                        <textarea cols="30" rows="2" id="Menu.Description" name="Menu.Description" @Model.Menu.Description maxlength="100"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
+            <button type="button" class="btn btn-default" onclick="javascript: window.location = '/Menu/MenuList';">返回</button>
+        </div>
+    </div>
+</form>
+@section Scripts{
+    <script type="text/javascript">
+        var rootNode = $('form');
+        rootNode.on('blur', 'input', function () {
+            if ($('.alert').is(":visible")) {
+                if ($(this).attr("reg")) {
+                    inputCheck($(this));
+                }
+            }
+        });
+
+        function validateForm() {
+            var validateResult = true;
+            if (!inputCheck($("[id='Menu.MenuName']"))) {
+                validateResult = false;
+            }
+            if (!inputCheck($("[id='Menu.SortNo']"))) {
+                validateResult = false;
+            }
+
+            var menuType = $('#Type').val();
+            if (menuType == 2) {
+                var parentMenuId = $("select[name='Menu.Parent']").find("option:selected").val();
+                if (!parentMenuId) {
+                    validateResult = false;
+                    $("select[name='Menu.Parent']").focus();
+                }
+            }
+
+            console.info("表单验证结果：" + validateResult);
+            return validateResult;
+        }
+
+        
+    </script>
+}
