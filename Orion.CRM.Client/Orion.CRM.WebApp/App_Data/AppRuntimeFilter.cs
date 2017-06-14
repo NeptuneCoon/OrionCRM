@@ -31,27 +31,6 @@ namespace Orion.CRM.WebApp.App_Data
         {
             // 读取配置文件
             filterContext.HttpContext.Items.Add("appConfig", _appConfig);
-
-            // 读取用户信息(从cookie中)
-            //string encryptUserInfo = filterContext.HttpContext.Request.Cookies["user"];// cookie中加密的用户信息
-            //filterContext.HttpContext.Items.Add("objUser", encryptUserInfo);
-
-            // 读取当前菜单(从cookie中)
-            //object encryptTopMenuId = filterContext.HttpContext.Request.Cookies["top_mid"];// cookie中加密的主菜单id
-            //filterContext.HttpContext.Items.Add("objTopMenuId", encryptTopMenuId);
-
-            // 读取当前菜单(从cookie中)
-            //object encryptLeftMenuId = filterContext.HttpContext.Request.Cookies["left_mid"];// cookie中加密的子菜单id
-            //filterContext.HttpContext.Items.Add("objLeftMenuId", encryptLeftMenuId);
-
-
-            //int? topMenuId = filterContext.HttpContext.Session.GetInt32("TopMenuId");
-            //filterContext.HttpContext.Items.Add("TopMenuId", topMenuId);
-
-            //int? leftMenuId = filterContext.HttpContext.Session.GetInt32("LeftMenuId");
-            //filterContext.HttpContext.Items.Add("LeftMenuId", leftMenuId);
-
-            //base.OnActionExecuting(filterContext);
         }
     }
 }

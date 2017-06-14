@@ -15,7 +15,7 @@
     <SqlMapDetail>
       <SqlName>InsertRole</SqlName>
       <OriginalSqlString>
-        insert into [Role](RoleName,CreateTime,UpdateTime,OrgId) values(@RoleName,@CreateTime,@UpdateTime,@OrgId);;select cast(@@identity as int);
+        insert into [Role](RoleName,CreateTime,UpdateTime,OrgId) values(@RoleName,@CreateTime,@UpdateTime,@OrgId);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

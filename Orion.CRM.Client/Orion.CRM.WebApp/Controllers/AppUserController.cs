@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Orion.CRM.WebApp.Controllers
 {
+    /// <summary>
+    /// 用户管理控制器
+    /// </summary>
     public class AppUserController : BaseController
     {
         public IActionResult List()

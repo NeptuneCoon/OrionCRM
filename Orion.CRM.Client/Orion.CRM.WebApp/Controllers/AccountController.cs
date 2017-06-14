@@ -12,6 +12,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Orion.CRM.WebApp.Controllers
 {
+    /// <summary>
+    /// µÇÂ¼×¢²á¿ØÖÆÆ÷
+    /// </summary>
     public class AccountController : BaseController
     {
         private IMemoryCache _memoryCache;

@@ -7,6 +7,9 @@ using Orion.CRM.WebApp.App_Data;
 
 namespace Orion.CRM.WebApp.Controllers
 {
+    /// <summary>
+    /// 资源管理控制器
+    /// </summary>
     public class ResourceController : BaseController
     {    
         // 资源列表
@@ -31,7 +34,8 @@ namespace Orion.CRM.WebApp.Controllers
         // 资源录入
         public IActionResult Add()
         {
-            return View();
+            Models.Resource.ResourceViewModel viewModel = new Models.Resource.ResourceViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]

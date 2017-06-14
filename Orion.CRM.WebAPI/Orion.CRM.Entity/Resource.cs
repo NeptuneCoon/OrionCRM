@@ -17,7 +17,7 @@ namespace Orion.CRM.Entity
         public DateTime? LastTime { get; set; }
         public string SourceFrom { get; set; }
         public int? Status { get; set; }
-        public string IntentionRank { get; set; }
+        public int? Inclination { get; set; }
         public int? TalkCount { get; set; }
         public string Message { get; set; }
         public string Mobile { get; set; }
@@ -29,6 +29,10 @@ namespace Orion.CRM.Entity
         public string InvalidReason { get; set; }
         public string AppendMan { get; set; }
         public int DeleteFlag { get; set; }
+        /// <summary>
+        /// 备注信息
+        /// </summary>
+        public string Remark { get; set; }
     }
 }
 

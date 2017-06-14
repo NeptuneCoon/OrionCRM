@@ -11,8 +11,8 @@ namespace Orion.CRM.WebTools
         /// <summary>
         /// 执行一个get请求，并获取结果，该方法会直接返回APIDataResult的Data属性
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
+        /// <typeparam name="T">返回结果的类型</typeparam>
+        /// <param name="url">API地址</param>
         /// <returns></returns>
         public static T Get<T>(string url)
         {
@@ -33,9 +33,9 @@ namespace Orion.CRM.WebTools
         /// <summary>
         /// 执行一个post请求，并获取结果，该方法会直接返回APIDataResult的Data属性
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
-        /// <param name="requestData"></param>
+        /// <typeparam name="T">返回结果的类型</typeparam>
+        /// <param name="url">API地址</param>
+        /// <param name="requestObj">参数对象</param>
         /// <returns></returns>
         public static T Post<T>(string url, object requestObj)
         {

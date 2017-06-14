@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Orion.CRM.WebApp.Controllers
 {
+    /// <summary>
+    /// 业务组控制器
+    /// </summary>
     public class GroupController : BaseController
     {
         public IActionResult List()

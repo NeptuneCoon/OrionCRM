@@ -12,6 +12,9 @@ using Microsoft.Extensions.Options;
 
 namespace Orion.CRM.WebApp.Controllers
 {
+    /// <summary>
+    /// »ù¿ØÖÆÆ÷
+    /// </summary>
     [TypeFilter(typeof(AppRuntimeFilter))]
     public class BaseController : Controller
     {
