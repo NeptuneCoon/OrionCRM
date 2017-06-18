@@ -15,7 +15,7 @@ namespace Orion.CRM.Entity
         public string Address { get; set; }
         public DateTime? MsgTime { get; set; }
         public DateTime? LastTime { get; set; }
-        public string SourceFrom { get; set; }
+        public int? SourceFrom { get; set; }
         public int? Status { get; set; }
         public int? Inclination { get; set; }
         public int? TalkCount { get; set; }
@@ -25,14 +25,13 @@ namespace Orion.CRM.Entity
         public string QQ { get; set; }
         public string Wechat { get; set; }
         public string Email { get; set; }
-        public DateTime? ImportTime { get; set; }
-        public string InvalidReason { get; set; }
-        public string AppendMan { get; set; }
-        public int DeleteFlag { get; set; }
-        /// <summary>
-        /// 备注信息
-        /// </summary>
         public string Remark { get; set; }
+        public string InvalidReason { get; set; }
+        public int AppendUserId { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
+        public int DeleteFlag { get; set; }
+        
     }
 }
 

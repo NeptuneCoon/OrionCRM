@@ -1,0 +1,23 @@
+﻿[
+  {
+    "statusText": "公共",
+    "value": 1
+  },
+  {
+    "statusText": "垃圾",
+    "value": 2
+  },
+  {
+    "statusText": "未分配",
+    "value": 3
+  },
+  {
+    "statusText": "洽谈中",
+    "value": 4
+  },
+  {
+    "statusText": "已签约",
+    "value": 5
+  }
+]
+

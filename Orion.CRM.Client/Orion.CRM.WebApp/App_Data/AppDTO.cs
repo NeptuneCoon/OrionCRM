@@ -1,0 +1,77 @@
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Orion.CRM.WebTools;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Orion.CRM.WebApp.App_Data
+{
+    /// <summary>
+    /// 应用程序数据传输/转换帮助类
+    /// </summary>
+    public class AppDTO
+    {
+        /// <summary>
+        /// 从json配置文件中获取意向群
+        /// </summary>
+        /// <returns></returns>
+        public static List<ResourceInclination> GetInclinationsFromJson(string webRoot)
+        {
+            var jsonPath = webRoot + @"\config\inclination.json";
+            var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
+            var list = JsonConvert.DeserializeObject<List<ResourceInclination>>(inclinationJson);
+
+            return list;
+        }
+
+        /// <summary>
+        /// 从json配置文件中获取资源状态
+        /// </summary>
+        /// <returns></returns>
+        public static List<ResourceStatus> GetStatusFromJson(string webRoot)
+        {
+            var jsonPath = webRoot + @"\config\status.json";
+            var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
+            var list = JsonConvert.DeserializeObject<List<ResourceStatus>>(inclinationJson);
+
+            return list;
+        }
+
+        /// <summary>
+        /// 从数据库中获取当前组织/公司下的项目
+        /// </summary>
+        /// <param name="apiHost"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public static List<Models.Project.Project> GetProjectsFromDb(string apiHost, int orgId)
+        {
+            string apiUrl = apiHost + "api/Project/GetProjectsByOrgId?orgId=" + orgId;
+            var projects = APIInvoker.Get<List<Models.Project.Project>>(apiUrl);
+
+            return projects;
+        }
+
+        /// <summary>
+        /// 从数据库中获取资源来源
+        /// </summary>
+        /// <param name="apiHost"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public static List<Models.Source.ResourceSource> GetSourcesFromDb(string apiHost, int orgId)
+        {
+            string apiUrl = apiHost + "api/ResourceSource/GetSourcesByOrgId?orgId=" + orgId;
+            var sources = APIInvoker.Get<List<Models.Source.ResourceSource>>(apiUrl);
+
+            return sources;
+        }
+
+        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost,int orgId)
+        {
+
+        }
+
+    }
+}

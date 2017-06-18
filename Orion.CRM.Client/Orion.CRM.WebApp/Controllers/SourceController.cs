@@ -17,13 +17,13 @@ namespace Orion.CRM.WebApp.Controllers
             string url = _AppConfig.WebAPIHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
             List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
 
-            ViewBag.OperateResult = Request.Query["operateResult"].ToString();
+            //ViewBag.OperateResult = Request.Query["operateResult"].ToString();
 
             return View(list);
         }
 
         [HttpPost]
-        public int Insert([FromBody]Models.Source.ResourceSource source)
+        public int Insert(Models.Source.ResourceSource source)
         {
             if (source != null) {
                 source.CreateTime = DateTime.Now;
@@ -39,7 +39,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
 
         [HttpPost]
-        public bool Update([FromBody]Models.Source.ResourceSource source)
+        public bool Update(Models.Source.ResourceSource source)
         {
             if (source != null && source.Id > 0) {
                 source.UpdateTime = DateTime.Now;
@@ -60,6 +60,15 @@ namespace Orion.CRM.WebApp.Controllers
                 return result;
             }
             return false;
+        }
+
+        // ajax重新加载页面
+        [HttpGet]
+        public List<Models.Source.ResourceSource> ReloadList()
+        {
+            string url = _AppConfig.WebAPIHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
+            List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
+            return list;
         }
     }
 }

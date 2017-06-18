@@ -13,6 +13,7 @@
     <Content Include="wwwroot\assets\DT_bootstrap.js" />
     <Content Include="wwwroot\assets\form-validation.js" />
     <Content Include="wwwroot\assets\jquery\jquery.min.js" />
+    <Content Include="wwwroot\assets\modal.css" />
     <Content Include="wwwroot\assets\scripts.js" />
     <Content Include="wwwroot\assets\styles.css" />
     <Content Include="wwwroot\bootstrap\css\bootstrap-responsive.css" />
@@ -23,6 +24,8 @@
     <Content Include="wwwroot\bootstrap\img\glyphicons-halflings.png" />
     <Content Include="wwwroot\bootstrap\js\bootstrap.js" />
     <Content Include="wwwroot\bootstrap\js\bootstrap.min.js" />
+    <Content Include="wwwroot\config\status.json" />
+    <Content Include="wwwroot\config\inclination.json" />
     <Content Include="wwwroot\fonts\Product Sans.ttf" />
     <Content Include="wwwroot\images\bg-input-focus.png" />
     <Content Include="wwwroot\images\bg-input.png" />

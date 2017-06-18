@@ -8,6 +8,7 @@
     <link href="~/vendors/easypiechart/jquery.easy-pie-chart.css" rel="stylesheet" media="screen">
     <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
     <link href="~/assets/styles.css" rel="stylesheet" media="screen">
+    <link href="~/assets/modal.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -32,7 +33,7 @@
             width: 260px !important
         }
 
-        
+        .tip{color:red}
     </style>
 </head>
 
@@ -110,28 +111,64 @@
         var regAddress = /^.{2,50}$/;
         var regNum = /^\d+$/;//数字
 
-        /*
+        /**
         * 通用文本框内容验证方法：使用正则表达式进行文本框输入内容的验证
         * @@param input 文本框对象
         */
         function inputCheck(input) {
-            if (input.length > 0) { //可能不存在，有些项是可选的，可通过后台配置
+            var validateResult = { result: true };
+            // validate
+            if (input.length > 0) {
                 var reg = eval(input.attr("reg"));
-                var required = input.attr("required");
-                var val = $(input).val() || $(input).find("option:selected").val();
-                if (required =="required" && (val == "" || val == undefined) || !reg.test(val)) {
-                    // fail
-                    //showErrorTips(input);//显示错误信息
-                    input.focus();
-                }
-                else {
-                    // pass
-                    //hideErrorTips(input);//隐藏错误信息
+                if (reg) {
+                    // 移除之前的错误信息
+                    $(input).parent().find(".tip").remove();
+                    // 验证
+                    var required = input.attr("is-null");
+                    var val = $(input).val() || $(input).find("option:selected").val();
+                    
+                    if (required == "required") {
+                        if (!val){
+                            validateResult.result = false;
+                            validateResult.errorType = 0;//错误类型：没有填写
+                        }
+                        else {
+                            if (!reg.test(val)) {
+                                validateResult.result = false;
+                                validateResult.errorType = 1;//错误类型：正则校验失败
+                            }
+                        }
+                    }
+                    else {
+                        if (val && !reg.test(val)) {
+                            validateResult.result = false;
+                            validateResult.errorType = 1;//错误类型：正则校验失败
+                        }
+                    }
                 }
             }
+            //console.info('id=' + $(input).attr("id") + ",val=" + val + ",required=" + required + ",result=" + validateResult.result);
+            // show error info
+            if (!validateResult.result) {
+                var placeholder = $(input).attr("placeholder");
+                if (validateResult.errorType == 0) {
+                    var elementType = $(input).is("input") ? "input" : "select";
+                    var message = '<span class="tip">请' + (elementType == 'input' ? '填写' : '选择') + placeholder + '。</span>';
+                    $(input).parents(".controls").append(message);
+                }
+                else {
+                    var message = '<span class="tip">' + placeholder + '格式有误。</span>';
+                    $(input).parents(".controls").append(message);
+                }
+            }
+            else {
+                $(input).parents(".controls").find(".tip").remove();
+            }
+
+            return validateResult.result;
         }
 
-        /*
+        /**
         * 弹出模态窗体
         * @@param element 模态窗体对象
         */
@@ -148,12 +185,22 @@
             $(element).show();
             $('#shadow').show();
         }
-        /*
-        * 隐藏模态窗体
+
+        /**
+        * 关闭模态窗体
         * @@param element 模态窗体对象
         */
         function modalClose(element) {
-            $(element).parent().hide();
+            $(element).hide();
+            $('#shadow').hide();
+        }
+
+        /**
+        * 模态窗体中的"关闭"按钮事件
+        * @@param element 模态窗体对象
+        */
+        function closeModal(element) {
+            $(element).parents(".modal").hide();
             $('#shadow').hide();
         }
     </script>

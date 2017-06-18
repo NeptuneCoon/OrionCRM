@@ -70,6 +70,10 @@ namespace Orion.CRM.Core
                 }
             }
 
+            if (mapDetail == null) {
+                throw new Exception("在" + sqlmapName + ".sqlmap文件中未找到名为" + sqlName + "的sql配置。");
+            }
+
             return mapDetail;
         }
 

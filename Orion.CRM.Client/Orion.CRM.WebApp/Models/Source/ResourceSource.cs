@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Orion.CRM.WebApp.Models.Source
 {
+    /// <summary>
+    /// 资源来源
+    /// </summary>
     public class ResourceSource
     {
         public int Id { get; set; }

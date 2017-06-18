@@ -44,14 +44,19 @@ namespace Orion.CRM.WebApp.App_Data
                         // 服务器端token丢失，有可能是服务器重启等非用户原因导致
                         // 为避免cookie没过期但需要用户重新登录的问题，这里重新去服务器获取并生成token，然后再作比对
                         var appUser = APIInvoker.Get<Models.Account.AppUserModel>(_appConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + cookieUser.Id);
-                        string tokenContent = appUser.UserName + "," + appUser.Password;
-                        string token = DesEncrypt.Encrypt(tokenContent, _appConfig.DesEncryptKey);
-                        if (token != tokenInCookie) {
+                        if (appUser != null) {
+                            string tokenContent = appUser.UserName + "," + appUser.Password;
+                            string token = DesEncrypt.Encrypt(tokenContent, _appConfig.DesEncryptKey);
+                            if (token != tokenInCookie) {
+                                authorized = false;
+                            }
+                            // 将token写入服务器端缓存
+                            var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
+                            _memoryCache.Set("token_" + cookieUser.Id, token, cacheOptons);
+                        }
+                        else {
                             authorized = false;
                         }
-                        // 将token写入服务器端缓存
-                        var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
-                        _memoryCache.Set("token_" + cookieUser.Id, token, cacheOptons);
                     }
                     else {
                         // cookie中的token已过期或没过期但用户密码已更改

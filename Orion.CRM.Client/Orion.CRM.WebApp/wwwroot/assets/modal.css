@@ -1,0 +1,85 @@
+﻿.modal {
+    background: none repeat scroll 0 0 #fff;
+    /*border: 1px solid #808080;*/
+    box-shadow: 0 0 1em #666;
+    left: 50%;
+    position: fixed;
+    top: 40%;
+    z-index: 1000;
+    border-radius: 0;
+}
+
+.modal a.modal-close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    color: #3babd0;
+    font-size: 20px;
+}
+
+.modal a.modal-close:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+.modal .modal-header {
+    min-height: 90px;
+}
+
+.modal .modal-contents {
+    padding: 0px 15px 25px 15px;
+}
+
+.modal h2 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #000;
+    line-height: 1.2em;
+}
+
+.modal-cover {
+    background: none repeat scroll 0 0 #fff;
+    height: 100%;
+    top: 0;
+    opacity: 0.4;
+    position: fixed;
+    width: 100%;
+    z-index: 20;
+}
+
+@media only screen and (max-width:480px) {
+    .modal {
+        visibility: hidden;
+    }
+}
+
+.modal-webpi {
+    width: auto;
+    /*width:580px;*/
+    /*margin-left:-350px;
+    margin-top:-108px;*/
+    margin: auto;
+}
+
+.modal-webpi p {
+    border: 1px solid #e1e2e2;
+    margin: 15px 0;
+    padding: 15px;
+    font-size: 15px;
+    line-height: 1.4em;
+}
+
+.modal-webpi .btn-install {
+    margin-left: 10px;
+}
+
+.modal-input {
+    border: 1px solid #e1e2e2;
+    border-radius: 0 !important;
+    background-color: #f7f7f7;
+    color: #666;
+    font-size: 12px;
+    width: 250px;
+    padding: 5px 5px;
+    outline: none;
+}

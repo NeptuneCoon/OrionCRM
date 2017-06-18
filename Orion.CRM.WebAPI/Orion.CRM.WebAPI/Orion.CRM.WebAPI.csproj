@@ -10,9 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\MappingFiles\SqlMap\AppUserDomain - 复制.sqlmap">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Content Include="wwwroot\MappingFiles\SqlMap\Resource.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceSource.sqlmap" />
   </ItemGroup>
   <ItemGroup>

@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 namespace Orion.CRM.WebApp.Models.Project
 {
     /// <summary>
-    /// 项目视图模型
+    /// 项目简化模型
     /// </summary>
-    public class ProjectViewModel
+    public class Project
     {
         public int Id { get; set; }
-        public int OrgId { get; set; }
         public string ProjectName { get; set; }
-        public DateTime CreateTime { get; set; }
-        public DateTime UpdateTime { get; set; }
     }
 }
