@@ -14,6 +14,10 @@ namespace Orion.CRM.Application
             return adapter.GetUsers(pageIndex, pageSize);
         }
 
+        public IEnumerable<Entity.AppUser> GetUsersByOrgId(int pageIndex, int pageSize, int orgId)
+        {
+            return adapter.GetUsersByOrgId(pageIndex, pageSize, orgId);
+        }
         public Entity.AppUser GetUserById(int id)
         {
             return adapter.GetUserById(id);
@@ -37,6 +41,11 @@ namespace Orion.CRM.Application
         public int GetUserCount()
         {
             return adapter.GetUserCount();
+        }
+
+        public int GetUserCountByOrgId(int orgId)
+        {
+            return adapter.GetUserCountByOrgId(orgId);
         }
     }
 }

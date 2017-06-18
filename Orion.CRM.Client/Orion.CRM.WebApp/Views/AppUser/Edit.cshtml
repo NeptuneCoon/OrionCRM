@@ -1,0 +1,91 @@
+﻿@model  Orion.CRM.WebApp.Models.AppUser.AppUserViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form action="/AppUser/EditHandler" method="post">
+    <input type="hidden" asp-for="@Model.Id" />
+    <div class="panel panel-default" style="width:700px">
+        <div class="panel-heading">
+            <h3 class="panel-title">编辑用户</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>用户名<span class="required">*</span></td>
+                    <td><input type="text" asp-for="@Model.UserName" reg="regString" maxlength="20" required="required" /></td>
+                </tr>
+                <tr>
+                    <td>密码<span class="required">*</span></td>
+                    <td><input type="text" asp-for="@Model.Password" reg="regString" maxlength="18" required="required" /></td>
+                </tr>
+                <tr>
+                    <td>真实姓名<span class="required">*</span></td>
+                    <td><input type="text" asp-for="@Model.RealName" reg="regString" maxlength="20" required="required" /></td>
+                </tr>
+                <tr>
+                    <td>手机</td>
+                    <td><input type="text" asp-for="@Model.Mobile" reg="regString" maxlength="20" /></td>
+                </tr>
+                <tr>
+                    <td>微信</td>
+                    <td><input type="text" asp-for="@Model.Wechat" reg="regString" maxlength="20" /></td>
+                </tr>
+                <tr>
+                    <td>邮箱</td>
+                    <td><input type="text" asp-for="@Model.Email" reg="regString" maxlength="20" /></td>
+                </tr>
+                <tr>
+                    <td>状态</td>
+                    <td>
+                        <select name="Enable" id="Enable">
+                            @if(Model.Enable == 1) {
+                                <option value="1" selected="selected">启用</option>
+                                <option value="0">禁用</option>
+                            }
+                            else {
+                                <option value="1" >启用</option>
+                                <option value="0" selected="selected">禁用</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
+            <button type="button" class="btn btn-default" onclick="javascript: window.location = '/AppUser/List';">返回</button>
+        </div>
+    </div>
+</form>
+@section Scripts{
+    <script type="text/javascript">
+        var rootNode = $('form');
+        rootNode.on('blur', 'input', function () {
+            if($('.alert').is(":visible")){
+                if ($(this).attr("reg")) {
+                    inputCheck($(this));
+                }
+            }
+        });
+
+        function validateForm() {
+            var validateResult = true;
+
+            if (!inputCheck($("#UserName"))){
+                validateResult = false;
+            }
+            else if (!inputCheck($('#Password'))) {
+                validateResult = false;
+            }
+            else if (!inputCheck($("#RealName"))) {
+                validateResult = false;
+            }
+            else if (!inputCheck($("#OrgId"))) {
+                validateResult = false;
+            }
+
+            console.info("表单验证结果：" + validateResult);
+            return validateResult;
+        }
+    </script>
+}

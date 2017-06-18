@@ -212,3 +212,15 @@ body {
   font-size: 12px;
   padding-left: 2px;
 }
+
+
+/* custome styles */
+.default-input {
+    border: 1px solid #e1e2e2;
+    border-radius: 2px !important;
+    background-color: #f7f7f7;
+    color: #666;
+    font-size: 12px;
+    padding: 5px 5px;
+    outline: none;
+}

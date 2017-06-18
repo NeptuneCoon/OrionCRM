@@ -23,33 +23,18 @@
     </style>
 }
 
-@*<ol class="breadcrumb">
-    <li><a href="/Menu/MenuList">菜单管理</a></li>
-    <li class="active">编辑菜单</li>
-</ol>*@
-
-<div class="navbar" style="margin-bottom:5px">
-    <div class="navbar-inner">
-        <ul class="breadcrumb">
-
-            <li>
-                <a href="#">资源管理</a> <span class="divider">/</span>
-            </li>
-            <li class="active">资源列表</li>
-        </ul>
-    </div>
-</div>
+<h3>资源录入</h3>
 
 <div class="row-fluid">
     <!-- block -->
-    <div class="block">
+    <div class="block" style="margin:0px">
         <div class="navbar navbar-inner block-header">
-            <div class="muted pull-left">客户录入</div>
+            <div class="muted pull-left">资源录入</div>
         </div>
         <div class="block-content collapse in">
             <div class="span12">
                 @if (TempData["result"] != null) {
-                    if ((bool)TempData["result"] == true) {
+                    if ((bool)TempData["result"]) {
                         <!--操作成功通知-->
                         <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 55px">
                             <button class="close" data-dismiss="alert">×</button>
@@ -66,7 +51,6 @@
                 }
                 
                 <form class="form-horizontal" method="post" action="/Resource/AddHandler">
-                    
                     <div class="control-group" style="margin-top:10px">
                         <label class="control-label">客户姓名<span class="required">*</span></label>
                         <div class="controls">

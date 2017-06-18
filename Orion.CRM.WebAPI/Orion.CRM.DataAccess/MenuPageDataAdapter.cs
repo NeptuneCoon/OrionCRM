@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Orion.CRM.DataAccess
 {
-    public class MenuPageDataAdapter
+    public class MenuPageDataAdapter : DataAdapter
     {
         #region 菜单相关操作
 

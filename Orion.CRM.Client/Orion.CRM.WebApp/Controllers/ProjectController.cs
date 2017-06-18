@@ -10,9 +10,6 @@ using Newtonsoft.Json;
 
 namespace Orion.CRM.WebApp.Controllers
 {
-    /// <summary>
-    /// 项目控制器
-    /// </summary>
     public class ProjectController : BaseController
     {
   
@@ -20,97 +17,81 @@ namespace Orion.CRM.WebApp.Controllers
         {
             string url = _AppConfig.WebAPIHost + "api/Project/GetProjectsByOrgId?orgId="+ _AppUser.OrgId;
             List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
+            if(list != null && list.Count > 0) {
+                foreach(var project in list) {
+                    project.CreateUserName = GetUserNameById(project.CreateUserId);
+                }
+            }
 
-            ViewBag.OperateResult = Request.Query["operateResult"].ToString();
             return View(list);
         }
-        
-        public IActionResult Create()
+
+        [HttpPost]
+        public int Insert(Models.Project.ProjectViewModel project)
         {
-            Models.Project.ProjectViewModel viewModel = new Models.Project.ProjectViewModel();
-            return View(viewModel);
+            if (project != null) {
+                project.OrgId = _AppUser.OrgId;
+                project.CreateTime = DateTime.Now;
+                project.UpdateTime = DateTime.Now;
+                project.CreateUserId = _AppUser.Id;
+
+                string url = _AppConfig.WebAPIHost + "api/Project/InsertProject";
+                int identityId = APIInvoker.Post<int>(url, project);
+                return identityId;
+            }
+
+            return 0;
         }
 
         [HttpPost]
-        public IActionResult CreateHandler(Models.Project.ProjectViewModel viewModel)
+        public bool Update(Models.Project.ProjectViewModel project)
         {
-            if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/Project/InsertProject";
-                var project = new
-                {
-                    OrgId = _AppUser.OrgId,
-                    ProjectName = viewModel.ProjectName,
-                    CreateTime = DateTime.Now,
-                    UpdateTime = DateTime.Now
-                };
+            if (project != null && project.Id > 0) {
+                project.UpdateTime = DateTime.Now;
+                project.OrgId = _AppUser.OrgId;
 
-                int primaryId = APIInvoker.Post<int>(apiUrl, project);
+                string url = _AppConfig.WebAPIHost + "api/Project/UpdateProject";
+                bool result = APIInvoker.Post<bool>(url, project);
+                return result;
+            }
+            return false;
+        }
 
-                if (primaryId > 0) {
-                    return RedirectToAction("List", new { operateResult = "success" });
-                }
-                else {
-                    return RedirectToAction("List", new { operateResult = "fail" });
+        public bool Delete(int id)
+        {
+            if (id > 0) {
+                string url = _AppConfig.WebAPIHost + "api/Project/DeleteProject?id=" + id;
+                bool result = APIInvoker.Get<bool>(url);
+                return result;
+            }
+            return false;
+        }
+
+        // Ajax重新加载页面
+        [HttpGet]
+        public List<Models.Project.ProjectViewModel> ReloadList()
+        {
+            string url = _AppConfig.WebAPIHost + "api/Project/GetProjectsByOrgId?orgId=" + _AppUser.OrgId;
+            List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
+            if (list != null && list.Count > 0) {
+                foreach (var project in list) {
+                    project.CreateUserName = GetUserNameById(project.CreateUserId);
                 }
             }
-            return View();
-        }
-        /*
-        public IActionResult Edit(int id)
-        {
-            Models.Project.ProjectViewModel viewModel = new Models.Project.ProjectViewModel();
 
-            string url = _AppConfig.WebAPIHost + "api/Organization/GetOrganizationById?id=" + id;
-            viewModel = APIInvoker.Get<Models.Project.ProjectViewModel>(url);
-
-            return View(viewModel);
+            return list;
         }
 
-        [HttpPost]
-        public IActionResult EditHandler(Models.Project.ProjectViewModel viewModel)
+        #region 根据用户Id获取用户登录名
+        private string GetUserNameById(int userId)
         {
-            if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/Organization/UpdateOrganization";
-                var org = new
-                {
-                    Id = viewModel.Id,
-                    OrgName = viewModel.OrgName,
-                    OrgCode = viewModel.OrgCode,
-                    Type = 1,
-                    DeleteFlag = 0
-                };
-                string requestData = JsonConvert.SerializeObject(org);
-                bool result = APIInvoker.Post<bool>(apiUrl, requestData);
-
-                if (result) {
-                    return RedirectToAction("List", new { operateResult = "success" });
-                }
-                else {
-                    return RedirectToAction("List", new { operateResult = "fail" });
-                }
+            string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + userId;
+            Models.Account.AppUserModel appUser = APIInvoker.Get<Models.Account.AppUserModel>(apiUrl);
+            if (appUser != null) {
+                return appUser.UserName;
             }
-            return View();
+            return string.Empty;
         }
-
-        /// <summary>
-        /// 软删除
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool DeleteOrganization(int id)
-        {
-            // 获取
-            string getURL = _AppConfig.WebAPIHost + "api/Organization/GetOrganizationById?id=" + id;
-            Models.Project.ProjectViewModel org = APIInvoker.Get<Models.Project.ProjectViewModel>(getURL);
-            org.DeleteFlag = true;
-
-            // 更新
-            string updateURL = _AppConfig.WebAPIHost + "api/Organization/UpdateOrganization";
-            string requestData = JsonConvert.SerializeObject(org);
-            bool result = APIInvoker.Post<bool>(updateURL, requestData);
-
-            return result;
-        }
-        */
+        #endregion
     }
 }

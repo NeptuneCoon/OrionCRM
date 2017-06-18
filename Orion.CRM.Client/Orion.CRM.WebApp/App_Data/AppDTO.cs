@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Orion.CRM.WebApp.App_Data
 {
     /// <summary>
-    /// 应用程序数据传输/转换帮助类
+    /// 应用程序 "数据传输/转换/提取" 帮助类
     /// </summary>
     public class AppDTO
     {
@@ -43,8 +43,8 @@ namespace Orion.CRM.WebApp.App_Data
         /// <summary>
         /// 从数据库中获取当前组织/公司下的项目
         /// </summary>
-        /// <param name="apiHost"></param>
-        /// <param name="orgId"></param>
+        /// <param name="apiHost">API基地址</param>
+        /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
         public static List<Models.Project.Project> GetProjectsFromDb(string apiHost, int orgId)
         {
@@ -57,8 +57,8 @@ namespace Orion.CRM.WebApp.App_Data
         /// <summary>
         /// 从数据库中获取资源来源
         /// </summary>
-        /// <param name="apiHost"></param>
-        /// <param name="orgId"></param>
+        /// <param name="apiHost">API基地址</param>
+        /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
         public static List<Models.Source.ResourceSource> GetSourcesFromDb(string apiHost, int orgId)
         {
@@ -68,10 +68,18 @@ namespace Orion.CRM.WebApp.App_Data
             return sources;
         }
 
-        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost,int orgId)
+        /// <summary>
+        /// 从数据库中获取项目下的业务组
+        /// </summary>
+        /// <param name="apiHost">API基地址</param>
+        /// <param name="projectId">项目Id</param>
+        /// <returns></returns>
+        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost, int projectId)
         {
+            string apiUrl = apiHost + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
+            var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
 
+            return groups;
         }
-
     }
 }

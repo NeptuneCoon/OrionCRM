@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Orion.CRM.DataAccess
 {
-    public class ResourceDataAdapter
+    public class ResourceDataAdapter : DataAdapter
     {
         #region 添加资源
         public int InsertResource(Entity.Resource resource)
@@ -91,16 +91,5 @@ namespace Orion.CRM.DataAccess
             return identityId;
         }
         #endregion
-
-
-        private object CheckNull(object item)
-        {
-            if(item == null) {
-                return DBNull.Value;
-            }
-            else {
-                return item;
-            }
-        }
     }
 }

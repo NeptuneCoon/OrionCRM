@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Orion.CRM.DataAccess
 {
-    public class AppUserDataAdapter
+    public class AppUserDataAdapter : DataAdapter
     {
         public IEnumerable<Entity.AppUser> GetUsers(int pageIndex, int pageSize)
         {
@@ -14,6 +14,16 @@ namespace Orion.CRM.DataAccess
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$PageIndex", pageIndex.ToString()).Replace("$PageSize", pageSize.ToString());
 
             IEnumerable<Entity.AppUser> users = SqlMapHelper.GetSqlMapResult<Entity.AppUser>(mapDetail);
+            return users;
+        }
+
+        public IEnumerable<Entity.AppUser> GetUsersByOrgId(int pageIndex, int pageSize, int orgId)
+        {
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("AppUserDomain", "GetUsersByOrgId").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$PageIndex", pageIndex.ToString()).Replace("$PageSize", pageSize.ToString());
+
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            IEnumerable<Entity.AppUser> users = SqlMapHelper.GetSqlMapResult<Entity.AppUser>(mapDetail, param);
             return users;
         }
 
@@ -114,6 +124,13 @@ namespace Orion.CRM.DataAccess
         public int GetUserCount()
         {
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount");
+            return count;
+        }
+
+        public int GetUserCountByOrgId(int orgId)
+        {
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount", param);
             return count;
         }
     }

@@ -19,7 +19,7 @@ namespace Orion.CRM.WebApp.App_Data
         private IMemcachedClient _memcachedClient;
 
 
-        MemcachedClient client = null;
+        //MemcachedClient client = null;
         public MemcacheAdapter(string host, int port)
         {
             /*

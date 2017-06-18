@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertGroup</SqlName>
+      <OriginalSqlString>
+        insert into [Group](GroupName,ProjectId,CreateTime,UpdateTime,ManagerId,OrgId)
+        values(@GroupName,@ProjectId,@CreateTime,@UpdateTime,@ManagerId,@OrgId);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增业务组</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>UpdateGroup</SqlName>
+      <OriginalSqlString>
+        update [Group] set GroupName=@GroupName,ProjectId=@ProjectId,UpdateTime=@UpdateTime,ManagerId=@ManagerId where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改业务组</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteGroup</SqlName>
+      <OriginalSqlString>
+        delete from [Group] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除业务组</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetGroupById</SqlName>
+      <OriginalSqlString>
+        select A.*,B.RealName as ManagerName,C.ProjectName from [Group] A
+        left join AppUser B on A.ManagerId=B.Id
+        inner join Project C on A.ProjectId=C.Id
+        where A.Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Id获取业务组</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetGroupsByProjectId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.RealName as ManagerName,C.ProjectName from [Group] A
+        left join AppUser B on A.ManagerId=B.Id
+        inner join Project C on A.ProjectId=C.Id
+        where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据项目Id获取业务组</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetGroupsByOrgId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.RealName as ManagerName,C.ProjectName from [Group] A
+        left join AppUser B on A.ManagerId=B.Id
+        inner join Project C on A.ProjectId=C.Id
+        where A.OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据组组机构Id获取业务组</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

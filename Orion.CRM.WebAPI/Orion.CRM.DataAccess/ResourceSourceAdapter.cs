@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Orion.CRM.DataAccess
 {
-    public class ResourceSourceAdapter
+    public class ResourceSourceAdapter : DataAdapter
     {
         public int InsertSource(Entity.ResourceSource source)
         {

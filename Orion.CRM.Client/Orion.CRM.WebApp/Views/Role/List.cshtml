@@ -1,8 +1,106 @@
-﻿
+﻿@using Orion.CRM.WebApp
+@model List<Orion.CRM.WebApp.Models.Role.RoleViewModel>
+
+@addTagHelper "Orion.CRM.WebApp.PagerTagHelper,Orion.CRM.WebApp"
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>List</h2>
+<div class="panel panel-default" style="width:700px">
+    <div class="panel-heading">
+        <h3 class="panel-title">角色管理</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <a href="/Role/Create" class="btn btn-default">
+                Add New <i class="icon-plus"></i>
+            </a>
+        </div>
+
+        @if (TempData["result"] != null) {
+            if ((bool)TempData["result"]) {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>操作成功！</strong>
+                </div>
+            }
+            else {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>抱歉，操作失败，请重新尝试！</strong>
+                </div>
+            }
+        }
+        
+        <table class="table table-bordered" style="margin-top:8px">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>角色名称</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null) {
+                    for (int i = 0; i < Model.Count; i++) {
+                        var item = Model[i];
+                        <tr>
+                            <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
+                            <td>@item.RoleName</td>
+                            <td>@item.CreateTime</td>
+                            <td>
+                                <a href="/Role/Edit/@item.Id">编辑</a>
+                                <a href="javascript:;" onclick="deleteRole(@item.Id)">删除</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="4" style="text-align:center">没有数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <pager pager-option="ViewBag.PagerOption as PagerOption"></pager>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        function deleteRole(id) {
+            alert('抱歉，暂不可用');
+            /*
+            if (confirm("你确认要删除吗？")){
+                $.get("/Role/Delete", { "id": id }, function (data) {
+                    if (data) {
+                        alert('删除成功！');
+                        window.location = "/Role/RoleList";
+                    }
+                    else {
+                        alert('删除失败！');
+                    }
+                });
+            }
+            */
+        }
+
+        //$(function () {
+        //    var operateResult = $('#hidOperateResult').val();
+        //    if (operateResult) {
+        //        if (operateResult == "success") {
+        //            $(".alert>span").html('操作成功！');
+        //        }
+        //        else if (operateResult == "fail") {
+        //            $(".alert>span").html('操作失败！');
+        //        }
+        //        $(".alert").show();
+        //    }
+        //});
+    </script>
+}
 

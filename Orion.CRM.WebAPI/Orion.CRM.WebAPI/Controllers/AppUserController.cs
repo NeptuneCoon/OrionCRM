@@ -27,6 +27,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult GetUsersByOrgId(int pageIndex, int pageSize, int orgId)
+        {
+            try {
+                IEnumerable<Entity.AppUser> users = service.GetUsersByOrgId(pageIndex, pageSize, orgId);
+                APIDataResult dataResult = new APIDataResult(200, users);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetUserById(int id)
         {
             try {
@@ -85,6 +98,19 @@ namespace Orion.CRM.WebAPI.Controllers
         {
             try {
                 int count = service.GetUserCount();
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        public APIDataResult GetUserCountByOrgId(int orgId)
+        {
+            try {
+                int count = service.GetUserCountByOrgId(orgId);
                 APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }

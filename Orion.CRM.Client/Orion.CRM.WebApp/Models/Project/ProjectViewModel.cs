@@ -15,5 +15,7 @@ namespace Orion.CRM.WebApp.Models.Project
         public string ProjectName { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
+        public int CreateUserId { get; set; }
+        public string CreateUserName { get; set; }
     }
 }

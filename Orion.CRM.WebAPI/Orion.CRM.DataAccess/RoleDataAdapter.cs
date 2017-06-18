@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Orion.CRM.DataAccess
 {
-    public class RoleDataAdapter
+    public class RoleDataAdapter : DataAdapter
     {
         public Entity.Role GetRoleById(int id)
         {

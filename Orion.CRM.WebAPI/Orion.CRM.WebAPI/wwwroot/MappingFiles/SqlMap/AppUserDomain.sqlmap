@@ -31,6 +31,36 @@
       <CommandType>Text</CommandType>
       <Description>获取用户总数</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetUsersByOrgId</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * 
+          from
+          (
+            select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
+		        (
+			        select A.*,B.OrgName from [AppUser] A inner join Organization B on A.OrgId=B.Id
+		        )as temp
+          )as t
+        where RowNumber > $PageSize*($PageIndex-1) and OrgId=@OrgId
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取指定组织机构下的用户</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetUserCountByOrgId</SqlName>
+      <OriginalSqlString>
+        select count(1) from AppUser where OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取指定组织机构下的用户总数</Description>
+    </SqlMapDetail>
     
     <SqlMapDetail>
       <SqlName>GetUserById</SqlName>

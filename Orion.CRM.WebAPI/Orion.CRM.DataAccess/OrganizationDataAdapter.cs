@@ -6,7 +6,7 @@ using Orion.CRM.Core;
 
 namespace Orion.CRM.DataAccess
 {
-    public class OrganizationDataAdapter
+    public class OrganizationDataAdapter : DataAdapter
     {
         public Entity.Organization GetOrganizationById(int id)
         {

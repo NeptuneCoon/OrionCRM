@@ -17,8 +17,6 @@ namespace Orion.CRM.WebApp.Controllers
             string url = _AppConfig.WebAPIHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
             List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
 
-            //ViewBag.OperateResult = Request.Query["operateResult"].ToString();
-
             return View(list);
         }
 
@@ -62,7 +60,7 @@ namespace Orion.CRM.WebApp.Controllers
             return false;
         }
 
-        // ajax重新加载页面
+        // Ajax重新加载页面
         [HttpGet]
         public List<Models.Source.ResourceSource> ReloadList()
         {
