@@ -104,7 +104,7 @@
     <SqlMapDetail>
       <SqlName>UpdateUser</SqlName>
       <OriginalSqlString>
-        update AppUser set OrgId=@OrgId,UserName=@UserName,[Password]=@Password,RealName=@RealName,UpdateTime=@UpdateTime,Mobile=@Mobile,Email=@Email,Wechat=@Wechat,Enable=@Enable where Id=@Id
+        update AppUser set OrgId=@OrgId,RealName=@RealName,UpdateTime=@UpdateTime,Mobile=@Mobile,Email=@Email,Wechat=@Wechat,Enable=@Enable where Id=@Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -123,16 +123,16 @@
     <SqlMapDetail>
       <SqlName>InsertUserRole</SqlName>
       <OriginalSqlString>
-
+        insert into UserRole(UserId,RoleId,CreateTime) values(@UserId,@RoleId,@CreateTime);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>获取用户和角色之间的关系</Description>
+      <Description>插入用户和角色之间的关系</Description>
     </SqlMapDetail>
     <SqlMapDetail>
       <SqlName>UpdateUserRole</SqlName>
       <OriginalSqlString>
-
+        update UserRole set RoleId=@RoleId where UserId=@UserId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

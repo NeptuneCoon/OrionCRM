@@ -42,6 +42,10 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult Create()
         {
             Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
+
+            string roleApiUrl = _AppConfig.WebAPIHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + _AppUser.OrgId;
+            viewModel.RoleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
+
             return View(viewModel);
         }
 
@@ -65,6 +69,17 @@ namespace Orion.CRM.WebApp.Controllers
                 };
 
                 int primaryId = APIInvoker.Post<int>(apiUrl, user);
+                if (primaryId > 0) {
+                    // 插入用户和角色之间的关系
+                    string userRoleApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserRole";
+                    var userRole = new
+                    {
+                        UserId = primaryId,
+                        RoleId = viewModel.RoleId,
+                        CreateTime = DateTime.Now
+                    };
+                    int userRoleId = APIInvoker.Post<int>(userRoleApi, userRole);
+                }
 
                 TempData["result"] = primaryId > 0;
                 return RedirectToAction("List");
@@ -74,10 +89,11 @@ namespace Orion.CRM.WebApp.Controllers
 
         public IActionResult Edit(int id)
         {
-            Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
-
             string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + id;
-            viewModel = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
+            Models.AppUser.AppUserViewModel viewModel = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
+
+            string roleApiUrl = _AppConfig.WebAPIHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + _AppUser.OrgId;
+            viewModel.RoleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
 
             return View(viewModel);
         }
@@ -86,23 +102,43 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult EditHandler(Models.AppUser.AppUserViewModel viewModel)
         {
             if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/UpdateUser";
-                var user = new
-                {
-                    Id = viewModel.Id,
-                    OrgId = _AppUser.OrgId,
-                    UserName = viewModel.UserName,
-                    Password = Md5Encrypt.Md5Bit32(viewModel.Password),
-                    RealName = viewModel.RealName,
-                    UpdateTime = DateTime.Now,
-                    Mobile = viewModel.Mobile,
-                    Email = viewModel.Email,
-                    Wechat = viewModel.Wechat,
-                    Enable = viewModel.Enable
-                };
-                bool result = APIInvoker.Post<bool>(apiUrl, user);
+                string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
+                Models.AppUser.AppUserViewModel user = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
-                TempData["result"] = result;
+                if (user != null) { 
+                    string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/UpdateUser";
+                    var updatingUser = new
+                    {
+                        Id = user.Id,
+                        OrgId = user.OrgId,
+                        UserName = user.UserName,
+                        Password = user.Password,
+                        RealName = viewModel.RealName,
+                        UpdateTime = DateTime.Now,
+                        Mobile = viewModel.Mobile,
+                        Email = viewModel.Email,
+                        Wechat = viewModel.Wechat,
+                        Enable = viewModel.Enable
+                    };
+                    bool result = APIInvoker.Post<bool>(apiUrl, updatingUser);
+                    if (result) {
+                        // 修改用户和角色之间的关系
+                        string userRoleApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserRole";
+                        var userRole = new
+                        {
+                            UserId = viewModel.Id,
+                            RoleId = viewModel.RoleId
+                        };
+
+                        bool _res = APIInvoker.Post<bool>(userRoleApi, userRole);
+                    
+                    }
+
+                    TempData["result"] = result;
+                }
+                else {
+                    TempData["result"] = false;
+                }
                 return RedirectToAction("List");
             }
             return View();

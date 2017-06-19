@@ -3,91 +3,134 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section styles{
 
-<form action="/AppUser/CreateHandler" method="post">
-    <div class="panel panel-default" style="width:700px">
-        <div class="panel-heading">
-            <h3 class="panel-title">创建用户</h3>
+}
+
+<h3>创建用户</h3>
+
+<div class="row-fluid">
+    <div class="block" style="margin:0px">
+        <div class="navbar navbar-inner block-header">
+            <div class="muted pull-left">创建用户</div>
         </div>
-        <div class="panel-body">
-            <table class="table table-bordered">
-                <tr>
-                    <td>用户名<span class="required">*</span></td>
-                    <td><input type="text" asp-for="@Model.UserName" reg="regString" maxlength="20" required="required" /></td>
-                </tr>
-                <tr>
-                    <td>密码<span class="required">*</span></td>
-                    <td><input type="text" asp-for="@Model.Password" reg="regString" maxlength="18" required="required" /></td>
-                </tr>
-                <tr>
-                    <td>真实姓名<span class="required">*</span></td>
-                    <td><input type="text" asp-for="@Model.RealName" reg="regString" maxlength="20" required="required" /></td>
-                </tr>
-                <tr>
-                    <td>手机</td>
-                    <td><input type="text" asp-for="@Model.Mobile" reg="regString" maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td>微信</td>
-                    <td><input type="text" asp-for="@Model.Wechat" reg="regString" maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td>邮箱</td>
-                    <td><input type="text" asp-for="@Model.Email" reg="regString" maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td>角色</td>
-                    <td>
-                        <select name="OrgId" id="OrgId" required="required">
-                            <option value="">请选择</option>
-                            <option>管理员</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>状态</td>
-                    <td>
-                        <select name="Enable" id="Enable">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
-            <button type="button" class="btn btn-default" onclick="javascript: window.location = '/AppUser/List';">返回</button>
+        <div class="block-content collapse in">
+            <div class="span12">
+                <form class="form-horizontal" method="post" action="/AppUser/CreateHandler">
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">用户名<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.UserName" reg="regStr" maxlength="20" is-null="required" placeholder="用户名" />
+                            <p class="help-block">用户名由2-20位英文字母或数字组成</p>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">初始密码<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.Password" reg="regString" maxlength="18" is-null="required" placeholder="密码" />
+                            <p class="help-block">密码为6-18位任意字符</p>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">真实姓名<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.RealName" reg="regChinese" maxlength="7" is-null="required" placeholder="真实姓名" />
+                            <br/>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">手机</label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.Mobile" reg="regMobile" maxlength="11" placeholder="手机号码" />
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">微信</label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.Wechat" reg="regWechat" maxlength="20" placeholder="微信号" />
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">邮箱</label>
+                        <div class="controls">
+                            <input type="text" class="span5" asp-for="@Model.Email" reg="regString" maxlength="20" placeholder="邮箱，可以用来找回密码" />
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">角色<span class="required">*</span></label>
+                        <div class="controls">
+                            <select class="span5 m-wrap" name="RoleId" id="RoleId" is-null="required">
+                                <option value="">请选择</option>
+                                @if (Model.RoleList != null) {
+                                    foreach(var role in Model.RoleList) {
+                                        <option value="@role.Id">@role.RoleName</option>
+                                    }
+                                }
+                            </select>
+                            <p class="help-block">请为用户指定一个角色，不同角色的权限不同</p>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">状态<span class="tip">*</span></label>
+                        <div class="form-inline">
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="Enable" value="1" />
+                                <span class="nebula-radioInput"></span>启用
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="Enable" value="0" />
+                                <span class="nebula-radioInput"></span>禁用
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="padding-left:140px">
+                        <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
+                        <button type="button" class="btn btn-default" onclick="javascript: window.location = '/AppUser/List';">返回</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</form>
+</div>
 @section Scripts{
     <script type="text/javascript">
-        var rootNode = $('form');
-        rootNode.on('blur', 'input', function () {
-            if($('.alert').is(":visible")){
+        $(function () {
+            var rootNode = $('form');
+            rootNode.on('blur', 'input,select', function () {
+                // 为表单中的文本框,下拉框绑定onfocus事件
                 if ($(this).attr("reg")) {
                     inputCheck($(this));
                 }
-            }
+            });
         });
 
         function validateForm() {
-            var validateResult = true;
+            var result = true;
+            var firstEmpty;
 
-            if (!inputCheck($("#UserName"))) {
-                validateResult = false;
+            try {
+                $('form').find("input,select").each(function () {
+                    var res = inputCheck($(this));
+                    if (!res) {
+                        result = res;
+                        if (!firstEmpty) {
+                            firstEmpty = $(this);
+                        }
+                    }
+                });
             }
-            else if (!inputCheck($('#Password'))) {
-                validateResult = false;
-            }
-            else if (!inputCheck($("#RealName"))) {
-                validateResult = false;
-            }
-            else if (!inputCheck($("#OrgId"))) {
-                validateResult = false;
+            catch (ex) {
+                result = false;
+                console.info('表单验证过程中发现异常：' + ex);
             }
 
-            console.info("表单验证结果：" + validateResult);
-            return validateResult;
+            if (firstEmpty) {
+                firstEmpty.focus();
+            }
+            console.info('表单验证结果：' + result);
+
+            return result;
         }
     </script>
 }

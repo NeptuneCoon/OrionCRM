@@ -14,6 +14,7 @@
     <Content Include="wwwroot\assets\form-validation.js" />
     <Content Include="wwwroot\assets\jquery\jquery.min.js" />
     <Content Include="wwwroot\assets\modal.css" />
+    <Content Include="wwwroot\assets\nebula-radio-check.css" />
     <Content Include="wwwroot\assets\scripts.js" />
     <Content Include="wwwroot\assets\styles.css" />
     <Content Include="wwwroot\bootstrap\css\bootstrap-responsive.css" />

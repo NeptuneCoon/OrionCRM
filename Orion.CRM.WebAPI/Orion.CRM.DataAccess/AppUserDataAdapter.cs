@@ -89,8 +89,6 @@ namespace Orion.CRM.DataAccess
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Id", user.Id));
             parameters.Add(new SqlParameter("@OrgId", user.OrgId));
-            parameters.Add(new SqlParameter("@UserName", user.UserName));
-            parameters.Add(new SqlParameter("@Password", user.Password));
             parameters.Add(new SqlParameter("@RealName", user.RealName));
             parameters.Add(new SqlParameter("@UpdateTime", user.UpdateTime));
             parameters.Add(new SqlParameter("@Enable", user.Enable));
@@ -132,6 +130,29 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@OrgId", orgId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount", param);
             return count;
+        }
+
+        public int InsertUserRole(Entity.UserRole userRole)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userRole.UserId),
+                new SqlParameter("@RoleId", userRole.RoleId),
+                new SqlParameter("@CreateTime", userRole.CreateTime)
+            };
+
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "InsertUserRole", paramArr);
+            return identityId;
+        }
+
+        public bool UpdateUserRole(Entity.UserRole userRole)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userRole.UserId),
+                new SqlParameter("@RoleId", userRole.RoleId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdateUserRole", paramArr);
+            return count > 0;
         }
     }
 }

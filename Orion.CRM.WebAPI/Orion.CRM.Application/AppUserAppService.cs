@@ -47,5 +47,15 @@ namespace Orion.CRM.Application
         {
             return adapter.GetUserCountByOrgId(orgId);
         }
+
+        public int InsertUserRole(Entity.UserRole userRole)
+        {
+            return adapter.InsertUserRole(userRole);
+        }
+
+        public bool UpdateUserRole(Entity.UserRole userRole)
+        {
+            return adapter.UpdateUserRole(userRole);
+        }
     }
 }

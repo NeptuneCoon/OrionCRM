@@ -119,5 +119,34 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        [HttpPost]
+        public APIDataResult InsertUserRole([FromBody]Entity.UserRole userRole)
+        {
+            try {
+                int idnetityId = service.InsertUserRole(userRole);
+                APIDataResult dataResult = new APIDataResult(200, idnetityId);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+
+        [HttpPost]
+        public APIDataResult UpdateUserRole([FromBody]Entity.UserRole userRole)
+        {
+            try {
+                bool res = service.UpdateUserRole(userRole);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

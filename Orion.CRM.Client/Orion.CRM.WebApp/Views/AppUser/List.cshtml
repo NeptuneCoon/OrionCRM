@@ -43,7 +43,8 @@
                     <th>真实姓名</th>
                     <th>手机</th>
                     <th>可用状态</th>
-                    <th>所属组织机构</th>
+                    <th>角色</th>
+                    <th>所属项目</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -58,7 +59,8 @@
                             <td>@item.RealName</td>
                             <td>@item.Mobile</td>
                             <td>@item.Enable</td>
-                            <td>@item.OrgName</td>
+                            <td>@item.RoleId</td>
+                            <td>@item.ProjectId</td>
                             <td>@item.CreateTime</td>
                             <td>
                                 <a href="/AppUser/Edit/@item.Id">编辑</a>
@@ -69,7 +71,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="8" style="text-align:center">没有数据</td>
+                        <td colspan="9" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
