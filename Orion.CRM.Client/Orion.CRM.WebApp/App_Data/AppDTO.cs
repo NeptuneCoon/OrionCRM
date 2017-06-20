@@ -41,6 +41,20 @@ namespace Orion.CRM.WebApp.App_Data
         }
 
         /// <summary>
+        /// 从数据库中获取当前组织/公司下的角色
+        /// </summary>
+        /// <param name="apiHost">API基地址</param>
+        /// <param name="orgId">组织/公司Id</param>
+        /// <returns></returns>
+        public static List<Models.Role.Role> GetRoleListFromDb(string apiHost, int orgId)
+        {
+            string roleApiUrl = apiHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + orgId;
+            var roleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
+
+            return roleList;
+        }
+
+        /// <summary>
         /// 从数据库中获取当前组织/公司下的项目
         /// </summary>
         /// <param name="apiHost">API基地址</param>

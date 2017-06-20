@@ -154,5 +154,53 @@ namespace Orion.CRM.DataAccess
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdateUserRole", paramArr);
             return count > 0;
         }
+
+
+        public int InsertUserProject(Entity.UserProject userProject)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userProject.UserId),
+                new SqlParameter("@ProjectId", userProject.ProjectId),
+                new SqlParameter("@CreateTime", userProject.CreateTime)
+            };
+
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "InsertUserProject", paramArr);
+            return identityId;
+        }
+
+        public bool UpdateUserProject(Entity.UserProject userProject)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userProject.UserId),
+                new SqlParameter("@ProjectId", userProject.ProjectId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdateUserProject", paramArr);
+            return count > 0;
+        }
+
+
+        public int InsertUserGroup(Entity.UserGroup userGroup)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userGroup.UserId),
+                new SqlParameter("@GroupId", userGroup.GroupId),
+                new SqlParameter("@CreateTime", userGroup.CreateTime)
+            };
+
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "InsertUserGroup", paramArr);
+            return identityId;
+        }
+
+        public bool UpdateUserGroup(Entity.UserGroup userGroup)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@UserId", userGroup.UserId),
+                new SqlParameter("@GroupId", userGroup.GroupId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdateUserGroup", paramArr);
+            return count > 0;
+        }
     }
 }

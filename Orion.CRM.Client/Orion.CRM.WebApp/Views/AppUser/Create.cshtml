@@ -57,9 +57,9 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
-                        <label class="control-label">角色<span class="required">*</span></label>
+                        <label class="control-label">角色<span class="tip">*</span></label>
                         <div class="controls">
-                            <select class="span5 m-wrap" name="RoleId" id="RoleId" is-null="required">
+                            <select class="span5 m-wrap" name="RoleId" id="RoleId" reg="regNum" is-null="required" placeholder="角色">
                                 <option value="">请选择</option>
                                 @if (Model.RoleList != null) {
                                     foreach(var role in Model.RoleList) {
@@ -68,6 +68,32 @@
                                 }
                             </select>
                             <p class="help-block">请为用户指定一个角色，不同角色的权限不同</p>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">所属项目<span class="tip">*</span></label>
+                        <div class="controls">
+                            <select class="span5 m-wrap" name="ProjectId" id="ProjectId" reg="regNum" is-null="required" placeholder="所属项目" onchange="projectChange()">
+                                <option value="">请选择</option>
+                                @if (Model.ProjectList != null) {
+                                    foreach (var project in Model.ProjectList) {
+                                        <option value="@project.Id">@project.ProjectName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">所属组<span class="tip">*</span></label>
+                        <div class="controls">
+                            <select class="span5 m-wrap" name="GroupId" id="GroupId" reg="regNum" is-null="required" placeholder="业务组">
+                                <option value="">请选择</option>
+                                @if (Model.GroupList != null) {
+                                    foreach (var group in Model.GroupList) {
+                                        <option value="@group.Id">@group.GroupName</option>
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
@@ -104,6 +130,20 @@
                 }
             });
         });
+
+        function projectChange() {
+            var projectId = $("#ProjectId").find("option:selected").val();
+            $.get("/AppUser/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+                $("#GroupId option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var group = data[i];
+                        var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
+                        $('#GroupId').append(option);
+                    }
+                }
+            });
+        }
 
         function validateForm() {
             var result = true;

@@ -148,5 +148,61 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        [HttpPost]
+        public APIDataResult InsertUserProject([FromBody]Entity.UserProject userProject)
+        {
+            try {
+                int idnetityId = service.InsertUserProject(userProject);
+                APIDataResult dataResult = new APIDataResult(200, idnetityId);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult UpdateUserProject([FromBody]Entity.UserProject userProject)
+        {
+            try {
+                bool res = service.UpdateUserProject(userProject);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult InsertUserGroup([FromBody]Entity.UserGroup userGroup)
+        {
+            try {
+                int idnetityId = service.InsertUserGroup(userGroup);
+                APIDataResult dataResult = new APIDataResult(200, idnetityId);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult UpdateUserGroup([FromBody]Entity.UserGroup userGroup)
+        {
+            try {
+                bool res = service.UpdateUserGroup(userGroup);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

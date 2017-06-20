@@ -18,6 +18,7 @@
             <div class="span12">
                 <form class="form-horizontal" method="post" action="/AppUser/EditHandler">
                     <input type="hidden" asp-for="@Model.Id" />
+                    <input type="hidden" id="groupIdHidden" value="@Model.GroupId" />
                     <div class="control-group" style="margin-top:10px">
                         <label class="control-label">用户名<span class="required">*</span></label>
                         <div class="controls">
@@ -53,7 +54,7 @@
                     <div class="control-group" style="margin-top:10px">
                         <label class="control-label">角色<span class="required">*</span></label>
                         <div class="controls">
-                            <select class="span5 m-wrap" name="RoleId" id="RoleId" is-null="required">
+                            <select class="span5 m-wrap" name="RoleId" id="RoleId" reg="regNum" is-null="required" placeholder="角色">
                                 <option value="">请选择</option>
                                 @if (Model.RoleList != null) {
                                     foreach (var role in Model.RoleList) {
@@ -67,6 +68,42 @@
                                 }
                             </select>
                             <p class="help-block">请为用户指定一个角色，不同角色的权限不同</p>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">所属项目<span class="tip">*</span></label>
+                        <div class="controls">
+                            <select class="span5 m-wrap" name="ProjectId" id="ProjectId" reg="regNum" is-null="required" placeholder="所属项目" onchange="projectChange()">
+                                <option value="">请选择</option>
+                                @if (Model.ProjectList != null) {
+                                    foreach (var project in Model.ProjectList) {
+                                        if (Model.ProjectId == project.Id) {
+                                            <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                        }
+                                        else {
+                                            <option value="@project.Id">@project.ProjectName</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">所属组<span class="tip">*</span></label>
+                        <div class="controls">
+                            <select class="span5 m-wrap" name="GroupId" id="GroupId" reg="regNum" is-null="required" placeholder="业务组">
+                                <option value="">请选择</option>
+                                @if (Model.GroupList != null) {
+                                    foreach (var group in Model.GroupList) {
+                                        if (Model.GroupId == group.Id) {
+                                            <option value="@group.Id" selected="selected">@group.GroupName</option>
+                                        }
+                                        else {
+                                            <option value="@group.Id">@group.GroupName</option>
+                                        }
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
@@ -112,7 +149,27 @@
                     inputCheck($(this));
                 }
             });
+
+            projectChange(function () {
+                $("#GroupId").val($('#groupIdHidden').val());
+            });
+            
         });
+
+        function projectChange(callback) {
+            var projectId = $("#ProjectId").find("option:selected").val();
+            $.get("/AppUser/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+                $("#GroupId option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var group = data[i];
+                        var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
+                        $('#GroupId').append(option);
+                    }
+                    callback();
+                }
+            });
+        }
 
         function validateForm() {
             var result = true;

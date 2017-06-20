@@ -57,5 +57,25 @@ namespace Orion.CRM.Application
         {
             return adapter.UpdateUserRole(userRole);
         }
+
+        public int InsertUserProject(Entity.UserProject userProject)
+        {
+            return adapter.InsertUserProject(userProject);
+        }
+
+        public bool UpdateUserProject(Entity.UserProject userProject)
+        {
+            return adapter.UpdateUserProject(userProject);
+        }
+
+        public int InsertUserGroup(Entity.UserGroup userGroup)
+        {
+            return adapter.InsertUserGroup(userGroup);
+        }
+
+        public bool UpdateUserGroup(Entity.UserGroup userGroup)
+        {
+            return adapter.UpdateUserGroup(userGroup);
+        }
     }
 }

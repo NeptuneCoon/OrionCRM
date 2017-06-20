@@ -9,6 +9,7 @@ namespace Orion.CRM.WebApp.Models.AppUser
     {
         #region 基本属性
         public int Id { get; set; }
+        public int OrgId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string RealName { get; set; }
@@ -17,28 +18,23 @@ namespace Orion.CRM.WebApp.Models.AppUser
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string Wechat { get; set; }
-        public int OrgId { get; set; }
-        public string OrgName { get; set; }
         public int Enable { get; set; }
         #endregion
 
-        #region 外键属性
-        /// <summary>
-        /// 外键属性，用户所属项目Id
-        /// </summary>
+        #region 扩展属性
         public int? ProjectId { get; set; }
-        /// <summary>
-        /// 外键属性，用户所属业务组Id
-        /// </summary>
         public int? GroupId { get; set; }
-        /// <summary>
-        /// 外键属性，用户所属角色Id
-        /// </summary>
-        public int? RoleId { get; set; } 
+        public int? RoleId { get; set; }
+        public string OrgName { get; set; }
+        public string ProjectName { get; set; }
+        public string RoleName { get; set; }
+        public string GroupName { get; set; }
         #endregion
 
 
         // 视图属性
         public IEnumerable<Role.Role> RoleList { get; set; }
+        public IEnumerable<Project.Project> ProjectList { get; set; }
+        public IEnumerable<Group.Group> GroupList { get; set; }
     }
 }

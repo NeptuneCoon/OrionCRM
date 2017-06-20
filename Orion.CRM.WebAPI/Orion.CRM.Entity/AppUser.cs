@@ -22,18 +22,15 @@ namespace Orion.CRM.Entity
         public int Enable { get; set; }
 
 
-        /// <summary>
-        /// 外键属性，用户所属项目Id
-        /// </summary>
+        #region 扩展属性
         public int? ProjectId { get; set; }
-        /// <summary>
-        /// 外键属性，用户所属业务组Id
-        /// </summary>
         public int? GroupId { get; set; }
-        /// <summary>
-        /// 外键属性，用户所属角色Id
-        /// </summary>
         public int? RoleId { get; set; }
+        public string OrgName { get; set; }
+        public string ProjectName { get; set; }
+        public string RoleName { get; set; }
+        public string GroupName { get; set; } 
+        #endregion
     }
 }
 

@@ -43,8 +43,9 @@ namespace Orion.CRM.WebApp.Controllers
         {
             Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
 
-            string roleApiUrl = _AppConfig.WebAPIHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + _AppUser.OrgId;
-            viewModel.RoleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+
 
             return View(viewModel);
         }
@@ -68,20 +69,40 @@ namespace Orion.CRM.WebApp.Controllers
                     Enable = viewModel.Enable
                 };
 
-                int primaryId = APIInvoker.Post<int>(apiUrl, user);
-                if (primaryId > 0) {
+                int userId = APIInvoker.Post<int>(apiUrl, user);
+                if (userId > 0) {
                     // 插入用户和角色之间的关系
                     string userRoleApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserRole";
                     var userRole = new
                     {
-                        UserId = primaryId,
+                        UserId = userId,
                         RoleId = viewModel.RoleId,
                         CreateTime = DateTime.Now
                     };
                     int userRoleId = APIInvoker.Post<int>(userRoleApi, userRole);
+
+                    // 插入用户和项目之间的关系
+                    string userProjectApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserProject";
+                    var userProject = new
+                    {
+                        UserId = userId,
+                        ProjectId = viewModel.ProjectId,
+                        CreateTime = DateTime.Now
+                    };
+                    int userProjectId = APIInvoker.Post<int>(userProjectApi, userProject);
+
+                    // 插入用户和业务组之间的关系
+                    string userGroupApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserGroup";
+                    var userGroup = new
+                    {
+                        UserId = userId,
+                        GroupId = viewModel.GroupId,
+                        CreateTime = DateTime.Now
+                    };
+                    var userGroupId = APIInvoker.Post<int>(userGroupApi, userGroup);
                 }
 
-                TempData["result"] = primaryId > 0;
+                TempData["result"] = userId > 0;
                 return RedirectToAction("List");
             }
             return View();
@@ -92,8 +113,8 @@ namespace Orion.CRM.WebApp.Controllers
             string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + id;
             Models.AppUser.AppUserViewModel viewModel = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
-            string roleApiUrl = _AppConfig.WebAPIHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + _AppUser.OrgId;
-            viewModel.RoleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
 
             return View(viewModel);
         }
@@ -130,8 +151,25 @@ namespace Orion.CRM.WebApp.Controllers
                             RoleId = viewModel.RoleId
                         };
 
-                        bool _res = APIInvoker.Post<bool>(userRoleApi, userRole);
-                    
+                        bool res1 = APIInvoker.Post<bool>(userRoleApi, userRole);
+
+                        // 修改用户和项目之间的关系
+                        string userProjectApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserProject";
+                        var userProject = new
+                        {
+                            UserId = user.Id,
+                            ProjectId = viewModel.ProjectId
+                        };
+                        bool res2 = APIInvoker.Post<bool>(userProjectApi, userProject);
+
+                        // 修改用户和业务组之间的关系
+                        string userGroupApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserGroup";
+                        var userGroup = new
+                        {
+                            UserId = user.Id,
+                            GroupId = viewModel.GroupId
+                        };
+                        bool res3 = APIInvoker.Post<bool>(userGroupApi, userGroup);
                     }
 
                     TempData["result"] = result;
@@ -142,6 +180,12 @@ namespace Orion.CRM.WebApp.Controllers
                 return RedirectToAction("List");
             }
             return View();
+        }
+
+        [HttpGet]
+        public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
+        {
+            return AppDTO.GetGroupsFromDb(_AppConfig.WebAPIHost, projectId);
         }
     }
 }
