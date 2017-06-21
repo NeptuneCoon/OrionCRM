@@ -21,7 +21,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@ManagerId", CheckNull(group.ManagerId))
             };
 
-            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("Group", "InsertGroup", paramArr);
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("GroupDomain", "InsertGroup", paramArr);
             return identityId;
         }
 
@@ -37,7 +37,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@ManagerId",  CheckNull(group.ManagerId))
             };
 
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("Group", "UpdateGroup", paramArr);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("GroupDomain", "UpdateGroup", paramArr);
             return count > 0;
         }
 
@@ -46,7 +46,7 @@ namespace Orion.CRM.DataAccess
             if (id <= 0) return false;
 
             SqlParameter param = new SqlParameter("@Id", id);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("Group", "DeleteGroup", param);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("GroupDomain", "DeleteGroup", param);
 
             return count > 0;
         }
@@ -56,7 +56,7 @@ namespace Orion.CRM.DataAccess
             if (id <= 0) return null;
 
             SqlParameter param = new SqlParameter("@Id", id);
-            var entity = SqlMapHelper.GetSqlMapSingleResult<Entity.Group>("Group", "GetGroupById", param);
+            var entity = SqlMapHelper.GetSqlMapSingleResult<Entity.Group>("GroupDomain", "GetGroupById", param);
 
             return entity;
         }
@@ -64,7 +64,7 @@ namespace Orion.CRM.DataAccess
         public IEnumerable<Entity.Group> GetGroupsByProjectId(int projectId)
         {
             SqlParameter param = new SqlParameter("@ProjectId", projectId);
-            var groups = SqlMapHelper.GetSqlMapResult<Entity.Group>("Group", "GetGroupsByProjectId", param);
+            var groups = SqlMapHelper.GetSqlMapResult<Entity.Group>("GroupDomain", "GetGroupsByProjectId", param);
 
             return groups;
         }
@@ -72,7 +72,7 @@ namespace Orion.CRM.DataAccess
         public IEnumerable<Entity.Group> GetGroupsByOrgId(int orgId)
         {
             SqlParameter param = new SqlParameter("@OrgId", orgId);
-            var groups = SqlMapHelper.GetSqlMapResult<Entity.Group>("Group", "GetGroupsByOrgId", param);
+            var groups = SqlMapHelper.GetSqlMapResult<Entity.Group>("GroupDomain", "GetGroupsByOrgId", param);
 
             return groups;
         }

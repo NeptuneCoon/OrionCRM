@@ -45,7 +45,6 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Update(Models.Group.Group group)
         {
             if (group != null && group.Id > 0) {
-
                 string getUrl = _AppConfig.WebAPIHost + "api/Group/GetGroupById?id=" + group.Id;
                 Models.Group.Group dbGroup = APIInvoker.Get<Models.Group.Group>(getUrl);
                 if (dbGroup != null) {
@@ -80,6 +79,32 @@ namespace Orion.CRM.WebApp.Controllers
             List<Models.Group.Group> list = APIInvoker.Get<List<Models.Group.Group>>(url);
 
             return list;
+        }
+
+        // 通用Ajax方法
+        [HttpGet]
+        public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
+        {
+            return AppDTO.GetGroupsFromDb(_AppConfig.WebAPIHost, projectId);
+        }
+
+        [HttpPost]
+        public bool SetGroupLeader(Models.Group.Group group)
+        {
+            if (group != null && group.Id > 0) {
+                string getUrl = _AppConfig.WebAPIHost + "api/Group/GetGroupById?id=" + group.Id;
+                Models.Group.Group dbGroup = APIInvoker.Get<Models.Group.Group>(getUrl);
+                if (dbGroup != null) {
+                    dbGroup.ManagerId = group.ManagerId;
+                    dbGroup.UpdateTime = DateTime.Now;
+                    
+                    string updateUrl = _AppConfig.WebAPIHost + "api/Group/UpdateGroup";
+                    bool result = APIInvoker.Post<bool>(updateUrl, dbGroup);
+                    TempData["result"] = result;
+                    return result;
+                }
+            }
+            return false;
         }
     }
 }

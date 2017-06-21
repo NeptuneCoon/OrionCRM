@@ -26,6 +26,28 @@
             font-family:ProductSans;
         }*/
         /*自定义样式*/
+        .search-select {
+            height: 27px;
+            border-radius: 1px !important;
+            padding: 0px 3px
+        }
+        .panel-select {
+            height: 27px;
+            border-radius: 1px !important;
+            padding: 0px 3px;
+            width:130px;
+        }
+        .panel-alert-info {
+            font-size: 16px;
+            color: green;
+            font-weight: bold
+        }
+        .panel-alert-error {
+            font-size: 16px;
+            color: red;
+            font-weight: bold
+        }
+
         .wid {
             width: 240px;
         }
@@ -42,6 +64,38 @@
 
         .control-group > div {
             margin-left: 140px !important
+        }
+
+        .pager-ul{
+            list-style:none;margin:0;
+        }
+            .pager-ul > li {
+                float: left;
+                /*padding: 6px 8px;*/
+                border-left: 1px solid #BFBFBF;
+                border-top: 1px solid #BFBFBF;
+                border-bottom: 1px solid #BFBFBF;
+            }
+        .pager-ul > li:first-child {
+            border-top-left-radius:3px;
+            border-bottom-left-radius:3px;
+        }
+                .pager-ul > li:last-child {
+                    border-right: 1px solid #BFBFBF;
+                    border-top-right-radius: 3px;
+                    border-bottom-right-radius: 3px;
+                }
+                .pager-ul > li > a, .pager-ul > li > span {
+                    text-decoration: none;
+                    position: relative;
+                    float: left;
+                    padding: 6px 10px;
+                }
+        .active {
+            background-color: #08c;
+        }
+        .active>a{
+            color:white;
         }
     </style>
 </head>
@@ -111,7 +165,7 @@
         var regDate = /(?!0000)[0-9]{4}\/(([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|1[0-9]|2[0-8])|([13-9]|0[13-9]|1[0-2])\/(29|30)|([13578]|0[13578]|1[02])\/31)/;
         var regEmail = /^[a-zA-Z0-9_-]+@@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
         var regIDCard = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-        var regWechat = /^[a-zA-Z\d_-]{5,}$/;
+        var regWechat = /^[a-zA-Z\d_-]{3,}$/;
         var regZip = /[1-9]\d{5}(?!\d)/; //邮编正则
         var regString = /^.+$/;
         var regStr =/^[A-Z0-9a-z]{1,}$/;
@@ -207,9 +261,12 @@
         * 模态窗体中的"关闭"按钮事件
         * @@param element 模态窗体对象
         */
-        function closeModal(element) {
+        function closeModal(element, callback) {
             $(element).parents(".modal").hide();
             $('#shadow').hide();
+            if(callback){
+                callback();
+            }
         }
     </script>
     

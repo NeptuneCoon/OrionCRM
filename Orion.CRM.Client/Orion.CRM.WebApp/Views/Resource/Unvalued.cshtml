@@ -1,8 +1,310 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Resource.ResourceListViewModel
+
+@using Orion.CRM.WebApp.App_Data
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
-    ViewData["Title"] = "Unvalued";
+    ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Unvalued</h2>
+@section styles{
+    <style>
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0 0 0;
+            line-height: normal;
+        }
 
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 1px !important;
+            padding: 2px 3px;
+            height: 16px !important;
+            width: 91px;
+            font-size: 12px !important;
+        }
+
+        .search-select {
+            width: 105px;
+            height: 27px;
+            border-radius: 1px !important;
+            padding: 0px 3px
+        }
+    </style>
+}
+
+<div class="panel panel-default" style="width:1000px">
+    <div class="panel-heading">
+        <h3 class="panel-title">资源列表</h3>
+    </div>
+
+    <div class="panel-body">
+        <form action="/Resource/List" method="get">
+            <div class="form-inline">
+                <label>姓名</label>
+                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" />
+                
+                <select name="pid" id="pid" class="search-select" onchange="projectChange()">
+                    @if (Model.ProjectList != null) {
+                        var defaultPId = Model.Params.pid == null ? Model.ProjectId : Model.Params.pid;
+                        foreach (var project in Model.ProjectList) {
+                            if (project.Id == defaultPId) {
+                                <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                            }
+                            else {
+                                <option value="@project.Id">@project.ProjectName</option>
+                            }
+                        }
+                    }
+                </select>
+                <select name="gid" id="gid" class="search-select" onchange="groupChange()">
+                    <option value="">业务组</option>
+                    <!--业务组由js根据Project动态加载-->
+                </select>
+                <select name="uid" id="uid" class="search-select">
+                    <option value="">业务员</option>
+                    <!--业务员由js根据Group动态加载-->
+                </select>
+                <select name="talk" id="talk" class="search-select">
+                    <option value="">洽谈次数</option>
+                    @if (Model.TalkCountList != null) {
+                        foreach (var talk in Model.TalkCountList) {
+                            if (talk.value == Model.Params.talk) {
+                                <option value="@talk.value" selected="selected">@talk.displayText</option>
+                            }
+                            else {
+                                <option value="@talk.value">@talk.displayText</option>
+                            }
+                        }
+                    }
+                </select>
+                <label>来源</label>
+                <select name="source" id="source" class="search-select">
+                    <option value="">请选择</option>
+                    @if (Model.SourceList != null) {
+                        foreach (var source in Model.SourceList) {
+                            if (source.Id == Model.Params.source) {
+                                <option value="@source.Id" selected="selected">@source.SourceName</option>
+                            }
+                            else {
+                                <option value="@source.Id">@source.SourceName</option>
+                            }
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-default">
+                    <i class="icon-search"></i> 查询
+                </button>
+            </div>
+        </form>
+        <table class="table table-bordered" style="margin-top:15px;font-size: 12px !important;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>项目</th>
+                    <th>业务员</th>
+                    <th>客户姓名</th>
+                    <th>联系方式</th>
+                    <th>留言时间</th>
+                    <th>最后时间</th>
+                    <th>来源</th>
+                    <th>状态</th>
+                    <th>意向</th>
+                    <th>洽谈数</th>
+                    <th>添加人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Resources != null && Model.Resources.Count > 0) {
+                    foreach (var resource in Model.Resources) {
+                        <tr>
+                            <td><input type="checkbox" name="ckResource" /></td>
+                            <td>@resource.ProjectName</td>
+                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
+                            <td><a href="/Customer/Edit/@resource.Id" target="_blank">@resource.CustomerName</a></td>
+                            <td>@resource.ContactInfo</td>
+                            <td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
+                            <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
+                            <td>@resource.SourceFromText</td>
+                            <td>@resource.StatusText</td>
+                            <td>@resource.InclinationText</td>
+                            <td>@resource.TalkCount</td>
+                            <td>@resource.AppendMan</td>
+                            <td>
+                                <a href="javascript:;" onclick="showRestorePanel(@resource.Id, '@resource.ProjectId')">还原</a> |
+                                <a href="javascript:;">删除</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="13" style="text-align:center">没有查询到数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
+    </div>
+</div>
+
+<!--资源分配-->
+<div class="modal modal-webpi" id="panelAssign" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>资源分配</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <input type="hidden" id="assignResourceId" />
+                <table>
+                    <tr>
+                        <td style="width:100px">请选择所属组：</td>
+                        <td>
+                            <select class="panel-select" id="assignSelectGroup" onchange="assignGroupChange()">
+                                <option value="">请选择所属组</option>
+                                <option>业务一组</option>
+                                <option>业务二组</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>请选择业务：</td>
+                        <td>
+                            <select class="panel-select" id="assignSelectSaler">
+                                <option value="">请选择业务</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceAssign()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--操作结果-->
+<div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>结果</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanResult">操作已成功！</span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function projectChange() {
+            var projectId = $("#pid").find("option:selected").val();
+            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+                $("#gid option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var group = data[i];
+                        var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
+                        $('#gid').append(option);
+                    }
+                }
+            });
+        }
+
+        // 查询条件中的组(Group)切换事件
+        function groupChange() {
+            var groupId = $('#gid').find("option:selected").val();
+            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
+                $("#uid option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
+                        $('#uid').append(option);
+                    }
+                }
+            });
+        }
+
+        // 资源分配模态窗体中的组(Group)切换事件
+        function assignGroupChange() {
+            var groupId = $('#assignSelectGroup').find("option:selected").val();
+            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
+                $("#assignSelectSaler option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
+                        $('#assignSelectSaler').append(option);
+                    }
+                }
+            });
+        }
+
+        // 弹出资源分配模态窗体
+        function showAssignPanel(resourceId, projectId) {
+            $('#assignResourceId').val(resourceId);
+            $("#assignSelectGroup option").not(":first").remove();
+            $('#assignSelectSaler option').not(":first").remove();
+
+            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
+                if (groups && groups.length > 0) {
+                    for (var i = 0; i < groups.length; i++) {
+                        var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
+                        $('#assignSelectGroup').append(option);
+                    }
+                }
+            });
+            modalShow($('#panelAssign'));
+        }
+
+        // 资源分配
+        function resourceAssign() {
+            var resourceId = $('#assignResourceId').val();
+            var groupId = $('#assignSelectGroup').find("option:selected").val();
+            var userId = $('#assignSelectSaler').find("option:selected").val();
+
+            if (!groupId) {
+                $('#assignTips').html('请先选择业务组');
+                $('#assignTips').show();
+            }
+            else if (!userId) {
+                $('#assignTips').html('请选择你要分配的业务人员');
+                $('#assignTips').show();
+            }
+            else {
+                $('#assignTips').hide();
+            }
+
+            if (resourceId && groupId && userId) {
+                $.get("/Resource/ResourceAssign", { "resourceId": resourceId, "groupId": groupId, "userId": userId }, function (result) {
+                    modalClose($('#panelAssign'));
+                    if (result) {
+                        $('#spanResult').attr("class", "panel-alert-info");
+                        $('#spanResult').html('操作已成功！');
+                    }
+                    else {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                    }
+                    modalShow($('#panelResult'));
+                });
+            }
+        }
+
+        function reload() {
+            window.location.reload();
+        }
+
+        $(function () {
+            projectChange();
+        });
+    </script>
+}

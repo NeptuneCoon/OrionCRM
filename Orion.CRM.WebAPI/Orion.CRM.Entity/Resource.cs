@@ -31,6 +31,22 @@ namespace Orion.CRM.Entity
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public int DeleteFlag { get; set; }
+        public int ProjectId { get; set; }
+        public int GroupId { get; set; }
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string ProjectName { get; set; }
+        /// <summary>
+        /// 业务员
+        /// </summary>
+        public string SaleMan { get; set; }
+        /// <summary>
+        /// 添加人
+        /// </summary>
+        public string AppendMan { get; set; }
         
     }
 }

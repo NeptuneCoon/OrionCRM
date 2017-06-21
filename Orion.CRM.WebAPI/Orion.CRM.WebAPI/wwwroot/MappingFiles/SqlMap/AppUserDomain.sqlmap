@@ -63,7 +63,25 @@
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>获取指定组织机构下的用户总数</Description>
+      <Description>获取指定组织机构下的用户数</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllUsersByGroupId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.OrgName,C.RoleId,D.ProjectId,H.GroupId,E.RoleName,F.ProjectName,I.GroupName from [AppUser] A
+        left join [Organization] B on A.OrgId=B.Id
+        left join [UserRole] C on A.Id=C.UserId
+        left join [UserProject] D on A.Id=D.UserId
+        left join [Role] E on C.RoleId=E.Id
+        left join [Project] F on D.ProjectId=F.Id
+        left join [UserGroup] H on A.Id=H.UserId
+        left join [Group] I on H.GroupId=I.Id
+        where GroupId=@GroupId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取指定业务组下的所有用户</Description>
     </SqlMapDetail>
     
     <SqlMapDetail>

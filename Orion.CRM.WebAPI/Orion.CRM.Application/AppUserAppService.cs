@@ -18,6 +18,12 @@ namespace Orion.CRM.Application
         {
             return adapter.GetUsersByOrgId(pageIndex, pageSize, orgId);
         }
+
+        public IEnumerable<Entity.AppUser> GetAllUsersByGroupId(int groupId)
+        {
+            return adapter.GetAllUsersByGroupId(groupId);
+        }
+
         public Entity.AppUser GetUserById(int id)
         {
             return adapter.GetUserById(id);

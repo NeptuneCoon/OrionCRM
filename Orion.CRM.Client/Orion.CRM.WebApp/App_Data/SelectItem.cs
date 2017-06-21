@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Orion.CRM.WebApp.App_Data
 {
-    public class ResourceInclination
+    public class SelectItem
     {
-        public string DisplayName { get; set; }
-        public string Value { get; set; }
+        public string displayText { get; set; }
+        public int value { get; set; }
     }
 }

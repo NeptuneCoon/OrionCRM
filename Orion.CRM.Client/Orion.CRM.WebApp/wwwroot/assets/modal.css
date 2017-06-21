@@ -38,10 +38,10 @@
 }
 
 .modal-cover {
-    background: none repeat scroll 0 0 #fff;
+    background: none repeat scroll 0 0 black;
     height: 100%;
     top: 0;
-    opacity: 0.4;
+    opacity: 0.7;
     position: fixed;
     width: 100%;
     z-index: 20;

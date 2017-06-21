@@ -16,7 +16,7 @@ namespace Orion.CRM.Core
     public class SqlMapHelper
     {
         /// <summary>
-        /// 执行指定的用于查询的SqlMap，返回结果集
+        /// 执行用于查询的SqlMap，返回结果集
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlmapName"></param>
@@ -30,7 +30,7 @@ namespace Orion.CRM.Core
         }
 
         /// <summary>
-        /// 执行指定的用于查询的SqlMap，返回结果集
+        /// 执行用于查询的SqlMap，返回结果集
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="map"></param>
@@ -48,7 +48,7 @@ namespace Orion.CRM.Core
         }
 
         /// <summary>
-        /// 执行指定的用于查询的SqlMap，返回结果集中的第一条记录
+        /// 执行用于查询的SqlMap，返回结果集中的第一条记录
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlmapName"></param>
@@ -62,7 +62,7 @@ namespace Orion.CRM.Core
         }
 
         /// <summary>
-        /// 执行指定的用于查询的SqlMap，返回结果集中的第一条记录
+        /// 执行用于查询的SqlMap，返回结果集中的第一条记录
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="map"></param>
@@ -115,7 +115,7 @@ namespace Orion.CRM.Core
         }
 
         /// <summary>
-        /// 执行指定SqlMap，并返回结果集中的第一行第一列
+        /// 执行指定SqlMap，返回结果集中的第一行第一列
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlmapName"></param>
@@ -129,7 +129,7 @@ namespace Orion.CRM.Core
         }
 
         /// <summary>
-        /// 执行指定SqlMap，并返回结果集中的第一行第一列
+        /// 执行指定SqlMap，返回结果集中的第一行第一列
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="map"></param>
@@ -148,6 +148,7 @@ namespace Orion.CRM.Core
 
         /// <summary>
         /// 批量插入实体
+        /// 注意：批量插入类型的SqlMap不需要配置OriginalSqlString节点
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="sqlmapName"></param>
@@ -162,6 +163,7 @@ namespace Orion.CRM.Core
 
         /// <summary>
         /// 批量插入实体
+        /// 注意：批量插入类型的SqlMap不需要配置OriginalSqlString节点
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="mapDetail"></param>

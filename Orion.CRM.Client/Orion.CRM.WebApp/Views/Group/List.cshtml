@@ -4,16 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section styles{
-    <style type="text/css">
-        .search-select {
-            height: 27px;
-            border-radius: 1px !important;
-            padding: 0px 3px
-        }
-    </style>
-}
-
 <div class="panel panel-default" style="width:700px">
     <div class="panel-heading">
         <h3 class="panel-title">业务组管理</h3>
@@ -26,12 +16,27 @@
             </a>
         </div>
 
-        <!--操作成功通知-->
+        <!--操作结果 同步-->
+        @if (TempData["result"] != null) {
+            if ((bool)TempData["result"]) {
+                <div class="alert alert-success" id="successAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>操作成功！</strong>
+                </div>
+            }
+            else {
+                <div class="alert alert-error" id="errorAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>抱歉，操作失败！请重试。</strong>
+                </div>
+            }
+        }
+        <!--操作成功通知 ajax-->
         <div class="alert alert-success" id="successAlert" style="margin:10px 0px;display:none">
             <button class="close" data-dismiss="alert">×</button>
             <strong></strong>
         </div>
-        <!--操作失败通知-->
+        <!--操作失败通知 ajax-->
         <div class="alert alert-error" id="errorAlert" style="margin:10px 0px;display:none">
             <button class="close" data-dismiss="alert">×</button>
             <strong></strong>
@@ -59,6 +64,7 @@
                             <td>
                                 <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.GroupName', @item.ProjectId)">编辑</a>
                                 <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>
+                                <a href="javascript:;" onclick="showLeaderSetPanel(@item.Id,'@item.GroupName','@item.ManagerId')">任命组长</a>
                             </td>
                         </tr>
                     }
@@ -109,7 +115,6 @@
             </table>
             <div id="panelTips" style="padding:3px;color:red;display:none"></div>
             <input type="button" value="保 存" class="btn btn-inverse" style="border-radius:0 !important;padding:4px 8px;margin-top:10px" onclick="saveChange()" />
-            
         </div>
     </div>
 </div>
@@ -131,6 +136,39 @@
         </div>
     </div>
 </div>
+
+<!-- group leader setter-->
+<div class="modal modal-webpi" id="panelLeaderSetter" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>组长任命</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="width:100px">业务组：</td>
+                        <td>
+                            <input type="hidden" id="groupIdInLeaderSetter" />
+                            <span id="spanGroupName"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>组长：</td>
+                        <td id="groupMembers">
+
+                        </td>
+                    </tr>
+                </table>
+                <div id="leaderSetterTips" style="padding:3px;color:red;display:none">请选择一个成员作为组长。</div>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="setGroupLeader(this)" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section scripts{
     <script type="text/javascript">
@@ -245,6 +283,46 @@
             });
         }
 
+        function showLeaderSetPanel(id, groupName, managerId) {
+            $('#leaderSetterTips').hide();
+            $('#groupIdInLeaderSetter').val(id);
+            $("#spanGroupName").html(groupName);
+
+            $('#groupMembers').html('');
+            $.get("/AppUser/GetUsersByGroupId", { "groupId": id }, function (data) {
+                console.info(data);
+                if (data && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        var checkbox = '';
+                        checkbox += '<label class="nebula-label">';
+                        checkbox += '<input class="nebula-radio" ' + (managerId == user.id ? "checked='checked'" : "") + ' type="radio" name="groupLeader" value="' + user.id + '" />';
+                        checkbox += '<span class="nebula-radioInput"></span>' + user.realName;
+                        checkbox += '</label>';
+                        $('#groupMembers').append(checkbox);
+                    }
+                }
+                else {
+                    $('#groupMembers').html('该业务组暂无用户。');
+                }
+            });
+
+            modalShow($('#panelLeaderSetter'));
+        }
+        // 任命组长
+        function setGroupLeader() {
+            var groupId = $('#groupIdInLeaderSetter').val();
+            var managerId = $("input[name='groupLeader']:checked").val();
+            if(managerId){
+                $.post("/Group/SetGroupLeader", { "Id": groupId, "ManagerId": managerId }, function (data) {
+                    window.location = "/Group/List";
+                });
+            }
+            else {
+                $('#leaderSetterTips').show();
+            }
+        }
+
         // 异步重载数据列表
         function reloadList() {
             $.get("/Group/ReloadList", null, function (data) {
@@ -271,7 +349,7 @@
                 else {
                     $(".table>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
                 }
-             });
+            });
         }
     </script>
 }

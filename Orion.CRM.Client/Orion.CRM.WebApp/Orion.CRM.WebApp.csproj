@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="App_Data\PagerTagHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\assets\DT_bootstrap.css" />
     <Content Include="wwwroot\assets\DT_bootstrap.js" />
     <Content Include="wwwroot\assets\form-validation.js" />
@@ -27,6 +31,7 @@
     <Content Include="wwwroot\bootstrap\js\bootstrap.min.js" />
     <Content Include="wwwroot\config\status.json" />
     <Content Include="wwwroot\config\inclination.json" />
+    <Content Include="wwwroot\config\talkcount.json" />
     <Content Include="wwwroot\fonts\Product Sans.ttf" />
     <Content Include="wwwroot\images\bg-input-focus.png" />
     <Content Include="wwwroot\images\bg-input.png" />

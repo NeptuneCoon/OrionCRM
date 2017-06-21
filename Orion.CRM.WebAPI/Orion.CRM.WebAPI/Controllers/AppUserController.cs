@@ -40,6 +40,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult GetAllUsersByGroupId(int groupId)
+        {
+            try {
+                IEnumerable<Entity.AppUser> users = service.GetAllUsersByGroupId(groupId);
+                APIDataResult dataResult = new APIDataResult(200, users);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetUserById(int id)
         {
             try {

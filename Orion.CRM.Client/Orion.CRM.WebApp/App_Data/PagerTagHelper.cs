@@ -31,6 +31,8 @@ namespace Orion.CRM.WebApp.App_Data
         /// </summary>
         public string RouteUrl { get; set; }
 
+        public string QueryString { get; set; }
+
         /// <summary>
         /// 样式 默认 bootstrap样式 1
         /// </summary>
@@ -49,9 +51,6 @@ namespace Orion.CRM.WebApp.App_Data
         {
 
             output.TagName = "div";
-
-            if (PagerOption.PageSize <= 0) { PagerOption.PageSize = 15; }
-            if (PagerOption.PageIndex <= 0) { PagerOption.PageIndex = 1; }
             if (PagerOption.TotalCount <= 0) { return; }
 
             //总页数
@@ -79,29 +78,30 @@ namespace Orion.CRM.WebApp.App_Data
                         #region 默认样式
 
                         sbPage.Append("<nav>");
-                        sbPage.Append("  <ul class=\"pagination\">");
-                        sbPage.AppendFormat("       <li><a href=\"{0}/{1}\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>",
-                                                PagerOption.RouteUrl,
-                                                PagerOption.PageIndex - 1 <= 0 ? 1 : PagerOption.PageIndex - 1);
+                        sbPage.Append("<ul class=\"pager-ul\">");
+                        sbPage.AppendFormat("<li><a href=\"{0}&{1}\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>",
+                                                "?id=" + (PagerOption.PageIndex - 1 <= 0 ? 1 : PagerOption.PageIndex - 1),
+                                                PagerOption.QueryString
+                                                );
 
                         for (int i = 1; i <= totalPage; i++) {
 
-                            sbPage.AppendFormat("       <li {1}><a href=\"{2}/{0}\">{0}</a></li>",
+                            sbPage.AppendFormat("<li {1}><a href=\"{2}/{0}\">{0}</a></li>",
                                 i,
                                 i == PagerOption.PageIndex ? "class=\"active\"" : "",
-                                PagerOption.RouteUrl);
+                                PagerOption.RouteUrl + PagerOption.QueryString);
 
                         }
 
-                        sbPage.Append("       <li>");
-                        sbPage.AppendFormat("         <a href=\"{0}/{1}\" aria-label=\"Next\">",
-                                            PagerOption.RouteUrl,
+                        sbPage.Append("<li>");
+                        sbPage.AppendFormat("<a href=\"{0}/{1}\" aria-label=\"Next\">",
+                                            PagerOption.RouteUrl + PagerOption.QueryString,
                                             PagerOption.PageIndex + 1 > totalPage ? PagerOption.PageIndex : PagerOption.PageIndex + 1);
-                        sbPage.Append("               <span aria-hidden=\"true\">&raquo;</span>");
-                        sbPage.Append("         </a>");
-                        sbPage.Append("       </li>");
-                        sbPage.Append("   </ul>");
-                        sbPage.Append("</nav>");
+                        sbPage.Append("<span aria-hidden=\"true\">&raquo;</span>");
+                        sbPage.Append("</a>");
+                        sbPage.Append("</li>");
+                        sbPage.Append("</ul>");
+                        sbPage.Append("</div>");
                         #endregion
                     }
                     break;

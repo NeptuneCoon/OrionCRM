@@ -1,38 +1,38 @@
 ﻿[
   {
-    "displayName": "未知",
+    "displayText": "未知",
     "value": 1
   },
   {
-    "displayName": "未接通",
+    "displayText": "未接通",
     "value": 2
   },
   {
-    "displayName": "未留言",
+    "displayText": "未留言",
     "value": 3
   },
   {
-    "displayName": "非本人",
+    "displayText": "非本人",
     "value": 4
   },
   {
-    "displayName": "号码错误",
+    "displayText": "号码错误",
     "value": 5
   },
   {
-    "displayName": "无意向",
+    "displayText": "无意向",
     "value": 6
   },
   {
-    "displayName": "意向一般",
+    "displayText": "意向一般",
     "value": 7
   },
   {
-    "displayName": "意向中等",
+    "displayText": "意向中等",
     "value": 8
   },
   {
-    "displayName": "意向强烈",
+    "displayText": "意向强烈",
     "value": 9
   }
 ]

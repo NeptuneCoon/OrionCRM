@@ -18,11 +18,11 @@ namespace Orion.CRM.WebApp.App_Data
         /// 从json配置文件中获取意向群
         /// </summary>
         /// <returns></returns>
-        public static List<ResourceInclination> GetInclinationsFromJson(string webRoot)
+        public static List<SelectItem> GetInclinationsFromJson(string webRoot)
         {
             var jsonPath = webRoot + @"\config\inclination.json";
             var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
-            var list = JsonConvert.DeserializeObject<List<ResourceInclination>>(inclinationJson);
+            var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
 
             return list;
         }
@@ -31,11 +31,24 @@ namespace Orion.CRM.WebApp.App_Data
         /// 从json配置文件中获取资源状态
         /// </summary>
         /// <returns></returns>
-        public static List<ResourceStatus> GetStatusFromJson(string webRoot)
+        public static List<SelectItem> GetStatusFromJson(string webRoot)
         {
             var jsonPath = webRoot + @"\config\status.json";
             var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
-            var list = JsonConvert.DeserializeObject<List<ResourceStatus>>(inclinationJson);
+            var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
+
+            return list;
+        }
+
+        /// <summary>
+        /// 从json配置文件中获取洽谈次数
+        /// </summary>
+        /// <returns></returns>
+        public static List<SelectItem> GetTalkCountFromJson(string webRoot)
+        {
+            var jsonPath = webRoot + @"\config\talkcount.json";
+            var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
+            var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
 
             return list;
         }
@@ -69,6 +82,20 @@ namespace Orion.CRM.WebApp.App_Data
         }
 
         /// <summary>
+        /// 从数据库中获取项目下的业务组
+        /// </summary>
+        /// <param name="apiHost">API基地址</param>
+        /// <param name="projectId">项目Id</param>
+        /// <returns></returns>
+        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost, int projectId)
+        {
+            string apiUrl = apiHost + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
+            var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
+
+            return groups;
+        }
+
+        /// <summary>
         /// 从数据库中获取资源来源
         /// </summary>
         /// <param name="apiHost">API基地址</param>
@@ -82,18 +109,6 @@ namespace Orion.CRM.WebApp.App_Data
             return sources;
         }
 
-        /// <summary>
-        /// 从数据库中获取项目下的业务组
-        /// </summary>
-        /// <param name="apiHost">API基地址</param>
-        /// <param name="projectId">项目Id</param>
-        /// <returns></returns>
-        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost, int projectId)
-        {
-            string apiUrl = apiHost + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
-            var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
 
-            return groups;
-        }
     }
 }

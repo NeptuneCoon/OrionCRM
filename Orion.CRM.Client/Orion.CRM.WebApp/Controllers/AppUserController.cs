@@ -50,6 +50,7 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
+        #region 创建处理程序
         [HttpPost]
         public IActionResult CreateHandler(Models.AppUser.AppUserViewModel viewModel)
         {
@@ -106,7 +107,8 @@ namespace Orion.CRM.WebApp.Controllers
                 return RedirectToAction("List");
             }
             return View();
-        }
+        } 
+        #endregion
 
         public IActionResult Edit(int id)
         {
@@ -119,6 +121,7 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
+        #region 修改处理程序
         [HttpPost]
         public IActionResult EditHandler(Models.AppUser.AppUserViewModel viewModel)
         {
@@ -126,7 +129,7 @@ namespace Orion.CRM.WebApp.Controllers
                 string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
                 Models.AppUser.AppUserViewModel user = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
-                if (user != null) { 
+                if (user != null) {
                     string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/UpdateUser";
                     var updatingUser = new
                     {
@@ -181,11 +184,20 @@ namespace Orion.CRM.WebApp.Controllers
             }
             return View();
         }
+        #endregion
 
+        // 通用Ajax方法
+        /// <summary>
+        /// 获取业务组下的成员
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         [HttpGet]
-        public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
+        public List<Models.AppUser.AppUserViewModel> GetUsersByGroupId(int groupId)
         {
-            return AppDTO.GetGroupsFromDb(_AppConfig.WebAPIHost, projectId);
+            string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + groupId;
+            List<Models.AppUser.AppUserViewModel> users = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUrl);
+            return users;
         }
     }
 }

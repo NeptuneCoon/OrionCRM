@@ -158,7 +158,7 @@
 
         function projectChange(callback) {
             var projectId = $("#ProjectId").find("option:selected").val();
-            $.get("/AppUser/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
                 $("#GroupId option").not(":first").remove();
                 if (data) {
                     for (var i = 0; i < data.length; i++) {

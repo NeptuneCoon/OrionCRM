@@ -27,11 +27,17 @@ namespace Orion.CRM.DataAccess
             return users;
         }
 
+        public IEnumerable<Entity.AppUser> GetAllUsersByGroupId(int groupId)
+        {
+            SqlParameter param = new SqlParameter("@GroupId", groupId);
+            IEnumerable<Entity.AppUser> users = SqlMapHelper.GetSqlMapResult<Entity.AppUser>("AppUserDomain", "GetAllUsersByGroupId", param);
+            return users;
+        }
+
         public Entity.AppUser GetUserById(int id)
         {
             SqlParameter param = new SqlParameter("@Id", id);
             Entity.AppUser appUser = SqlMapHelper.GetSqlMapSingleResult<Entity.AppUser>("AppUserDomain", "GetUserById", param);
-
             return appUser;
         }
 

@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+
+    <SqlMapDetail>
+      <SqlName>InsertResource</SqlName>
+      <OriginalSqlString>
+        insert into [Resource](CustomerName,Sex,[Address],MsgTime,LastTime,SourceFrom,[Status],Inclination,TalkCount,[Message],Mobile,Tel,QQ,Wechat,Email,Remark,InvalidReason,AppendUserId,CreateTime,DeleteFlag)
+        values(@CustomerName,@Sex,@Address,@MsgTime,@LastTime,@SourceFrom,@Status,@Inclination,@TalkCount,@Message,@Mobile,@Tel,@QQ,@Wechat,@Email,@Remark,@InvalidReason,@AppendUserId,@CreateTime,@DeleteFlag);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增一条资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateResource</SqlName>
+      <OriginalSqlString>
+        update [Resource] set CustomerName=@CustomerName,TalkCount=@TalkCount,DeleteFlag=@DeleteFlag where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改一条资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourcesByUserId</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * from
+          (
+            select ROW_NUMBER() OVER (ORDER BY A.Id desc) as RowNumber,A.* from [Resource] A inner join ResourceUser B on A.Id=B.ResourceId
+          )t where RowNumber > $PageSize*($PageIndex-1) and UserId=@UserId
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourcesByProjectId</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * from
+          (
+            select ROW_NUMBER() OVER (ORDER BY A.Id desc) as RowNumber,A.*,B.ProjectId from [Resource] A inner join ResourceProject B on  A.Id=B.ResourceId
+          )t where RowNumber > $PageSize*($PageIndex-1) and ProjectId=@ProjectId
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按项目Id分页获取资源</Description>
+    </SqlMapDetail>
+
+
+    <SqlMapDetail>
+      <SqlName>GetResourcesByCondition</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+          select top $PageSize * from(
+	          select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from (
+		          select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,H.RealName as AppendMan from [Resource] A
+		          left join [ResourceProject] B on A.Id= B.ResourceId
+		          left join [ResourceGroup] C on A.Id=C.ResourceId
+		          left join [ResourceUser] D on A.Id=D.ResourceId
+				      left join [Project] E on B.ProjectId=E.Id
+				      left join [AppUser] F on D.UserId=F.Id
+				      left join [AppUser] H on A.AppendUserId=H.Id
+	          )t1 where DeleteFlag=0 $SqlWhere 
+          )t2
+          where RowNumber > $PageSize*($PageIndex-1)
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按筛选条件分页获取资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourceCountByCondition</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+          select count(1) from (
+              select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,H.RealName as AppendMan from [Resource] A
+		          left join [ResourceProject] B on A.Id= B.ResourceId
+		          left join [ResourceGroup] C on A.Id=C.ResourceId
+		          left join [ResourceUser] D on A.Id=D.ResourceId
+				      left join [Project] E on B.ProjectId=E.Id
+				      left join [AppUser] F on D.UserId=F.Id
+				      left join [AppUser] H on A.AppendUserId=H.Id
+	          )t1 where DeleteFlag=0 $SqlWhere 
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取符合筛选条件的资源个数</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertResourceProject</SqlName>
+      <OriginalSqlString>
+        insert into ResourceProject(ResourceId,ProjectId,CreateTime) values(@ResourceId,@ProjectId,@CreateTime);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增资源和项目的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertResourceGroup</SqlName>
+      <OriginalSqlString>
+        insert into ResourceGroup(ResourceId,GroupId,CreateTime) values(@ResourceId,@GroupId,@CreateTime);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增资源和业务组的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateResourceGroup</SqlName>
+      <OriginalSqlString>
+        update ResourceGroup set GroupId=@GroupId where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改资源和业务组的关系</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetResourceGroup</SqlName>
+      <OriginalSqlString>
+        select * from ResourceGroup where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取资源和业务组的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertResourceUser</SqlName>
+      <OriginalSqlString>
+        insert into ResourceUser(ResourceId,UserId,CreateTime) values(@ResourceId,@UserId,@CreateTime);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增资源和用户的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateResourceUser</SqlName>
+      <OriginalSqlString>
+        update ResourceUser set UserId=@UserId where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改资源和用户的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourceUser</SqlName>
+      <OriginalSqlString>
+        select * from ResourceUser where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取资源和用户的关系</Description>
+    </SqlMapDetail>
+
+	</SqlMapConfigurations>
+</SqlMap>

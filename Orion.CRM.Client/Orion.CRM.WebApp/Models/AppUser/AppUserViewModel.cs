@@ -32,7 +32,7 @@ namespace Orion.CRM.WebApp.Models.AppUser
         #endregion
 
 
-        // 视图属性
+        // 视图数据
         public IEnumerable<Role.Role> RoleList { get; set; }
         public IEnumerable<Project.Project> ProjectList { get; set; }
         public IEnumerable<Group.Group> GroupList { get; set; }

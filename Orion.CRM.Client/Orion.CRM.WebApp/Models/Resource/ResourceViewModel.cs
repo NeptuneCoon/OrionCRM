@@ -39,6 +39,6 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// <summary>
         /// 意向群
         /// </summary>
-        public List<App_Data.ResourceInclination> Inclinations { get; set; }
+        public List<App_Data.SelectItem> Inclinations { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@OrgId",source.OrgId),
             };
 
-            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceSource", "InsertSource", paramArr);
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("SourceDomain", "InsertSource", paramArr);
             return identityId;
         }
 
@@ -33,7 +33,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@OrgId",source.OrgId),
             };
 
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceSource", "UpdateSource", paramArr);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("SourceDomain", "UpdateSource", paramArr);
             return count > 0;
         }
 
@@ -42,7 +42,7 @@ namespace Orion.CRM.DataAccess
             if (id <= 0) return false;
 
             SqlParameter param = new SqlParameter("@Id", id);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceSource", "DeleteSource", param);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("SourceDomain", "DeleteSource", param);
 
             return count > 0;
         }
@@ -50,7 +50,7 @@ namespace Orion.CRM.DataAccess
         public IEnumerable<Entity.ResourceSource> GetSourcesByOrgId(int orgId)
         {
             SqlParameter param = new SqlParameter("@OrgId", orgId);
-            var sources = SqlMapHelper.GetSqlMapResult<Entity.ResourceSource>("ResourceSource", "GetSourcesByOrgId", param);
+            var sources = SqlMapHelper.GetSqlMapResult<Entity.ResourceSource>("SourceDomain", "GetSourcesByOrgId", param);
 
             return sources;
         }

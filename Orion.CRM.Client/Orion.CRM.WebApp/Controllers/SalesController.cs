@@ -15,5 +15,20 @@ namespace Orion.CRM.WebApp.Controllers
         {
             return View();
         }
+
+        public IActionResult Quarter()
+        {
+            return View();
+        }
+
+        public IActionResult Year()
+        {
+            return View();
+        }
+
+        public IActionResult Group()
+        {
+            return View();
+        }
     }
 }
