@@ -29,10 +29,10 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
             viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
             viewModel.ProjectId = _AppUser.ProjectId;
 
@@ -60,16 +60,27 @@ namespace Orion.CRM.WebApp.Controllers
                     pageOption.QueryString = "?pid=" + viewModel.ProjectId;
                     param.pid = viewModel.ProjectId;
                 }
+            }
+            #endregion
+
+            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
+            if (param.pid != null && param.pid > 0) {
+                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
+                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
+                if (param.gid != null && param.gid > 0) {
+                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
+                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                }
             } 
             #endregion
 
             ViewBag.PagerOption = pageOption;
 
             // 查询到的数据
-            int totalCount = APIInvoker.Post<int>(_AppConfig.WebAPIHost + "api/Resource/GetResourceCountByCondition", param);
+            int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "api/Resource/GetResourceCountByCondition", param);
             pageOption.TotalCount = totalCount;
 
-            string searchUrl = _AppConfig.WebAPIHost + "api/Resource/GetResourcesByCondition";
+            string searchUrl = _AppConfig.WebApiHost + "api/Resource/GetResourcesByCondition";
             List<Models.Resource.Resource> resources = APIInvoker.Post<List<Models.Resource.Resource>>(searchUrl, param);
             ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
             viewModel.Resources = resources;
@@ -84,10 +95,10 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
             viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
             viewModel.ProjectId = _AppUser.ProjectId;
 
@@ -119,13 +130,24 @@ namespace Orion.CRM.WebApp.Controllers
             }
             #endregion
 
+            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
+            if (param.pid != null && param.pid > 0) {
+                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
+                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
+                if (param.gid != null && param.gid > 0) {
+                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
+                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                }
+            }
+            #endregion
+
             ViewBag.PagerOption = pageOption;
 
             // 查询到的数据
-            int totalCount = APIInvoker.Post<int>(_AppConfig.WebAPIHost + "api/Resource/GetResourceCountByCondition", param);
+            int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "api/Resource/GetResourceCountByCondition", param);
             pageOption.TotalCount = totalCount;
 
-            string searchUrl = _AppConfig.WebAPIHost + "api/Resource/GetResourcesByCondition";
+            string searchUrl = _AppConfig.WebApiHost + "api/Resource/GetResourcesByCondition";
             List<Models.Resource.Resource> resources = APIInvoker.Post<List<Models.Resource.Resource>>(searchUrl, param);
             ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
             viewModel.Resources = resources;
@@ -140,10 +162,10 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
             viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
             viewModel.ProjectId = _AppUser.ProjectId;
 
@@ -175,13 +197,24 @@ namespace Orion.CRM.WebApp.Controllers
             }
             #endregion
 
+            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
+            if (param.pid != null && param.pid > 0) {
+                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
+                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
+                if (param.gid != null && param.gid > 0) {
+                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
+                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                }
+            }
+            #endregion
+
             ViewBag.PagerOption = pageOption;
 
             // 查询到的数据
-            int totalCount = APIInvoker.Post<int>(_AppConfig.WebAPIHost + "api/Resource/GetResourceCountByCondition", param);
+            int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "api/Resource/GetResourceCountByCondition", param);
             pageOption.TotalCount = totalCount;
 
-            string searchUrl = _AppConfig.WebAPIHost + "api/Resource/GetResourcesByCondition";
+            string searchUrl = _AppConfig.WebApiHost + "api/Resource/GetResourcesByCondition";
             List<Models.Resource.Resource> resources = APIInvoker.Post<List<Models.Resource.Resource>>(searchUrl, param);
             ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
             viewModel.Resources = resources;
@@ -196,13 +229,13 @@ namespace Orion.CRM.WebApp.Controllers
             
             // 当前组织/公司下的项目集合
             viewModel.ProjectId = Convert.ToInt32(_AppUser.ProjectId);
-            viewModel.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
             // 意向群
             viewModel.Inclinations = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
 
             // 资源来源
-            viewModel.Sources = AppDTO.GetSourcesFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.Sources = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
             return View(viewModel);
         }
@@ -275,7 +308,7 @@ namespace Orion.CRM.WebApp.Controllers
                 DeleteFlag = 0
             };
 
-            string apiUrl = _AppConfig.WebAPIHost + "api/Resource/InsertResource";
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/InsertResource";
             int identityId = APIInvoker.Post<int>(apiUrl, resource);
 
             return identityId;
@@ -292,7 +325,7 @@ namespace Orion.CRM.WebApp.Controllers
                 CreateTime = DateTime.Now
             };
 
-            string apiUrl = _AppConfig.WebAPIHost + "api/Resource/InsertResourceProject";
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/InsertResourceProject";
             int identityId = APIInvoker.Post<int>(apiUrl, resourceProject);
 
             return identityId;
@@ -371,9 +404,9 @@ namespace Orion.CRM.WebApp.Controllers
 
             bool assignResult = true;
             // 插入ResourceGroup表
-            string rgGetAPI = _AppConfig.WebAPIHost + "api/Resource/GetResourceGroup?resourceId=" + resourceId;
-            string rgUpdateAPI = _AppConfig.WebAPIHost + "api/Resource/UpdateResourceGroup";
-            string rgInsertAPI = _AppConfig.WebAPIHost + "api/Resource/InsertResourceGroup";
+            string rgGetAPI = _AppConfig.WebApiHost + "api/Resource/GetResourceGroup?resourceId=" + resourceId;
+            string rgUpdateAPI = _AppConfig.WebApiHost + "api/Resource/UpdateResourceGroup";
+            string rgInsertAPI = _AppConfig.WebApiHost + "api/Resource/InsertResourceGroup";
 
             Models.Resource.ResourceGroup resourceGroup = APIInvoker.Get<Models.Resource.ResourceGroup>(rgGetAPI);
             if (resourceGroup == null) {
@@ -399,9 +432,9 @@ namespace Orion.CRM.WebApp.Controllers
             }
 
             // 插入ResourceUser表
-            string ruGetAPI = _AppConfig.WebAPIHost + "api/Resource/GetResourceUser?resourceId=" + resourceId;
-            string ruUpdateAPI = _AppConfig.WebAPIHost + "api/Resource/UpdateResourceUser";
-            string ruInsertAPI = _AppConfig.WebAPIHost + "api/Resource/InsertResourceUser";
+            string ruGetAPI = _AppConfig.WebApiHost + "api/Resource/GetResourceUser?resourceId=" + resourceId;
+            string ruUpdateAPI = _AppConfig.WebApiHost + "api/Resource/UpdateResourceUser";
+            string ruInsertAPI = _AppConfig.WebApiHost + "api/Resource/InsertResourceUser";
             Models.Resource.ResourceUser resourceUser = APIInvoker.Get<Models.Resource.ResourceUser>(ruGetAPI);
             if (resourceUser == null) {
                 // insert

@@ -49,14 +49,19 @@
         }
 
         .wid {
-            width: 240px;
+            width: 250px;
         }
 
         .bar-left {
-            width: 260px !important
+            width: 250px !important
         }
 
         .tip{color:red}
+
+        .table-data {
+            margin-top: 15px;
+            font-size: 13px !important;
+        }
 
         .control-group > label {
             width: 120px !important
@@ -65,6 +70,7 @@
         .control-group > div {
             margin-left: 140px !important
         }
+        
 
         .pager-ul{
             list-style:none;margin:0;
@@ -140,7 +146,7 @@
                 @await Component.InvokeAsync("LeftMenu")
             </div>
             
-            <div class="span9" id="content" style="margin-top:10px">
+            <div class="span9" id="content" style="margin-top:10px;background-color:white;padding-left:20px;padding-bottom:20px">
                 @RenderBody()
             </div>
         </div>

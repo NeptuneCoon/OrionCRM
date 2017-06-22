@@ -17,10 +17,10 @@ namespace Orion.CRM.WebApp.Controllers
         {
             ViewBag.OperateResult = Request.Query["operateResult"].ToString();
 
-            string url = _AppConfig.WebAPIHost + "api/Role/GetRolesByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Role/GetRolesByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
             List<Models.Role.RoleViewModel> list = APIInvoker.Get<List<Models.Role.RoleViewModel>>(url);
 
-            int totalCount = APIInvoker.Get<int>(_AppConfig.WebAPIHost + "api/Role/GetRoleCountByOrgId?orgId=" + _AppUser.OrgId);
+            int totalCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/Role/GetRoleCountByOrgId?orgId=" + _AppUser.OrgId);
 
             var pageOption = new PagerOption {
                 PageIndex = id,
@@ -39,7 +39,7 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult Create()
         {
             Models.Role.RoleViewModel viewModel = new Models.Role.RoleViewModel();
-            viewModel.MenuList = APIInvoker.Get<IEnumerable<Models.Role.Menu>>(_AppConfig.WebAPIHost + "api/MenuPage/GetAllMenus");
+            viewModel.MenuList = APIInvoker.Get<IEnumerable<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
 
             return View(viewModel);
         }
@@ -49,7 +49,7 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult CreateHandler(Models.Role.RoleViewModel viewModel)
         {
             if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/Role/InsertRole";
+                string apiUrl = _AppConfig.WebApiHost + "api/Role/InsertRole";
                 var role = new
                 {
                     RoleName = viewModel.RoleName,
@@ -79,7 +79,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 3.获取角色和一级菜单的关系
                     List<int> parentMenuIds = new List<int>();
-                    List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebAPIHost + "api/MenuPage/GetAllMenus");
+                    List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
 
                     if (menus != null && menus.Count > 0) {
                         if (!string.IsNullOrEmpty(menuIds)) {
@@ -110,7 +110,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 插入数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
-                        string roleMenuInsertApiUrl = _AppConfig.WebAPIHost + "api/Role/RoleMenuBatchInsert";
+                        string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "api/Role/RoleMenuBatchInsert";
                         bool res = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
                     }
                     TempData["result"] = true;
@@ -130,10 +130,10 @@ namespace Orion.CRM.WebApp.Controllers
         {
             Models.Role.RoleViewModel viewModel = new Models.Role.RoleViewModel();
 
-            string url = _AppConfig.WebAPIHost + "api/Role/GetRoleById?id=" + id;
+            string url = _AppConfig.WebApiHost + "api/Role/GetRoleById?id=" + id;
             viewModel = APIInvoker.Get<Models.Role.RoleViewModel>(url);
-            viewModel.MenuList = APIInvoker.Get<IEnumerable<Models.Role.Menu>>(_AppConfig.WebAPIHost + "api/MenuPage/GetAllMenus");
-            viewModel.RoleMenus = APIInvoker.Get<IEnumerable<Models.Role.RoleMenu>>(_AppConfig.WebAPIHost + "api/Role/GetRoleMenusByRoleId?roleId=" + id);
+            viewModel.MenuList = APIInvoker.Get<IEnumerable<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
+            viewModel.RoleMenus = APIInvoker.Get<IEnumerable<Models.Role.RoleMenu>>(_AppConfig.WebApiHost + "api/Role/GetRoleMenusByRoleId?roleId=" + id);
 
             return View(viewModel);
         }
@@ -143,7 +143,7 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult EditHandler(Models.Role.RoleViewModel viewModel)
         {
             if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/Role/UpdateRole";
+                string apiUrl = _AppConfig.WebApiHost + "api/Role/UpdateRole";
                 var role = new
                 {
                     Id = viewModel.Id,
@@ -155,7 +155,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                 if (result) {
                     // 0.删除旧的角色和菜单的关系
-                    string deleteRoleMenuApiUrl = _AppConfig.WebAPIHost + "api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
+                    string deleteRoleMenuApiUrl = _AppConfig.WebApiHost + "api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
                     APIInvoker.Get<bool>(deleteRoleMenuApiUrl);
 
                     // 1.获取角色和一级菜单的关系
@@ -177,7 +177,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 3.获取角色和一级菜单的关系
                     List<int> parentMenuIds = new List<int>();
-                    List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebAPIHost + "api/MenuPage/GetAllMenus");
+                    List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
 
                     if (menus != null && menus.Count > 0) {
                         if (!string.IsNullOrEmpty(menuIds)) {
@@ -208,7 +208,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 插入数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
-                        string roleMenuInsertApiUrl = _AppConfig.WebAPIHost + "api/Role/RoleMenuBatchInsert";
+                        string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "api/Role/RoleMenuBatchInsert";
                         bool res = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
                     }
                     TempData["result"] = true;

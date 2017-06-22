@@ -16,7 +16,7 @@
 
         .search-input {
             border: 1px solid gray;
-            border-radius: 1px !important;
+            border-radius: 2px !important;
             padding: 2px 3px;
             height: 16px !important;
             width: 91px;
@@ -26,24 +26,26 @@
         .search-select {
             width: 105px;
             height: 27px;
-            border-radius: 1px !important;
+            border-radius: 2px !important;
             padding: 0px 3px
         }
     </style>
 }
 
-<div class="panel panel-default" style="width:1000px">
+<div class="panel panel-default" style="width:1000px;">
     <div class="panel-heading">
         <h3 class="panel-title">资源列表</h3>
     </div>
 
     <div class="panel-body">
         <form action="/Resource/List" method="get">
+            <input type="hidden" id="hidGroupId" value="@Model.Params.gid" />
+            <input type="hidden" id="hidUserId" value="@Model.Params.uid" />
             <div class="form-inline">
-                <label>姓名</label>
-                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" />
-                <label style="margin-left:5px">手机/QQ/微信</label>
-                <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" />
+                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" style="width:200px" />
+            </div>
+            <div class="form-inline" style="margin-top:12px">
+                <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="手机/QQ/微信" />
                 <select name="pid" id="pid" class="search-select" onchange="projectChange()">
                     @if (Model.ProjectList != null) {
                         var defaultPId = Model.Params.pid == null ? Model.ProjectId : Model.Params.pid;
@@ -59,11 +61,29 @@
                 </select>
                 <select name="gid" id="gid" class="search-select" onchange="groupChange()">
                     <option value="">业务组</option>
-                    <!--业务组由js根据Project动态加载-->
+                    @if (Model.GroupList != null) {
+                        foreach(var group in Model.GroupList) {
+                            if(group.Id == Model.Params.gid) {
+                                <option value="@group.Id" selected="selected">@group.GroupName</option>
+                            }
+                            else {
+                                <option value="@group.Id">@group.GroupName</option>
+                            }
+                        }
+                    }
                 </select>
                 <select name="uid" id="uid" class="search-select">
                     <option value="">业务员</option>
-                    <!--业务员由js根据Group动态加载-->
+                    @if (Model.SalerList != null) {
+                        foreach(var saler in Model.SalerList) {
+                            if(saler.Id == Model.Params.uid) {
+                                <option value="@saler.Id" selected="selected">@saler.RealName</option>
+                            }
+                            else {
+                                <option value="@saler.Id">@saler.RealName</option>
+                            }
+                        }
+                    }
                 </select>
                 <select name="status" id="status" class="search-select">
                     <option value="">资源状态</option>
@@ -104,11 +124,17 @@
                         }
                     }
                 </select>
+
+                <div style="float:right">
+                    <button type="submit" class="btn btn-default">
+                        <i class="icon-search"></i> 查询
+                    </button>
+                    <button type="button" class="btn btn-default">批量分配</button>
+                </div>
             </div>
-            <div class="form-inline" style="margin-top:5px">
-                <label>来源</label>
+            <div class="form-inline" style="margin-top:12px">
                 <select name="source" id="source" class="search-select">
-                    <option value="">请选择</option>
+                    <option value="">来源</option>
                     @if (Model.SourceList != null) {
                         foreach (var source in Model.SourceList) {
                             if (source.Id == Model.Params.source) {
@@ -135,13 +161,9 @@
                         <option value="2">组长未分</option>
                     }
                 </select>
-                <button type="submit" class="btn btn-default">
-                    <i class="icon-search"></i> 查询
-                </button>
-                <button type="button" class="btn btn-default">批量分配</button>
             </div>
         </form>
-        <table class="table table-bordered" style="margin-top:15px;font-size: 12px !important;">
+        <table class="table table-bordered table-data">
             <thead>
                 <tr>
                     <th></th>
@@ -347,9 +369,5 @@
         function reload() {
             window.location.reload();
         }
-
-        $(function () {
-            projectChange();
-        });
     </script>
 }

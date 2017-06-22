@@ -44,7 +44,7 @@ namespace Orion.CRM.WebApp.App_Data
                     if (tokenInCache == null) {
                         // 服务器端token丢失，有可能是服务器重启等非用户原因导致
                         // 为避免cookie没过期但需要用户重新登录的问题，这里重新去服务器获取并生成token，然后再作比对
-                        var appUser = APIInvoker.Get<Models.Account.AppUserModel>(_appConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + cookieUser.Id);
+                        var appUser = APIInvoker.Get<Models.Account.AppUserModel>(_appConfig.WebApiHost + "api/AppUser/GetUserById?id=" + cookieUser.Id);
                         if (appUser != null) {
                             string tokenContent = appUser.UserName + "," + appUser.Password;
                             string token = DesEncrypt.Encrypt(tokenContent, _appConfig.DesEncryptKey);

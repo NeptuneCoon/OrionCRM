@@ -53,7 +53,7 @@ namespace Orion.CRM.WebApp.ViewComponents
             }
             else {
                 // 缓存中不存在，从数据库中获取，并写入缓存
-                string apiUrl = _appConfig.WebAPIHost + "api/Role/GetComplexRoleMenusByRoleId?roleId=" + roleId;
+                string apiUrl = _appConfig.WebApiHost + "api/Role/GetComplexRoleMenusByRoleId?roleId=" + roleId;
                 var roleMenus = APIInvoker.Get<List<Models.Role.RoleMenuComplex>>(apiUrl);//角色下的所有菜单
 
                 // 获得当前角色下的Left菜单

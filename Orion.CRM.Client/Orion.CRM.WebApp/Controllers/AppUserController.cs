@@ -20,10 +20,10 @@ namespace Orion.CRM.WebApp.Controllers
         /// <returns></returns>
         public IActionResult List(int id = 1)
         {
-            string url = _AppConfig.WebAPIHost + "api/AppUser/GetUsersByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/AppUser/GetUsersByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
             List<Models.AppUser.AppUserViewModel> list = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(url);
 
-            int totalCount = APIInvoker.Get<int>(_AppConfig.WebAPIHost + "api/AppUser/GetUserCountByOrgId?orgId=" + _AppUser.OrgId);
+            int totalCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/AppUser/GetUserCountByOrgId?orgId=" + _AppUser.OrgId);
 
             var pageOption = new PagerOption {
                 PageIndex = id,
@@ -43,8 +43,8 @@ namespace Orion.CRM.WebApp.Controllers
         {
             Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
 
-            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
 
             return View(viewModel);
@@ -55,7 +55,7 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult CreateHandler(Models.AppUser.AppUserViewModel viewModel)
         {
             if (viewModel != null) {
-                string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/InsertUser";
+                string apiUrl = _AppConfig.WebApiHost + "api/AppUser/InsertUser";
                 var user = new
                 {
                     OrgId = _AppUser.OrgId,
@@ -73,7 +73,7 @@ namespace Orion.CRM.WebApp.Controllers
                 int userId = APIInvoker.Post<int>(apiUrl, user);
                 if (userId > 0) {
                     // 插入用户和角色之间的关系
-                    string userRoleApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserRole";
+                    string userRoleApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserRole";
                     var userRole = new
                     {
                         UserId = userId,
@@ -83,7 +83,7 @@ namespace Orion.CRM.WebApp.Controllers
                     int userRoleId = APIInvoker.Post<int>(userRoleApi, userRole);
 
                     // 插入用户和项目之间的关系
-                    string userProjectApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserProject";
+                    string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserProject";
                     var userProject = new
                     {
                         UserId = userId,
@@ -93,7 +93,7 @@ namespace Orion.CRM.WebApp.Controllers
                     int userProjectId = APIInvoker.Post<int>(userProjectApi, userProject);
 
                     // 插入用户和业务组之间的关系
-                    string userGroupApi = _AppConfig.WebAPIHost + "api/AppUser/InsertUserGroup";
+                    string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserGroup";
                     var userGroup = new
                     {
                         UserId = userId,
@@ -112,11 +112,11 @@ namespace Orion.CRM.WebApp.Controllers
 
         public IActionResult Edit(int id)
         {
-            string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + id;
+            string url = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + id;
             Models.AppUser.AppUserViewModel viewModel = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
-            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
             return View(viewModel);
         }
@@ -126,11 +126,11 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult EditHandler(Models.AppUser.AppUserViewModel viewModel)
         {
             if (viewModel != null) {
-                string url = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
+                string url = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
                 Models.AppUser.AppUserViewModel user = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
                 if (user != null) {
-                    string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/UpdateUser";
+                    string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdateUser";
                     var updatingUser = new
                     {
                         Id = user.Id,
@@ -147,7 +147,7 @@ namespace Orion.CRM.WebApp.Controllers
                     bool result = APIInvoker.Post<bool>(apiUrl, updatingUser);
                     if (result) {
                         // 修改用户和角色之间的关系
-                        string userRoleApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserRole";
+                        string userRoleApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserRole";
                         var userRole = new
                         {
                             UserId = viewModel.Id,
@@ -157,7 +157,7 @@ namespace Orion.CRM.WebApp.Controllers
                         bool res1 = APIInvoker.Post<bool>(userRoleApi, userRole);
 
                         // 修改用户和项目之间的关系
-                        string userProjectApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserProject";
+                        string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserProject";
                         var userProject = new
                         {
                             UserId = user.Id,
@@ -166,7 +166,7 @@ namespace Orion.CRM.WebApp.Controllers
                         bool res2 = APIInvoker.Post<bool>(userProjectApi, userProject);
 
                         // 修改用户和业务组之间的关系
-                        string userGroupApi = _AppConfig.WebAPIHost + "api/AppUser/UpdateUserGroup";
+                        string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserGroup";
                         var userGroup = new
                         {
                             UserId = user.Id,
@@ -195,7 +195,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.AppUser.AppUserViewModel> GetUsersByGroupId(int groupId)
         {
-            string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + groupId;
+            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + groupId;
             List<Models.AppUser.AppUserViewModel> users = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUrl);
             return users;
         }

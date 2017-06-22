@@ -27,6 +27,14 @@ namespace Orion.CRM.WebApp.Models.Resource
 
         #region 视图展示性数据
         public List<Models.Project.Project> ProjectList { get; set; }
+        /// <summary>
+        /// 业务组
+        /// </summary>
+        public List<Models.Group.Group> GroupList { get; set; }
+        /// <summary>
+        /// 业务员
+        /// </summary>
+        public List<Models.AppUser.AppUserViewModel> SalerList { get; set; }
         public List<App_Data.SelectItem> StatusList { get; set; }
         public List<App_Data.SelectItem> InclinationList { get; set; }
         public List<Models.Source.ResourceSource> SourceList { get; set; } 

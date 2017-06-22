@@ -15,7 +15,7 @@ namespace Orion.CRM.WebApp.Controllers
   
         public IActionResult List()
         {
-            string url = _AppConfig.WebAPIHost + "api/Project/GetProjectsByOrgId?orgId="+ _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Project/GetProjectsByOrgId?orgId="+ _AppUser.OrgId;
             List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
             if(list != null && list.Count > 0) {
                 foreach(var project in list) {
@@ -35,7 +35,7 @@ namespace Orion.CRM.WebApp.Controllers
                 project.UpdateTime = DateTime.Now;
                 project.CreateUserId = _AppUser.Id;
 
-                string url = _AppConfig.WebAPIHost + "api/Project/InsertProject";
+                string url = _AppConfig.WebApiHost + "api/Project/InsertProject";
                 int identityId = APIInvoker.Post<int>(url, project);
                 return identityId;
             }
@@ -50,7 +50,7 @@ namespace Orion.CRM.WebApp.Controllers
                 project.UpdateTime = DateTime.Now;
                 project.OrgId = _AppUser.OrgId;
 
-                string url = _AppConfig.WebAPIHost + "api/Project/UpdateProject";
+                string url = _AppConfig.WebApiHost + "api/Project/UpdateProject";
                 bool result = APIInvoker.Post<bool>(url, project);
                 return result;
             }
@@ -60,7 +60,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Delete(int id)
         {
             if (id > 0) {
-                string url = _AppConfig.WebAPIHost + "api/Project/DeleteProject?id=" + id;
+                string url = _AppConfig.WebApiHost + "api/Project/DeleteProject?id=" + id;
                 bool result = APIInvoker.Get<bool>(url);
                 return result;
             }
@@ -71,7 +71,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Project.ProjectViewModel> ReloadList()
         {
-            string url = _AppConfig.WebAPIHost + "api/Project/GetProjectsByOrgId?orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Project/GetProjectsByOrgId?orgId=" + _AppUser.OrgId;
             List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
             if (list != null && list.Count > 0) {
                 foreach (var project in list) {
@@ -85,7 +85,7 @@ namespace Orion.CRM.WebApp.Controllers
         #region 根据用户Id获取用户登录名
         private string GetUserNameById(int userId)
         {
-            string apiUrl = _AppConfig.WebAPIHost + "api/AppUser/GetUserById?id=" + userId;
+            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
             Models.Account.AppUserModel appUser = APIInvoker.Get<Models.Account.AppUserModel>(apiUrl);
             if (appUser != null) {
                 return appUser.UserName;

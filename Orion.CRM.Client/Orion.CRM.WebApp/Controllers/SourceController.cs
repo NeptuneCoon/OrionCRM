@@ -14,7 +14,7 @@ namespace Orion.CRM.WebApp.Controllers
     {
         public IActionResult List()
         {
-            string url = _AppConfig.WebAPIHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
             List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
 
             return View(list);
@@ -28,7 +28,7 @@ namespace Orion.CRM.WebApp.Controllers
                 source.UpdateTime = DateTime.Now;
                 source.OrgId = _AppUser.OrgId;
 
-                string url = _AppConfig.WebAPIHost + "api/ResourceSource/InsertSource";
+                string url = _AppConfig.WebApiHost + "api/ResourceSource/InsertSource";
                 int identityId = APIInvoker.Post<int>(url, source);
                 return identityId;
             }
@@ -43,7 +43,7 @@ namespace Orion.CRM.WebApp.Controllers
                 source.UpdateTime = DateTime.Now;
                 source.OrgId = _AppUser.OrgId;
 
-                string url = _AppConfig.WebAPIHost + "api/ResourceSource/UpdateSource";
+                string url = _AppConfig.WebApiHost + "api/ResourceSource/UpdateSource";
                 bool result = APIInvoker.Post<bool>(url, source);
                 return result;
             }
@@ -53,7 +53,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Delete(int id)
         {
             if (id > 0) { 
-                string url = _AppConfig.WebAPIHost + "api/ResourceSource/DeleteSource?id=" + id;
+                string url = _AppConfig.WebApiHost + "api/ResourceSource/DeleteSource?id=" + id;
                 bool result = APIInvoker.Get<bool>(url);
                 return result;
             }
@@ -64,7 +64,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Source.ResourceSource> ReloadList()
         {
-            string url = _AppConfig.WebAPIHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
             List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
             return list;
         }

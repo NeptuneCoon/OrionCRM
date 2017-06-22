@@ -15,11 +15,11 @@ namespace Orion.CRM.WebApp.Controllers
     {
         public IActionResult List()
         {
-            string url = _AppConfig.WebAPIHost + "api/Group/GetGroupsByOrgId?orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Group/GetGroupsByOrgId?orgId=" + _AppUser.OrgId;
             List<Models.Group.Group> list = APIInvoker.Get<List<Models.Group.Group>>(url);
 
             ViewBag.ProjectId = _AppUser.ProjectId;//当前用户所属项目，如果不为空，则创建业务组时默认选中其所属的项目
-            ViewBag.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);
+            ViewBag.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
             return View(list);
         }
@@ -33,7 +33,7 @@ namespace Orion.CRM.WebApp.Controllers
                 group.UpdateTime = DateTime.Now;
                 group.OrgId = _AppUser.OrgId;
 
-                string url = _AppConfig.WebAPIHost + "api/Group/InsertGroup";
+                string url = _AppConfig.WebApiHost + "api/Group/InsertGroup";
                 int identityId = APIInvoker.Post<int>(url, group);
                 return identityId;
             }
@@ -45,7 +45,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Update(Models.Group.Group group)
         {
             if (group != null && group.Id > 0) {
-                string getUrl = _AppConfig.WebAPIHost + "api/Group/GetGroupById?id=" + group.Id;
+                string getUrl = _AppConfig.WebApiHost + "api/Group/GetGroupById?id=" + group.Id;
                 Models.Group.Group dbGroup = APIInvoker.Get<Models.Group.Group>(getUrl);
                 if (dbGroup != null) {
                     dbGroup.GroupName = group.GroupName;
@@ -53,7 +53,7 @@ namespace Orion.CRM.WebApp.Controllers
                     dbGroup.UpdateTime = DateTime.Now;
                     dbGroup.ManagerId = group.ManagerId;
                     
-                    string updateUrl = _AppConfig.WebAPIHost + "api/Group/UpdateGroup";
+                    string updateUrl = _AppConfig.WebApiHost + "api/Group/UpdateGroup";
                     bool result = APIInvoker.Post<bool>(updateUrl, dbGroup);
                     return result;
                 }
@@ -64,7 +64,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Delete(int id)
         {
             if (id > 0) {
-                string url = _AppConfig.WebAPIHost + "api/Group/DeleteGroup?id=" + id;
+                string url = _AppConfig.WebApiHost + "api/Group/DeleteGroup?id=" + id;
                 bool result = APIInvoker.Get<bool>(url);
                 return result;
             }
@@ -75,7 +75,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Group.Group> ReloadList()
         {
-            string url = _AppConfig.WebAPIHost + "api/Group/GetGroupsByOrgId?orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Group/GetGroupsByOrgId?orgId=" + _AppUser.OrgId;
             List<Models.Group.Group> list = APIInvoker.Get<List<Models.Group.Group>>(url);
 
             return list;
@@ -85,20 +85,20 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
         {
-            return AppDTO.GetGroupsFromDb(_AppConfig.WebAPIHost, projectId);
+            return AppDTO.GetGroupsFromDb(_AppConfig.WebApiHost, projectId);
         }
 
         [HttpPost]
         public bool SetGroupLeader(Models.Group.Group group)
         {
             if (group != null && group.Id > 0) {
-                string getUrl = _AppConfig.WebAPIHost + "api/Group/GetGroupById?id=" + group.Id;
+                string getUrl = _AppConfig.WebApiHost + "api/Group/GetGroupById?id=" + group.Id;
                 Models.Group.Group dbGroup = APIInvoker.Get<Models.Group.Group>(getUrl);
                 if (dbGroup != null) {
                     dbGroup.ManagerId = group.ManagerId;
                     dbGroup.UpdateTime = DateTime.Now;
                     
-                    string updateUrl = _AppConfig.WebAPIHost + "api/Group/UpdateGroup";
+                    string updateUrl = _AppConfig.WebApiHost + "api/Group/UpdateGroup";
                     bool result = APIInvoker.Post<bool>(updateUrl, dbGroup);
                     TempData["result"] = result;
                     return result;

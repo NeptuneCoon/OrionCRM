@@ -59,11 +59,29 @@
                 </select>
                 <select name="gid" id="gid" class="search-select" onchange="groupChange()">
                     <option value="">业务组</option>
-                    <!--业务组由js根据Project动态加载-->
+                    @if (Model.GroupList != null) {
+                        foreach (var group in Model.GroupList) {
+                            if (group.Id == Model.Params.gid) {
+                                <option value="@group.Id" selected="selected">@group.GroupName</option>
+                            }
+                            else {
+                                <option value="@group.Id">@group.GroupName</option>
+                            }
+                        }
+                    }
                 </select>
                 <select name="uid" id="uid" class="search-select">
                     <option value="">业务员</option>
-                    <!--业务员由js根据Group动态加载-->
+                    @if (Model.SalerList != null) {
+                        foreach (var saler in Model.SalerList) {
+                            if (saler.Id == Model.Params.uid) {
+                                <option value="@saler.Id" selected="selected">@saler.RealName</option>
+                            }
+                            else {
+                                <option value="@saler.Id">@saler.RealName</option>
+                            }
+                        }
+                    }
                 </select>
                 <select name="talk" id="talk" class="search-select">
                     <option value="">洽谈次数</option>
@@ -100,7 +118,7 @@
                 </button>
             </div>
         </form>
-        <table class="table table-bordered" style="margin-top:15px;font-size: 12px !important;">
+        <table class="table table-bordered" style="margin-top:15px;font-size: 13px !important;">
             <thead>
                 <tr>
                     <th></th>
@@ -305,9 +323,5 @@
         function reload() {
             window.location.reload();
         }
-
-        $(function () {
-            projectChange();
-        });
     </script>
 }

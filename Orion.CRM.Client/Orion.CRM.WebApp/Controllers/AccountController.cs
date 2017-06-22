@@ -44,7 +44,7 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult LoginHandler(Models.Account.LoginViewModel viewModel)
         {
             if (viewModel != null) {
-                var apiUrl = _AppConfig.WebAPIHost + "api/AppUser/GetUserByUserName?userName=" + viewModel.UserName;
+                var apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserByUserName?userName=" + viewModel.UserName;
                 var appUser = APIInvoker.Get<Models.Account.AppUserModel>(apiUrl);
 
                 if (appUser != null) {
