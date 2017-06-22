@@ -27,7 +27,6 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult List(ResourceSearchParams param)
         {
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
-
             viewModel.Params = param;
 
             viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebAPIHost, _AppUser.OrgId);

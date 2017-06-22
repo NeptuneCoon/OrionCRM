@@ -17,6 +17,7 @@ namespace Orion.CRM.WebApp.App_Data
 
         public Logging Logging { get; set; }
         public string WebAPIHost { get; set; }
+        public string ApplicationHost { get; set; }
         /// <summary>
         /// 页容量
         /// </summary>
