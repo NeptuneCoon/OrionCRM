@@ -72,12 +72,14 @@ namespace Orion.CRM.WebApp.Controllers
                         // 将user信息DES加密后写入cookie
                         string userInfo = DesEncrypt.Encrypt(JsonConvert.SerializeObject(appUser), _AppConfig.DesEncryptKey);
                         Response.Cookies.Append("user", userInfo, cookieOptions);
+                        // 将username写入cookie
+                        Response.Cookies.Append("user_name", appUser.UserName, cookieOptions);
 
                         // 将token保存在服务器端缓存中(永不过期)
                         var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
                         _memoryCache.Set("token_" + appUser.Id, token, cacheOptons);
                         // 将用户信息保存在服务器端缓存中(永不过期)
-                        _memoryCache.Set("user_" + appUser.Id, appUser, cacheOptons);
+                        //_memoryCache.Set("user_" + appUser.Id, appUser, cacheOptons);
 
                         return RedirectToAction("List", "Resource");
                     }
@@ -91,6 +93,57 @@ namespace Orion.CRM.WebApp.Controllers
             }
 
             return RedirectToAction("List", "Resource");
+        }
+
+        public IActionResult Logout()
+        {
+            _memoryCache.Remove("token_" + _AppUser.Id);
+            //_memoryCache.Remove("user_" + _AppUser.Id);
+
+            Response.Cookies.Delete("token");
+            Response.Cookies.Delete("user");
+            Response.Cookies.Delete("user_name");
+
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult UpdatePassword()
+        {
+            Models.Account.PasswordModel viewModel = new Models.Account.PasswordModel();
+            viewModel.UserId = _AppUser.Id;
+            return View(viewModel);
+        }
+
+        public IActionResult UserInfo()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult UserInfoHandler()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdatePasswordHandler(Models.Account.PasswordModel viewModel)
+        {
+            if (viewModel != null) {
+                viewModel.Password = Md5Encrypt.Md5Bit32(viewModel.Password);
+                string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
+                bool result = APIInvoker.Get<bool>(apiUrl);
+                if (result) {
+                    // 更新token
+                    string tokenContent = _AppUser.UserName + "," + viewModel.Password;
+                    string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
+                    // 将token保存在服务器端缓存中(永不过期)
+                    var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
+                    _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
+                }
+                TempData["result"] = result;
+            }
+            return RedirectToAction("UpdatePassword");
         }
     }
 }

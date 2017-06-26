@@ -199,5 +199,35 @@ namespace Orion.CRM.WebApp.Controllers
             List<Models.AppUser.AppUserViewModel> users = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUrl);
             return users;
         }
+
+        /// <summary>
+        /// 根据Id获取用户
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public Models.AppUser.AppUserViewModel GetUserById(int userId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
+            Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
+            return appUser;
+        }
+
+        /// <summary>
+        /// 验证密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public bool ValidatePassword(int userId, string password)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
+            Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
+            if (appUser != null && appUser.Password == Md5Encrypt.Md5Bit32(password)) {
+                return true;
+            }
+            return false;
+        }
     }
 }

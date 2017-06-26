@@ -285,7 +285,47 @@ namespace Orion.CRM.WebApp.Controllers
             return View();
         }
 
-        #region 插入资源
+        public IActionResult Detail(int id)
+        {
+            ResourceDetailViewModel viewModel = new ResourceDetailViewModel();
+
+            string apiResource = _AppConfig.WebApiHost + "api/Resource/GetResourceById?id=" + id;
+            Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(apiResource);
+
+            if (resource != null) { 
+                // 客户(资源)信息
+                viewModel.ResourceId = id;
+                viewModel.CustomerName = resource.CustomerName;
+                viewModel.Mobile = resource.Mobile;
+                viewModel.QQ = resource.QQ;
+                viewModel.Wechat = resource.Wechat;
+                viewModel.Email = resource.Email;
+                viewModel.SourceFrom = "";
+                viewModel.Sex = resource.Sex;
+                viewModel.Address = resource.Address;
+                viewModel.Remark = resource.Remark;
+                // 便签
+                string apiNote = _AppConfig.WebApiHost + "api/ResourceNote/GetNotesByResourceId?resourceId=" + id;
+                viewModel.ResourceNotes = APIInvoker.Get<List<Models.Resource.ResourceNote>>(apiNote);
+
+                // 洽谈记录
+                string apiRecord = _AppConfig.WebApiHost + "api/TalkRecord/GetRecordsByResourceId?resourceId=" + id;
+                viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
+            }
+            else {
+                return RedirectToAction("Http404", "Error");
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult DetailHandler()
+        {
+            return View();
+        }
+
+        #region 插入资源 InsertResource
         private int InsertResource(Models.Resource.ResourceViewModel viewModel)
         {
             var resource = new
@@ -388,7 +428,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
-        #region 资源分配
+        #region 资源分配 ResourceAssign
         /// <summary>
         /// 资源分配
         /// 资源和业务组，资源和用户都是一对一关系
@@ -459,6 +499,40 @@ namespace Orion.CRM.WebApp.Controllers
             }
 
             return assignResult;
+        }
+        #endregion
+
+        #region DeleteResource
+        /// <summary>
+        /// 删除资源 ajax
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public bool DeleteResource(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/DeleteResource?id=" + id;
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
+        }
+        #endregion
+
+        #region 添加一条洽谈记录
+        [HttpPost]
+        public bool AddTalkRecord(int resourceId, int talkWay, string talkResult)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/InsertTalkRecord";
+            var record = new
+            {
+                ResourceId = resourceId,
+                TalkWay = talkWay,
+                TalkResult = talkResult,
+                UserId = _AppUser.Id,
+                CreateTime = DateTime.Now
+            };
+
+            bool result = APIInvoker.Post<bool>(apiUrl, record);
+            return result;
         } 
         #endregion
     }

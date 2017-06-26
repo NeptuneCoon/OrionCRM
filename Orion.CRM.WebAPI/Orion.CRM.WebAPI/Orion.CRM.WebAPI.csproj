@@ -12,7 +12,9 @@
   <ItemGroup>
     <Content Include="wwwroot\MappingFiles\SqlMap\GroupDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceDomain.sqlmap" />
+    <Content Include="wwwroot\MappingFiles\SqlMap\ResourceNote.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\SourceDomain.sqlmap" />
+    <Content Include="wwwroot\MappingFiles\SqlMap\TalkRecord.sqlmap" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

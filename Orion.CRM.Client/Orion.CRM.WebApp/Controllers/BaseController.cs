@@ -18,31 +18,9 @@ namespace Orion.CRM.WebApp.Controllers
     [TypeFilter(typeof(AppRuntimeFilter))]
     public class BaseController : Controller
     {
-        //public BaseController()
-        //{
-
-        //}
-        ////private readonly AppConfig _appConfig;
-        //public BaseController(IOptions<AppConfig> optionsAccessor)
-        //{
-        //    // 初始化_AppConfig
-        //    _AppConfig = optionsAccessor.Value;
-
-        //    // 初始化_AppUser
-        //    if (HttpContext.Request.Cookies["user"] != null) {
-        //        string encryptUserInfo = HttpContext.Request.Cookies["user"];
-        //        string decryptUserInfo = DesEncrypt.Decrypt(encryptUserInfo, _AppConfig.DesEncryptKey);
-        //        var appUser = JsonConvert.DeserializeObject<Models.Account.AppUserModel>(decryptUserInfo);
-
-        //        _AppUser = appUser;
-        //    }
-        //    else {
-        //        _AppUser = null;
-        //    }
-
-        //}
-
-
+        /// <summary>
+        /// 当前登录用户信息
+        /// </summary>
         public Models.Account.AppUserModel _AppUser
         {
             get
@@ -63,6 +41,9 @@ namespace Orion.CRM.WebApp.Controllers
             set { _AppUser = value; }
         }
 
+        /// <summary>
+        /// 应用程序配置
+        /// </summary>
         public AppConfig _AppConfig
         {
             get

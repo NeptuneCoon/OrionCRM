@@ -17,13 +17,64 @@
     <SqlMapDetail>
       <SqlName>UpdateResource</SqlName>
       <OriginalSqlString>
-        update [Resource] set CustomerName=@CustomerName,TalkCount=@TalkCount,DeleteFlag=@DeleteFlag where Id=@Id
+        update [Resource]
+        set CustomerName=@CustomerName,
+        Sex=@Sex,
+        [Address]=@Address,
+        MsgTime=@MsgTime,
+        LastTime=@LastTime,
+        SourceFrom=@SourceFrom,
+        [Status]=@Status,
+        Inclination=@Inclination,
+        TalkCount=@TalkCount,
+        [Message]=@Message,
+        Mobile=@Mobile,
+        Tel=@Tel,
+        QQ=@QQ,
+        Wechat=@Wechat,
+        Email=@Email,
+        Remark=@Remark,
+        InvalidReason=@InvalidReason,
+        AppendUserId=@AppendUserId,
+        UpdateTime=@UpdateTime,
+        DeleteFlag=@DeleteFlag
+        where Id=@Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>修改一条资源</Description>
+      <Description>更新一条资源</Description>
     </SqlMapDetail>
 
+    <SqlMapDetail>
+      <SqlName>DeleteResource</SqlName>
+      <OriginalSqlString>
+        update [Resource] set DeleteFlag=1 where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>软删除一条资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>RestoreResource</SqlName>
+      <OriginalSqlString>
+        update [Resource] set DeleteFlag=0 where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>恢复一条资源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourceById</SqlName>
+      <OriginalSqlString>
+        select * from [Resource] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Id获取资源</Description>
+    </SqlMapDetail>
+    
     <SqlMapDetail>
       <SqlName>GetResourcesByUserId</SqlName>
       <OriginalSqlString>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertTalkRecord</SqlName>
+      <OriginalSqlString>
+        insert into TalkRecord(ResourceId,TalkWay,TalkResult,UserId,CreateTime)
+        values(@ResourceId,@TalkWay,@TalkResult,@UserId,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增洽谈记录</Description>
+    </SqlMapDetail>
+  
+    <SqlMapDetail>
+      <SqlName>DeleteTalkRecord</SqlName>
+      <OriginalSqlString>
+        delete from TalkRecord where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除洽谈记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRecordsByResourceId</SqlName>
+      <OriginalSqlString>
+        select * from TalkRecord where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId获取洽谈记录</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

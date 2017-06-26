@@ -107,6 +107,20 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public APIDataResult UpdatePassword(string userId, string password)
+        {
+            try {
+                bool res = service.UpdatePassword(userId, password);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetUserCount()
         {
             try {

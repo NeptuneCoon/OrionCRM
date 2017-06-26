@@ -42,6 +42,35 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+
+        // 软删除一条资源
+        public APIDataResult DeleteResource(int id)
+        {
+            try {
+                bool res = service.DeleteResource(id);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 恢复一条资源
+        public APIDataResult RestoreResource(int id)
+        {
+            try {
+                bool res = service.RestoreResource(id);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         [HttpPost]
         public APIDataResult InsertResourceProject([FromBody]Entity.ResourceProject resourceProject)
         {
@@ -86,6 +115,20 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 int count = service.GetResourceCountByCondition(param);
                 APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 根据Id获取资源
+        public APIDataResult GetResourceById(int id)
+        {
+            try {
+                Entity.Resource resource = service.GetResourceById(id);
+                APIDataResult dataResult = new APIDataResult(200, resource);
                 return dataResult;
             }
             catch (Exception ex) {

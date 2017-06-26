@@ -67,8 +67,7 @@ namespace Orion.CRM.WebApp.App_Data
                     }
                 }
                 if (!authorized) {
-                    //context.HttpContext.Response.Redirect("http://localhost:12816/Account/Login");
-                    context.HttpContext.Response.Redirect(_appConfig.ApplicationHost + "/Account/Login");
+                    context.HttpContext.Response.Redirect(_appConfig.ApplicationHost + "Account/Login");
                     context.Result = new EmptyResult();
                 }
             }

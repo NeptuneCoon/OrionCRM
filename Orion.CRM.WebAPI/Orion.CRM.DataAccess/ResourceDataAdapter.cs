@@ -50,13 +50,53 @@ namespace Orion.CRM.DataAccess
             SqlParameter[] paramArr = {
                 new SqlParameter("@Id", resource.Id),
                 new SqlParameter("@CustomerName", resource.CustomerName),
+                new SqlParameter("@Sex", CheckNull(resource.Sex)),
+                new SqlParameter("@Address", CheckNull(resource.Address)),
+                new SqlParameter("@MsgTime", CheckNull(resource.MsgTime)),
+                new SqlParameter("@LastTime", CheckNull(resource.LastTime)),
+                new SqlParameter("@SourceFrom", CheckNull(resource.SourceFrom)),
+                new SqlParameter("@Status", CheckNull(resource.Status)),
+                new SqlParameter("@Inclination", CheckNull(resource.Inclination)),
                 new SqlParameter("@TalkCount", CheckNull(resource.TalkCount)),
+                new SqlParameter("@Message", CheckNull(resource.Message)),
+                new SqlParameter("@Mobile", CheckNull(resource.Mobile)),
+                new SqlParameter("@Tel", CheckNull(resource.Tel)),
+                new SqlParameter("@QQ", CheckNull(resource.QQ)),
+                new SqlParameter("@Wechat", CheckNull(resource.Wechat)),
+                new SqlParameter("@Email", CheckNull(resource.Email)),
+                new SqlParameter("@Remark", CheckNull(resource.Remark)),
+                new SqlParameter("@InvalidReason", CheckNull(resource.InvalidReason)),
+                new SqlParameter("@AppendUserId", resource.AppendUserId),
                 new SqlParameter("@UpdateTime", resource.UpdateTime),
                 new SqlParameter("@DeleteFlag", resource.DeleteFlag)
             };
 
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateResource", paramArr);
             return count > 0;
+        }
+        #endregion
+
+        #region 软删除一条资源
+        public bool DeleteResource(int id)
+        {
+            if (id <= 0) return false;
+
+            SqlParameter param = new SqlParameter("Id", id);
+
+            int result = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "DeleteResource", param);
+            return result > 0;
+        }
+        #endregion
+
+        #region 恢复一条资源
+        public bool RestoreResource(int id)
+        {
+            if (id <= 0) return false;
+
+            SqlParameter param = new SqlParameter("Id", id);
+
+            int result = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "RestoreResource", param);
+            return result > 0;
         }
         #endregion
 
@@ -74,6 +114,15 @@ namespace Orion.CRM.DataAccess
             int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "InsertResourceProject", paramArr);
             return identityId;
         }
+        #endregion
+
+        #region 根据Id获取资源
+        public Entity.Resource GetResourceById(int id)
+        {
+            SqlParameter param = new SqlParameter("@Id", id);
+            Entity.Resource resource = SqlMapHelper.GetSqlMapSingleResult<Entity.Resource>("ResourceDomain", "GetResourceById", param);
+            return resource;
+        } 
         #endregion
 
         #region 根据筛选条件查询资源

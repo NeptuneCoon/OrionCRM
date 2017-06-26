@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertResourceNote</SqlName>
+      <OriginalSqlString>
+        insert into ResourceNote(ResourceId,Message,IsRemind,RemindTime,UserId,CreateTime)
+        values(@ResourceId,@Message,@IsRemind,@RemindTime,@UserId,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增便签</Description>
+    </SqlMapDetail>
+  
+    <SqlMapDetail>
+      <SqlName>DeleteResourceNote</SqlName>
+      <OriginalSqlString>
+        delete from ResourceNote where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除便签</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetNotesByResourceId</SqlName>
+      <OriginalSqlString>
+        select * from ResourceNote where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId获取便签</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

@@ -1,0 +1,240 @@
+﻿@model Orion.CRM.WebApp.Models.Resource.ResourceDetailViewModel
+@using Orion.CRM.WebApp.App_Data
+@{
+    ViewData["Title"] = "Detail";
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>资源详细信息</title>
+    <link href="~/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        body {
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 13px !important;
+        }
+
+        /*.table {
+            width:720px;
+            border-collapse: collapse;
+            border: 1px solid #f7f7f7;
+            border-radius: 3px !important;
+            margin-bottom:25px;
+        }
+        .table > thead>tr,th {
+            background-color: #f7f7f7;
+            padding:5px;
+            font-weight:normal;
+        }
+        .table>tbody>tr,td{
+            padding:5px;
+        }*/
+
+
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0 0 0;
+            line-height: normal;
+        }
+
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 2px !important;
+            padding: 2px 3px;
+            height: 16px !important;
+            width: 91px;
+            font-size: 12px !important;
+        }
+
+        .search-select {
+            width: 105px;
+            height: 27px;
+            border-radius: 2px !important;
+            padding: 0px 3px
+        }
+        .default-input {
+            border: 1px solid #e1e2e2;
+            border-radius: 2px !important;
+            color: #666;
+            font-size: 12px;
+            padding: 5px 5px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <form action="/Resource/DetailHandler" method="post" style="padding:10px">
+        <input type="hidden" asp-for="@Model.ResourceId" />
+        <!--基本资料-->
+        <table class="table table-bordered" style="width:720px">
+            <thead>
+                <tr>
+                    <th colspan="4">基本资料</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>客户姓名</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.CustomerName" /></td>
+
+                    <td>手机号码</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.Mobile" /></td>
+                </tr>
+                <tr>
+                    <td>QQ</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.QQ" /></td>
+
+                    <td>微信</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.Wechat" /></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.Email" /></td>
+
+                    <td>客户来源</td>
+                    <td>客服分配</td>
+                </tr>
+                <tr>
+                    <td>客户性别</td>
+                    <td>
+                        <label><input type="radio" />男</label>
+                        <label><input type="radio" />女</label>
+                    </td>
+
+                    <td>意向</td>
+                    <td>
+                        <select>
+                            <option>请选择</option>
+                            <option>意向强烈</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>客户地址</td>
+                    <td><input type="text" class="default-input" asp-for="@Model.Address" /></td>
+
+                    <td>状态</td>
+                    <td>
+                        <select>
+                            <option>请选择</option>
+                            <option>公共</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td colspan="3">
+                        <textarea>@Model.Remark</textarea>
+                    </td>
+                </tr>
+                <tr style="display:none">
+                    <td colspan="4" style="text-align:center">
+                        <button type="button">保存</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!--添加便签-->
+        <table class="table" style="width:720px;margin-bottom:10px;display:none">
+            <thead>
+                <tr>
+                    <th colspan="4">便签信息</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>便签内容</td><td>是否提醒</td><td>提醒时间</td><td>删除</td>
+                </tr>
+                @if (Model.ResourceNotes != null && Model.ResourceNotes.Count > 0) {
+                    foreach (var note in Model.ResourceNotes) {
+                        <tr>
+                            <td>@note.Message</td>
+                            <td>@(note.IsRemind ? "是" : "否")</td>
+                            <td>@(note.RemindTime == null ? "": Convert.ToDateTime(note.RemindTime).ToString("yyyy-MM-dd HH:mm"))</td>
+                            <td><a href="javascript:;" onclick="deleteNote(@note.Id)">删除</a></td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="4">还没有便签</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <div style="margin-bottom:20px;display:none">
+            <input type="text" placeholder="便签内容" />
+        </div>
+
+        <!--洽谈记录-->
+        <table class="table" style="width:720px">
+            <thead>
+                <tr>
+                    <th colspan="4">洽谈记录</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>时间</td>
+                    <td>洽谈人</td>
+                    <td>方式</td>
+                    <td>结果</td>
+                </tr>
+                @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
+                    foreach (var record in Model.TalkRecords) {
+                        <tr>
+                            <td>@record.CreateTime.ToString("yyyy-MM-dd")</td>
+                            <td>@record.UserId</td>
+                            <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
+                            <td>@record.TalkResult</td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="4">还没有洽谈记录</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!-- 添加洽谈记录 -->
+        <div class="form-inline">
+            <label>洽谈方式：</label>
+            <select id="talkWay" >
+                <option value="1">电话</option>
+                <option value="2">网聊</option>
+                <option value="3">面谈</option>
+                <option value="4">Email</option>
+                <option value="5">其他</option>
+            </select>
+            <label>小结：</label>
+            <input type="text" placeholder="洽谈结果" id="talkResult" />
+            <input type="button" value="添加记录" onclick="addTalkRecord()" />
+        </div>
+    </form>
+    <script src="~/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript">
+        function addTalkRecord() {
+            var resourceId = $('#ResourceId').val();
+            var talkWay = $('#talkWay').find("option:selected").val();
+            var talkResult = $('#talkResult').val();
+            if (!talkResult) {
+                alert('洽谈小结不能为空，请填写。');
+            }
+            else {
+                $.post("/Resource/AddTalkRecord", { "resourceId": resourceId, "talkWay": talkWay, "talkResult": talkResult }, function (data) {
+                    if (data) {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('抱歉，添加失败！');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+

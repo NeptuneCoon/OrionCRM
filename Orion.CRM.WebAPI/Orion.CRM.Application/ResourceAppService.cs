@@ -18,6 +18,18 @@ namespace Orion.CRM.Application
             return adapter.UpdateResource(resource);
         }
 
+        // 软删除一条资源
+        public bool DeleteResource(int id)
+        {
+            return adapter.DeleteResource(id);
+        }
+
+        // 恢复一条资源
+        public bool RestoreResource(int id)
+        {
+            return adapter.RestoreResource(id);
+        }
+
         public int InsertResourceProject(Entity.ResourceProject resourceProject)
         {
             return adapter.InsertResourceProject(resourceProject);
@@ -31,6 +43,12 @@ namespace Orion.CRM.Application
         public IEnumerable<Entity.Resource> GetResourcesByCondition(Entity.ResourceSearchParams param)
         {
             return adapter.GetResourcesByCondition(param);
+        }
+
+        // 根据Id获取资源
+        public Entity.Resource GetResourceById(int id)
+        {
+            return adapter.GetResourceById(id);
         }
 
         /// <summary>

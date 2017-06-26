@@ -109,6 +109,23 @@ namespace Orion.CRM.WebApp.App_Data
             return sources;
         }
 
+        public static Dictionary<int,string> TalkWayCollection
+        {
+            get
+            {
+                return new Dictionary<int, string>() {
+                    {1, "电话" },
+                    {2, "网聊" },
+                    {3, "面谈" },
+                    {4, "Email" },
+                    {5, "其他" }
+                };
+            }
+            set
+            {
+                TalkWayCollection = value;
+            }
+        }
 
     }
 }

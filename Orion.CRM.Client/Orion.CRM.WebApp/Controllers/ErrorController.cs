@@ -6,12 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Orion.CRM.WebApp.Controllers
 {
-    /// <summary>
-    /// ¿Í»§¿ØÖÆÆ÷
-    /// </summary>
-    public class CustomerController : BaseController
+    public class ErrorController : Controller
     {
-        public IActionResult Search()
+        public IActionResult Http404()
         {
             return View();
         }

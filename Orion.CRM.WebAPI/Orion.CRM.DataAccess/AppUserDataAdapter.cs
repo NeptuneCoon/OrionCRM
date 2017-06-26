@@ -125,6 +125,17 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        public bool UpdatePassword(string userId, string password)
+        {
+            SqlParameter[] paramArr = {
+                new SqlParameter("@Id", userId),
+                new SqlParameter("@Password", password),
+                new SqlParameter("@UpdateTime", DateTime.Now)
+            };
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdatePassword", paramArr);
+            return count > 0;
+        }
+
         public int GetUserCount()
         {
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount");

@@ -44,6 +44,11 @@ namespace Orion.CRM.Application
             return adapter.UpdateUser(user);
         }
 
+        public bool UpdatePassword(string userId, string password)
+        {
+            return adapter.UpdatePassword(userId, password);
+        }
+
         public int GetUserCount()
         {
             return adapter.GetUserCount();
