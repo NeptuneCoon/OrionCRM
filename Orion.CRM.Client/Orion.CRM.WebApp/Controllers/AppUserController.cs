@@ -16,17 +16,17 @@ namespace Orion.CRM.WebApp.Controllers
         /// <summary>
         /// 用户列表
         /// </summary>
-        /// <param name="id">此处的id是页索引PageIndex</param>
+        /// <param name="pi">此处的pi是页索引PageIndex</param>
         /// <returns></returns>
-        public IActionResult List(int id = 1)
+        public IActionResult List(int pi = 1)
         {
-            string url = _AppConfig.WebApiHost + "api/AppUser/GetUsersByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/AppUser/GetUsersByOrgId?pageIndex=" + pi + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
             List<Models.AppUser.AppUserViewModel> list = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(url);
 
             int totalCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/AppUser/GetUserCountByOrgId?orgId=" + _AppUser.OrgId);
 
             var pageOption = new PagerOption {
-                PageIndex = id,
+                PageIndex = pi,
                 PageSize = _AppConfig.PageSize,
                 TotalCount = totalCount,
                 RouteUrl = "/AppUser/List"

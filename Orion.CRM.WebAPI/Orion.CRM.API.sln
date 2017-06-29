@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{66AF7F03-C749-48D1-8727-9C802C053742}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.CRM.WebAPI", "Orion.CRM.WebAPI\Orion.CRM.WebAPI.csproj", "{61E0E95D-87C5-478C-9A10-B289BC02E0C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{70A2F45C-E831-4BFF-8259-41B8FCA9DBCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.CRM.Application.ServiceModel", "Orion.CRM.Application.ServiceModel\Orion.CRM.Application.ServiceModel.csproj", "{3E2A1434-4CDC-4DEA-B777-F07F8244404A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{70A2F45C-E831-4BFF-8259-41B8FCA9DBCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70A2F45C-E831-4BFF-8259-41B8FCA9DBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70A2F45C-E831-4BFF-8259-41B8FCA9DBCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E2A1434-4CDC-4DEA-B777-F07F8244404A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E2A1434-4CDC-4DEA-B777-F07F8244404A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E2A1434-4CDC-4DEA-B777-F07F8244404A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E2A1434-4CDC-4DEA-B777-F07F8244404A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +79,6 @@ Global
 		{1EB87A16-F7F5-427B-BF1C-E73DD73AC638} = {429944B8-259D-4D59-8715-0834279EAB3F}
 		{61E0E95D-87C5-478C-9A10-B289BC02E0C8} = {5F8FAA4D-B480-4F6B-920D-746C8488A03D}
 		{70A2F45C-E831-4BFF-8259-41B8FCA9DBCB} = {FE852A40-3793-4F77-91BE-ECFB094D7907}
+		{3E2A1434-4CDC-4DEA-B777-F07F8244404A} = {429944B8-259D-4D59-8715-0834279EAB3F}
 	EndGlobalSection
 EndGlobal

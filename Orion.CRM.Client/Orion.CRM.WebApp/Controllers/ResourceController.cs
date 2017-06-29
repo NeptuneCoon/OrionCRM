@@ -62,6 +62,8 @@ namespace Orion.CRM.WebApp.Controllers
                 }
             }
             #endregion
+            param.gid = _AppUser.GroupId;
+            param.uid = _AppUser.Id;
 
             #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
             if (param.pid != null && param.pid > 0) {

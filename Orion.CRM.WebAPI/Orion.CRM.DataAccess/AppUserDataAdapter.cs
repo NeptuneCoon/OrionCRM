@@ -138,14 +138,14 @@ namespace Orion.CRM.DataAccess
 
         public int GetUserCount()
         {
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount");
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "GetUserCount");
             return count;
         }
 
         public int GetUserCountByOrgId(int orgId)
         {
             SqlParameter param = new SqlParameter("@OrgId", orgId);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "GetUserCount", param);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "GetUserCountByOrgId", param);
             return count;
         }
 

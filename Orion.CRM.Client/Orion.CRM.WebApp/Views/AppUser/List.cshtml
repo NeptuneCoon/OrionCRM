@@ -2,7 +2,7 @@
 @model List<Orion.CRM.WebApp.Models.AppUser.AppUserViewModel>
 
 @using Orion.CRM.WebApp.App_Data
-@addTagHelper "Orion.CRM.WebApp.App_Data.PagerTagHelper,Orion.CRM.WebApp"
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -79,7 +79,7 @@
                 }
             </tbody>
         </table>
-        <pager pager-option="ViewBag.PagerOption as PagerOption"></pager>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
     </div>
 </div>
 

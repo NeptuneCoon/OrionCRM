@@ -1,7 +1,8 @@
 ﻿@using Orion.CRM.WebApp
 @model List<Orion.CRM.WebApp.Models.Role.RoleViewModel>
 
-@addTagHelper "Orion.CRM.WebApp.PagerTagHelper,Orion.CRM.WebApp"
+@using Orion.CRM.WebApp.App_Data
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -66,7 +67,7 @@
                 }
             </tbody>
         </table>
-        <pager pager-option="ViewBag.PagerOption as PagerOption"></pager>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
     </div>
 </div>
 

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>GetDataPermissionCategories</SqlName>
+      <OriginalSqlString>
+        select A.Id as CategoryId,A.CategoryName,B.Id as PermissionId,B.PermissionName from DataPermissionCategory A
+        inner join DataPermission B on A.Id=B.CategoryId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>查询数据权限类别 及 类别下的项</Description>
+    </SqlMapDetail>
+  
+    <SqlMapDetail>
+      <SqlName>GetRoleDataPermissions</SqlName>
+      <OriginalSqlString>
+        select * from RoleDataPermission where RoleId=@RoleId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取角色下的数据权限</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>BatchInsertRoleDataPermissions</SqlName>
+      <OriginalSqlString>
+        
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量插入角色下的数据权限</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

@@ -13,17 +13,17 @@ namespace Orion.CRM.WebApp.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-        public IActionResult List(int id = 1)
+        public IActionResult List(int pi = 1)
         {
             ViewBag.OperateResult = Request.Query["operateResult"].ToString();
 
-            string url = _AppConfig.WebApiHost + "api/Role/GetRolesByOrgId?pageIndex=" + id + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
+            string url = _AppConfig.WebApiHost + "api/Role/GetRolesByOrgId?pageIndex=" + pi + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
             List<Models.Role.RoleViewModel> list = APIInvoker.Get<List<Models.Role.RoleViewModel>>(url);
 
             int totalCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/Role/GetRoleCountByOrgId?orgId=" + _AppUser.OrgId);
 
             var pageOption = new PagerOption {
-                PageIndex = id,
+                PageIndex = pi,
                 PageSize = _AppConfig.PageSize,
                 TotalCount = totalCount,
                 RouteUrl = "/Role/List"

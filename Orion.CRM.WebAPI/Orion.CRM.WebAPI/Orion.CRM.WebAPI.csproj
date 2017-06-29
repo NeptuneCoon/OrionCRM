@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\MappingFiles\SqlMap\DataPermissionDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\GroupDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceNote.sqlmap" />
