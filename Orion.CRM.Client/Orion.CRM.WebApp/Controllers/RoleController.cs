@@ -60,7 +60,7 @@ namespace Orion.CRM.WebApp.Controllers
                 int primaryId = APIInvoker.Post<int>(apiUrl, role);
 
                 if (primaryId > 0) {
-                    // 1.获取角色和一级菜单的关系
+                    // 1.1获取角色和二级菜单的关系
                     List<object> roleMenuRelations = new List<object>();
                     string menuIds = Request.Form["ckRoleMenu"];
                     if (!string.IsNullOrEmpty(menuIds)) {
@@ -77,7 +77,7 @@ namespace Orion.CRM.WebApp.Controllers
                         }
                     }
 
-                    // 3.获取角色和一级菜单的关系
+                    // 1.2获取角色和一级菜单的关系
                     List<int> parentMenuIds = new List<int>();
                     List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
 
@@ -108,17 +108,39 @@ namespace Orion.CRM.WebApp.Controllers
                         }
                     }
 
-                    // 插入数据库
+                    // 1.3插入数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
                         string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "api/Role/RoleMenuBatchInsert";
                         bool res = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
                     }
+
+                    // 2.2获取角色和数据权限的关系
+                    List<object> rolePermissions = new List<object>();
+                    string permissionIds = Request.Form["ckDataPermission"];
+                    if (!string.IsNullOrEmpty(permissionIds)) {
+                        string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (permissionIdArr.Length > 0) {
+                            foreach (var permissionId in permissionIdArr) {
+                                rolePermissions.Add(new
+                                {
+                                    RoleId = viewModel.Id,
+                                    PermissionId = permissionId,
+                                    CreateTime = DateTime.Now
+                                });
+                            }
+                        }
+                    }
+
+                    // 2.3插入数据库
+                    if (rolePermissions != null && rolePermissions.Count > 0) {
+                        string rolePermissionInsertApiUrl = _AppConfig.WebApiHost + "api/DataPermission/RoleDataPermissionBatchInsert";
+                        bool rpInsertResult = APIInvoker.Post<bool>(rolePermissionInsertApiUrl, rolePermissions);
+                    }
+
                     TempData["result"] = true;
-                    //return RedirectToAction("List", new { operateResult = "success" });
                 }
                 else {
                     TempData["result"] = false;
-                    //return RedirectToAction("List", new { operateResult = "fail" });
                 }
                 return RedirectToAction("List");
             }
@@ -134,6 +156,7 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel = APIInvoker.Get<Models.Role.RoleViewModel>(url);
             viewModel.MenuList = APIInvoker.Get<IEnumerable<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
             viewModel.RoleMenus = APIInvoker.Get<IEnumerable<Models.Role.RoleMenu>>(_AppConfig.WebApiHost + "api/Role/GetRoleMenusByRoleId?roleId=" + id);
+            viewModel.RolePermissions = APIInvoker.Get<IEnumerable<Models.Role.RoleDataPermission>>(_AppConfig.WebApiHost + "api/DataPermission/GetRoleDataPermissions?roleId=" + id);
 
             return View(viewModel);
         }
@@ -154,11 +177,11 @@ namespace Orion.CRM.WebApp.Controllers
                 bool result = APIInvoker.Post<bool>(apiUrl, role);
 
                 if (result) {
-                    // 0.删除旧的角色和菜单的关系
-                    string deleteRoleMenuApiUrl = _AppConfig.WebApiHost + "api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
-                    APIInvoker.Get<bool>(deleteRoleMenuApiUrl);
+                    // 1.1删除旧的角色和菜单的关系
+                    string delRoleMenuApiUrl = _AppConfig.WebApiHost + "api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
+                    int delRMCount = APIInvoker.Get<int>(delRoleMenuApiUrl);
 
-                    // 1.获取角色和一级菜单的关系
+                    // 1.2获取角色和二级菜单的关系
                     List<object> roleMenuRelations = new List<object>();
                     string menuIds = Request.Form["ckRoleMenu"];
                     if (!string.IsNullOrEmpty(menuIds)) {
@@ -175,7 +198,7 @@ namespace Orion.CRM.WebApp.Controllers
                         }
                     }
 
-                    // 3.获取角色和一级菜单的关系
+                    // 1.3获取角色和一级菜单的关系
                     List<int> parentMenuIds = new List<int>();
                     List<Models.Role.Menu> menus = APIInvoker.Get<List<Models.Role.Menu>>(_AppConfig.WebApiHost + "api/MenuPage/GetAllMenus");
 
@@ -206,17 +229,43 @@ namespace Orion.CRM.WebApp.Controllers
                         }
                     }
 
-                    // 插入数据库
+                    // 1.4插入数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
                         string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "api/Role/RoleMenuBatchInsert";
-                        bool res = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
+                        bool rmInsertUrl = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
                     }
+
+                    // 2.1删除角色和数据权限的关系
+                    string delRolePermissionApiUrl = _AppConfig.WebApiHost + "api/DataPermission/DeleteRoleDataPermissions?roleId=" + viewModel.Id;
+                    int delRPCount = APIInvoker.Get<int>(delRolePermissionApiUrl);
+
+                    // 2.2获取角色和数据权限的关系
+                    List<object> rolePermissions = new List<object>();
+                    string permissionIds = Request.Form["ckDataPermission"];
+                    if (!string.IsNullOrEmpty(permissionIds)) {
+                        string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (permissionIdArr.Length > 0) {
+                            foreach (var permissionId in permissionIdArr) {
+                                rolePermissions.Add(new
+                                {
+                                    RoleId = viewModel.Id,
+                                    PermissionId = permissionId,
+                                    CreateTime = DateTime.Now
+                                });
+                            }
+                        }
+                    }
+
+                    // 2.3插入数据库
+                    if(rolePermissions != null && rolePermissions.Count > 0) {
+                        string rolePermissionInsertApiUrl = _AppConfig.WebApiHost + "api/DataPermission/RoleDataPermissionBatchInsert";
+                        bool rpInsertResult = APIInvoker.Post<bool>(rolePermissionInsertApiUrl, rolePermissions);
+                    }
+
                     TempData["result"] = true;
-                    //return RedirectToAction("List", new { operateResult = "success" });
                 }
                 else {
                     TempData["result"] = false;
-                    //return RedirectToAction("List", new { operateResult = "fail" });
                 }
                 return RedirectToAction("List");
             }

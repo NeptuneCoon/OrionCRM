@@ -52,7 +52,7 @@ namespace Orion.CRM.Application
             return adapter.DeleteRoleMenuById(id);
         }
 
-        public bool DeleteRoleMenuByRoleId(int roleId)
+        public int DeleteRoleMenuByRoleId(int roleId)
         {
             return adapter.DeleteRoleMenuByRoleId(roleId);
         }

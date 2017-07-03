@@ -94,14 +94,14 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
-        public bool DeleteRoleMenuByRoleId(int roleId)
+        public int DeleteRoleMenuByRoleId(int roleId)
         {
-            if (roleId <= 0) return false;
+            if (roleId <= 0) return 0;
 
             SqlParameter param = new SqlParameter("@RoleId", roleId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("RoleDomain", "DeleteRoleMenuByRoleId", param);
 
-            return count > 0;
+            return count;
         }
 
         public bool DeleteRoleMenuByMenuId(int menuId)

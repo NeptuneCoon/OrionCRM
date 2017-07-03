@@ -68,33 +68,13 @@ namespace Orion.CRM.DataAccess
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@MenuName", menu.MenuName));
-            if(menu.Icon != null) { 
-                parameters.Add(new SqlParameter("@Icon", menu.Icon));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Icon", DBNull.Value));
-            }
-            if (menu.URL != null) {
-                parameters.Add(new SqlParameter("@URL", menu.URL));
-            }
-            else {
-                parameters.Add(new SqlParameter("@URL", DBNull.Value));
-            }
-            if (menu.Description != null) { 
-                parameters.Add(new SqlParameter("@Description", menu.Description));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Description", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Icon", CheckNull(menu.Icon)));
+            parameters.Add(new SqlParameter("@URL", CheckNull(menu.URL)));
+            parameters.Add(new SqlParameter("@Description", CheckNull(menu.Description)));
             parameters.Add(new SqlParameter("@CreateTime", menu.CreateTime));
             parameters.Add(new SqlParameter("@UpdateTime", menu.UpdateTime));
             parameters.Add(new SqlParameter("@SortNo", menu.SortNo));
-            if (menu.Parent != null) {
-                parameters.Add(new SqlParameter("@Parent", menu.Parent));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Parent", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Parent", CheckNull(menu.Parent)));
 
             SqlParameter[] parmArr = parameters.ToArray();
 
@@ -121,32 +101,12 @@ namespace Orion.CRM.DataAccess
 
             parameters.Add(new SqlParameter("@Id", menu.Id));
             parameters.Add(new SqlParameter("@MenuName", menu.MenuName));
-            if (menu.Icon != null) {
-                parameters.Add(new SqlParameter("@Icon", menu.Icon));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Icon", DBNull.Value));
-            }
-            if (menu.URL != null) {
-                parameters.Add(new SqlParameter("@URL", menu.URL));
-            }
-            else {
-                parameters.Add(new SqlParameter("@URL", DBNull.Value));
-            }
-            if (menu.Description != null) {
-                parameters.Add(new SqlParameter("@Description", menu.Description));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Description", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Icon", CheckNull(menu.Icon)));
+            parameters.Add(new SqlParameter("@URL", CheckNull(menu.URL)));
+            parameters.Add(new SqlParameter("@Description", CheckNull(menu.Description)));
             parameters.Add(new SqlParameter("@UpdateTime", menu.UpdateTime));
             parameters.Add(new SqlParameter("@SortNo", menu.SortNo));
-            if (menu.Parent != null) {
-                parameters.Add(new SqlParameter("@Parent", menu.Parent));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Parent", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Parent", CheckNull(menu.Parent)));
 
             SqlParameter[] parmArr = parameters.ToArray();
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("MenuPageDomain", "UpdateMenu", parmArr);
@@ -164,14 +124,7 @@ namespace Orion.CRM.DataAccess
             if (id <= 0) return false;
 
             SqlParameter param = new SqlParameter("@Id", id);
-            int count = 0;
-            try {
-                count = SqlMapHelper.ExecuteSqlMapNonQuery("MenuPageDomain", "DeleteMenu", param);
-            }
-            catch(Exception ex) {
-                // log..
-            }
-
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("MenuPageDomain", "DeleteMenu", param);
             return count > 0;
         }
         #endregion

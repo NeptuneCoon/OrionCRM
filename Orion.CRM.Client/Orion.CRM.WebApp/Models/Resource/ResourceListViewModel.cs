@@ -39,6 +39,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<App_Data.SelectItem> InclinationList { get; set; }
         public List<Models.Source.ResourceSource> SourceList { get; set; } 
         public List<App_Data.SelectItem> TalkCountList { get; set; }
+        /// <summary>
+        /// 角色下的数据权限
+        /// </summary>
+        public List<Models.Role.RoleDataPermission> RolePermissions { get; set; }
         #endregion
 
         /// <summary>

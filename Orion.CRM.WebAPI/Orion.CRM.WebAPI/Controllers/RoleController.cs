@@ -112,8 +112,8 @@ namespace Orion.CRM.WebAPI.Controllers
         public APIDataResult DeleteRoleMenuByRoleId(int roleId)
         {
             try {
-                bool res = service.DeleteRoleMenuByRoleId(roleId);
-                APIDataResult dataResult = new APIDataResult(200, res);
+                int count = service.DeleteRoleMenuByRoleId(roleId);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {

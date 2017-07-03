@@ -23,10 +23,28 @@
     </SqlMapDetail>
 
     <SqlMapDetail>
-      <SqlName>BatchInsertRoleDataPermissions</SqlName>
+      <SqlName>DeleteRoleDataPermissions</SqlName>
       <OriginalSqlString>
-        
+        delete from RoleDataPermission where RoleId=@RoleId
       </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据角色ID，删除角色和数据权限的关系</Description>
+    </SqlMapDetail>
+    
+    <!--<SqlMapDetail>
+      <SqlName>InsertRoleDataPermission</SqlName>
+      <OriginalSqlString>
+        insert into RoleDataPermission(RoleId,PermissionId,CreateTime) values(@RoleId,@PermissionId,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>插入角色和数据权限的关系</Description>
+    </SqlMapDetail>-->
+
+    <SqlMapDetail TableName="RoleDataPermission">
+      <SqlName>RoleDataPermissionBatchInsert</SqlName>
+      <OriginalSqlString/>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>批量插入角色下的数据权限</Description>

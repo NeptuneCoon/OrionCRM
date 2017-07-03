@@ -20,5 +20,6 @@ namespace Orion.CRM.WebApp.Models.Role
         public IEnumerable<Menu> MenuList { get; set; }
         public IEnumerable<OrganizationModel> OrgList { get; set; }
         public IEnumerable<RoleMenu> RoleMenus { get; set; }
+        public IEnumerable<RoleDataPermission> RolePermissions { get; set; }
     }
 }

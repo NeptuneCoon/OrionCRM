@@ -8,11 +8,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="panel panel-default" style="width:820px">
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">用户管理</h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="padding-right:20px">
         <div class="form-group">
             <a href="/AppUser/Create" class="btn btn-default">
                 Add New <i class="icon-plus"></i>
@@ -56,16 +56,16 @@
                     for (int i = 0; i < Model.Count; i++) {
                         var item = Model[i];
                         <tr>
-                            <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
-                            <td>@item.UserName</td>
-                            <td>@item.RealName</td>
-                            <td>@item.Mobile</td>
-                            <td>@item.Enable</td>
-                            <td>@item.RoleName</td>
+                            <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
+                            <td style="width:130px">@item.UserName</td>
+                            <td style="width:80px">@item.RealName</td>
+                            <td style="width:110px">@item.Mobile</td>
+                            <td>@Html.Raw((item.Enable == 1 ? "可用" : "<span class='tip'>禁用</span>"))</td>
+                            <td style="width:70px">@item.RoleName</td>
                             <td>@item.ProjectName</td>
                             <td>@item.GroupName</td>
-                            <td>@item.CreateTime</td>
-                            <td>
+                            <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td style="width:70px">
                                 <a href="/AppUser/Edit/@item.Id">编辑</a>
                                 @*<a href="javascript:;" onclick="deleteUser(@item.Id)">删除</a>*@
                             </td>

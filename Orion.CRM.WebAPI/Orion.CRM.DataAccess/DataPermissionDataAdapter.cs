@@ -15,10 +15,36 @@ namespace Orion.CRM.DataAccess
             return categories;
         }
 
-        public IEnumerable<DataPermission> GetRoleDataPermissions(int roleId)
+        public IEnumerable<RoleDataPermission> GetRoleDataPermissions(int roleId)
         {
             SqlParameter param = new SqlParameter("@RoleId", roleId);
-            return null;
+            var rolePermissions = SqlMapHelper.GetSqlMapResult<RoleDataPermission>("DataPermissionDomain", "GetRoleDataPermissions", param);
+            return rolePermissions;
+        }
+
+        public int DeleteRoleDataPermissions(int roleId)
+        {
+            SqlParameter param = new SqlParameter("@RoleId", roleId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("DataPermissionDomain", "DeleteRoleDataPermissions", param);
+            return count;
+        }
+
+        //public int InsertRoleDataPermission(RoleDataPermission rolePermission)
+        //{
+        //    SqlParameter[] paramArr = {
+        //        new SqlParameter("@RoleId", rolePermission.RoleId),
+        //        new SqlParameter("@PermissionId", rolePermission.PermissionId),
+        //        new SqlParameter("@CreateTime", rolePermission.CreateTime)
+        //    };
+
+        //    int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("DataPermissionDomain", "InsertRoleDataPermission", paramArr);
+        //    return identityId;
+        //}
+
+        public bool RoleDataPermissionBatchInsert(IEnumerable<Entity.RoleDataPermission> rolePermissions)
+        {
+            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.RoleDataPermission>("DataPermissionDomain", "RoleDataPermissionBatchInsert", rolePermissions);
+            return result;
         }
     }
 }

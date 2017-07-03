@@ -34,6 +34,7 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
+            viewModel.RolePermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
@@ -47,7 +48,7 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Resource/List",
                 QueryString = Request.QueryString.Value
             };
-
+            /*
             #region 处理默认值项目(ProjectId，该值为必选)
             if (string.IsNullOrEmpty(Request.QueryString.Value)) {
                 if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
@@ -75,6 +76,8 @@ namespace Orion.CRM.WebApp.Controllers
                 }
             } 
             #endregion
+            */
+
 
             ViewBag.PagerOption = pageOption;
 
@@ -537,5 +540,17 @@ namespace Orion.CRM.WebApp.Controllers
             return result;
         } 
         #endregion
+
+        /// <summary>
+        /// 获取角色下的数据权限
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        private List<Models.Role.RoleDataPermission> GetRoleDataPermissions(int roleId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/DataPermission/GetRoleDataPermissions?roleId=" + roleId;
+            var dataResult = APIInvoker.Get<List<Models.Role.RoleDataPermission>>(apiUrl);
+            return dataResult;
+        }
     }
 }

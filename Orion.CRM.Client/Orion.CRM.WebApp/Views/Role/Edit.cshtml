@@ -59,6 +59,103 @@
                         }
                     </td>
                 </tr>
+                <tr>
+                    <td>角色可访问的数据<span class="tip">*</span></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>资源可见范围</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="ul-menulist">
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" checked="checked" disabled="disabled" /> 本人资源
+                                                <input type="checkbox" name="ckDataPermission" value="1" checked="checked" style="display:none" />
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                @{ var query2 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 2);}
+                                                @if (query2 == null) { 
+                                                    @:<input type="checkbox" name="ckDataPermission" value="2" /> 本组资源
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="2" checked="checked" /> 本组资源
+                                                }
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                @{ var query3 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 3);}
+                                                @if (query3 == null) {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="3" /> 本项目资源
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="3" checked="checked" /> 本项目资源
+                                                }
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                @{ var query4 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 4);}
+                                                @if (query4 == null) {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="4" /> 公司资源
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="4" checked="checked" /> 公司资源
+                                                }
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>资源操作</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="ul-menulist">
+                                        <li>
+                                            <label>
+                                                @{ var query5 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 5);}
+                                                @if (query5 == null) {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="5" /> 资源查询
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="5" checked="checked" /> 资源查询
+                                                }
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                @{ var query6 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 6);}
+                                                @if (query6 == null) {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="6" /> 资源分配
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="6" checked="checked" /> 资源分配
+                                                }
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                @{ var query7 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 7);}
+                                                @if (query7 == null) {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="7" /> 资源批量分配
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ckDataPermission" value="7" checked="checked" /> 资源批量分配
+                                                }
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
             </table>
             <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
             <button type="button" class="btn btn-default" onclick="javascript: window.location = '/Role/List';">返回</button>
