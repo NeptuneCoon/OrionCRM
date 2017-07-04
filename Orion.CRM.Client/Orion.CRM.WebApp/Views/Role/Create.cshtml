@@ -39,7 +39,7 @@
                                                         @foreach (var child in childMenus) {
                                                             <li>
                                                                 <label>
-                                                                    <input type="checkbox" name="ckRoleMenu" value="@child.Id" /> @child.MenuName
+                                                                    <input type="checkbox" name="RoleMenu" value="@child.Id" /> @child.MenuName
                                                                 </label>
                                                             </li>
                                                         }
@@ -64,26 +64,27 @@
                                 <td>
                                     <ul class="ul-menulist">
                                         <li>
-                                            <label>
-                                                <label>
-                                                    <input type="checkbox" checked="checked" disabled="disabled" /> 本人资源
-                                                    <input type="checkbox" name="ckDataPermission" value="1" checked="checked" style="display:none" />
-                                                </label>
+                                            <label class="nebula-label">
+                                                <input class="nebula-radio" type="radio" name="ResourceVisible" value="1" />
+                                                <span class="nebula-radioInput"></span>本人资源
                                             </label>
                                         </li>
                                         <li>
-                                            <label>
-                                                <input type="checkbox" name="ckDataPermission" value="2" /> 本组资源
+                                            <label class="nebula-label">
+                                                <input class="nebula-radio" type="radio" name="ResourceVisible" value="2" />
+                                                <span class="nebula-radioInput"></span>本组资源
                                             </label>
                                         </li>
                                         <li>
-                                            <label>
-                                                <input type="checkbox" name="ckDataPermission" value="3" /> 本项目资源
+                                            <label class="nebula-label">
+                                                <input class="nebula-radio" type="radio" name="ResourceVisible" value="3" />
+                                                <span class="nebula-radioInput"></span>本项目资源
                                             </label>
                                         </li>
                                         <li>
-                                            <label>
-                                                <input type="checkbox" name="ckDataPermission" value="4" /> 公司资源
+                                            <label class="nebula-label">
+                                                <input class="nebula-radio" type="radio" name="ResourceVisible" value="4" />
+                                                <span class="nebula-radioInput"></span>公司资源
                                             </label>
                                         </li>
                                     </ul>
@@ -97,17 +98,17 @@
                                     <ul class="ul-menulist">
                                         <li>
                                             <label>
-                                                <input type="checkbox" name="ckDataPermission" value="5" /> 资源查询
+                                                <input type="checkbox" name="ResourceHandle" value="5" /> 资源查询
                                             </label>
                                         </li>
                                         <li>
                                             <label>
-                                                <input type="checkbox" name="ckDataPermission" value="6" /> 资源分配
+                                                <input type="checkbox" name="ResourceHandle" value="6" /> 资源分配
                                             </label>
                                         </li>
                                         <li>
                                             <label>
-                                                <input type="checkbox" name="ckDataPermission" value="7" /> 资源批量分配
+                                                <input type="checkbox" name="ResourceHandle" value="7" /> 资源批量分配
                                             </label>
                                         </li>
                                     </ul>
@@ -159,7 +160,7 @@
             }
             else {
                 var menuArr = [];
-                $("input[name='ckRoleMenu']").each(function () {
+                $("input[name='RoleMenu']").each(function () {
                     if ($(this).prop("checked")) {
                         menuArr.push($(this).val());
                     }

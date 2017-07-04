@@ -39,11 +39,19 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<App_Data.SelectItem> InclinationList { get; set; }
         public List<Models.Source.ResourceSource> SourceList { get; set; } 
         public List<App_Data.SelectItem> TalkCountList { get; set; }
+
         /// <summary>
-        /// 角色下的数据权限
+        /// 资源可见范围(4=公司资源，3=本项目资源，2=本组资源，1=本人资源)
+        /// </summary> 
+        public int RoleResourceVisible { get; set; }
+
+        /// <summary>
+        /// 资源操作权限
         /// </summary>
-        public List<Models.Role.RoleDataPermission> RolePermissions { get; set; }
+        public List<Models.Role.RoleDataPermission> RoleResourceHandle { get; set; }
+
         #endregion
+        
 
         /// <summary>
         /// 查询到的当页资源列表数据

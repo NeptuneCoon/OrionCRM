@@ -62,7 +62,7 @@ namespace Orion.CRM.WebApp.Controllers
                 if (primaryId > 0) {
                     // 1.1获取角色和二级菜单的关系
                     List<object> roleMenuRelations = new List<object>();
-                    string menuIds = Request.Form["ckRoleMenu"];
+                    string menuIds = Request.Form["RoleMenu"];
                     if (!string.IsNullOrEmpty(menuIds)) {
                         string[] menuIdArr = menuIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (menuIdArr.Length > 0) {
@@ -116,7 +116,16 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 2.2获取角色和数据权限的关系
                     List<object> rolePermissions = new List<object>();
-                    string permissionIds = Request.Form["ckDataPermission"];
+                    // 2.2.1获取资源可见范围
+                    rolePermissions.Add(new
+                    {
+                        RoleId = viewModel.Id,
+                        PermissionCategoryId = 1,
+                        PermissionId = Convert.ToInt32(Request.Form["ResourceVisible"]),
+                        CreateTime = DateTime.Now
+                    });
+                    // 2.2.2获取资源操作权限
+                    string permissionIds = Request.Form["ResourceHandle"];
                     if (!string.IsNullOrEmpty(permissionIds)) {
                         string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (permissionIdArr.Length > 0) {
@@ -124,6 +133,7 @@ namespace Orion.CRM.WebApp.Controllers
                                 rolePermissions.Add(new
                                 {
                                     RoleId = viewModel.Id,
+                                    PermissionCategoryId = 2,
                                     PermissionId = permissionId,
                                     CreateTime = DateTime.Now
                                 });
@@ -183,7 +193,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 1.2获取角色和二级菜单的关系
                     List<object> roleMenuRelations = new List<object>();
-                    string menuIds = Request.Form["ckRoleMenu"];
+                    string menuIds = Request.Form["RoleMenu"];
                     if (!string.IsNullOrEmpty(menuIds)) {
                         string[] menuIdArr = menuIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (menuIdArr.Length > 0) {
@@ -241,7 +251,15 @@ namespace Orion.CRM.WebApp.Controllers
 
                     // 2.2获取角色和数据权限的关系
                     List<object> rolePermissions = new List<object>();
-                    string permissionIds = Request.Form["ckDataPermission"];
+                    // 2.2.1获取资源可见范围
+                    rolePermissions.Add(new {
+                        RoleId = viewModel.Id,
+                        PermissionCategoryId = 1,
+                        PermissionId = Convert.ToInt32(Request.Form["ResourceVisible"]),
+                        CreateTime = DateTime.Now
+                    });
+                    // 2.2.2获取资源操作权限
+                    string permissionIds = Request.Form["ResourceHandle"];
                     if (!string.IsNullOrEmpty(permissionIds)) {
                         string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (permissionIdArr.Length > 0) {
@@ -249,6 +267,7 @@ namespace Orion.CRM.WebApp.Controllers
                                 rolePermissions.Add(new
                                 {
                                     RoleId = viewModel.Id,
+                                    PermissionCategoryId = 2,
                                     PermissionId = permissionId,
                                     CreateTime = DateTime.Now
                                 });

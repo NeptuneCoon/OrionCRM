@@ -29,12 +29,14 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
+            
             viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
             viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
-            viewModel.RolePermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
+            viewModel.RoleResourceVisible = GetRoleResourceVisible(roleDataPermissions);
+            viewModel.RoleResourceHandle = GetRoleResourceHandle(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
@@ -77,7 +79,41 @@ namespace Orion.CRM.WebApp.Controllers
             } 
             #endregion
             */
+            //param.pid = 1;
+            //param.gid = _AppUser.GroupId;
+            //param.uid = _AppUser.Id;
 
+            string groupApiUrl = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=";
+            string groupUserApiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=";
+
+            switch (viewModel.RoleResourceVisible) {
+                case 4:
+                    // 资源可见范围：公司资源，需加载[项目列表、业务组列表、业务员列表]
+                    viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+                    //viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(groupApiUrl+_AppUser.ProjectId);
+                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                    break;
+                case 3:
+                    // 资源可见范围：本项目资源，需加载[业务组列表、业务员列表]
+                    viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(groupApiUrl + _AppUser.ProjectId);
+
+                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                    param.pid = _AppUser.ProjectId;
+                    break;
+                case 2:
+                    // 资源可见范围：本组资源，需加载[业务员列表]
+                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+                    param.pid = _AppUser.ProjectId;
+                    param.gid = _AppUser.GroupId;
+                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(groupUserApiUrl + param.gid);
+                    break;
+                case 1:
+                    // 资源可见范围：本人资源
+                    param.pid = _AppUser.ProjectId;
+                    param.gid = _AppUser.GroupId;
+                    param.uid = _AppUser.Id;
+                    break;
+            }
 
             ViewBag.PagerOption = pageOption;
 
@@ -551,6 +587,35 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "api/DataPermission/GetRoleDataPermissions?roleId=" + roleId;
             var dataResult = APIInvoker.Get<List<Models.Role.RoleDataPermission>>(apiUrl);
             return dataResult;
+        }
+
+        /// <summary>
+        /// 角色的数据权限：获取资源可见范围
+        /// </summary>
+        /// <param name="roleDataPermissions"></param>
+        /// <returns></returns>
+        private int GetRoleResourceVisible(List<Models.Role.RoleDataPermission> roleDataPermissions)
+        {
+            if (roleDataPermissions == null) return -1;
+
+            var query = roleDataPermissions.FirstOrDefault(x => x.PermissionCategoryId == 1);
+            if (query != null) {
+                return query.PermissionId;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 角色的数据权限：获取资源操作权限
+        /// </summary>
+        /// <param name="roleDataPermissions"></param>
+        /// <returns></returns>
+        private List<Models.Role.RoleDataPermission> GetRoleResourceHandle(List<Models.Role.RoleDataPermission> roleDataPermissions)
+        {
+            if (roleDataPermissions == null) return null;
+
+            var query = roleDataPermissions.Where(x => x.PermissionCategoryId == 2).ToList();
+            return query;
         }
     }
 }

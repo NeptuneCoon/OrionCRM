@@ -8,6 +8,7 @@ namespace Orion.CRM.Entity
     {
         //public int Id { get; set; }//批量插入的实体不能有主键
         public int RoleId { get; set; }
+        public int PermissionCategoryId { get; set; }
         public int PermissionId { get; set; }
         public DateTime CreateTime { get; set; }
     }
