@@ -172,6 +172,12 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        public Entity.UserProject GetUserProject(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            Entity.UserProject entity = SqlMapHelper.GetSqlMapSingleResult<Entity.UserProject>("AppUserDomain", "GetUserProject", param);
+            return entity;
+        }
 
         public int InsertUserProject(Entity.UserProject userProject)
         {
@@ -196,6 +202,19 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        public int DeleteUserProject(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUserProject", param);
+            return count;
+        }
+
+        public Entity.UserGroup GetUserGroup(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            Entity.UserGroup entity = SqlMapHelper.GetSqlMapSingleResult<Entity.UserGroup>("AppUserDomain", "GetUserGroup", param);
+            return entity;
+        }
 
         public int InsertUserGroup(Entity.UserGroup userGroup)
         {
@@ -218,6 +237,13 @@ namespace Orion.CRM.DataAccess
 
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "UpdateUserGroup", paramArr);
             return count > 0;
+        }
+
+        public int DeleteUserGroup(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUserGroup", param);
+            return count;
         }
     }
 }

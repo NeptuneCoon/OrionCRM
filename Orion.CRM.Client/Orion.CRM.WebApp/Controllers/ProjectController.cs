@@ -30,6 +30,7 @@ namespace Orion.CRM.WebApp.Controllers
         public int Insert(Models.Project.ProjectViewModel project)
         {
             if (project != null) {
+                project.ProjectName = project.ProjectName.Trim();
                 project.OrgId = _AppUser.OrgId;
                 project.CreateTime = DateTime.Now;
                 project.UpdateTime = DateTime.Now;
@@ -47,6 +48,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Update(Models.Project.ProjectViewModel project)
         {
             if (project != null && project.Id > 0) {
+                project.ProjectName = project.ProjectName.Trim();
                 project.UpdateTime = DateTime.Now;
                 project.OrgId = _AppUser.OrgId;
 

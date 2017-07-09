@@ -37,7 +37,7 @@ namespace Orion.CRM.WebApp.App_Data
 
             // 页码(取10页展示)
             int beginIndex = Math.Max(1, pageIndex - 5);
-            int endIndex = Math.Min(pageMax, pageIndex + 5);
+            int endIndex = Math.Min(pageMax, beginIndex + 9);
             for (int i = beginIndex; i <= endIndex; i++) {
                 string url = PagerOption.RouteUrl + IndexReplace(PagerOption.QueryString, i);
                 sb.Append($"<li {(pageIndex == i ? "class='active'" : "")}><a href=\"{url}\">{i}</a></li>");

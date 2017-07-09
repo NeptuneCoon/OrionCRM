@@ -15,7 +15,7 @@ namespace Orion.CRM.WebAPI.Controllers
         private ResourceSourceAppService service = new ResourceSourceAppService();
 
         [HttpPost]
-        public APIDataResult InsertSource([FromBody]Entity.ResourceSource source)
+        public APIDataResult InsertSource([FromBody]Entity.Source source)
         {
             try {
                 int identityId = service.InsertSource(source);
@@ -29,7 +29,7 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
         [HttpPost]
-        public APIDataResult UpdateSource([FromBody]Entity.ResourceSource source)
+        public APIDataResult UpdateSource([FromBody]Entity.Source source)
         {
             try {
                 bool res = service.UpdateSource(source);
@@ -58,7 +58,7 @@ namespace Orion.CRM.WebAPI.Controllers
         public APIDataResult GetSourcesByOrgId(int orgId)
         {
             try {
-                IEnumerable<Entity.ResourceSource> sources = service.GetSourcesByOrgId(orgId);
+                IEnumerable<Entity.Source> sources = service.GetSourcesByOrgId(orgId);
                 APIDataResult dataResult = new APIDataResult(200, sources);
                 return dataResult;
             }

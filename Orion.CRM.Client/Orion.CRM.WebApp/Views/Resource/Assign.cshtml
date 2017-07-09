@@ -4,5 +4,336 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Assign</h2>
-<h5>本周上线，请稍候。</h5>
+@section styles{
+    <style type="text/css">
+        /*资源列表*/
+        .table-resource-assign {
+            border-collapse: separate;
+            border-color: gray;
+            font-size: 13px;
+            border: 1px solid #DEDEDE;
+            padding: 3px;
+            border-radius: 2px;
+        }
+
+        .table-resource-assign th {
+            background-color: #DADADA;
+            font-weight: bold;
+            height: 25px;
+            line-height: 25px;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        .table-resource-assign tr td {
+            font: 13px "Helvetica Neue",Helvetica,Arial,sans-serif;
+            height: 30px;
+            line-height: 30px;
+            text-align: left;
+            padding-left: 5px;
+            /*border-bottom: 1px solid #dedede;*/
+        }
+
+        .table-assign-inner th {
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius:2px;
+            border-top-right-radius:2px;
+            padding-left:15px;
+        }
+        .table-assign-inner tr,td {
+            padding-left: 15px !important;
+        }
+
+        .assign-input {
+            border: 1px solid #C9C9C9 !important;
+            border-radius: 2px !important;
+            padding: 2px 3px !important;
+            width: 120px !important;
+        }
+    </style>
+}
+
+<h3>资源批量分配</h3>
+
+@if (TempData["result"] != null) {
+    if ((bool)TempData["result"]) {
+        <!--操作成功通知-->
+        <div class="alert alert-success" style="max-width:540px;margin:10px 0px 10px 0px">
+            <button class="close" data-dismiss="alert">×</button>
+            <span>资源分配已成功！</span>
+        </div>
+    }
+    else {
+                        <!--操作失败通知-->
+        <div class="alert alert-error" style="max-width:540px;margin:10px 0px 10px 0px">
+            <button class="close" data-dismiss="alert">×</button>
+            <span>抱歉，资源分配失败，请重试！</span>
+        </div>
+    }
+}
+
+<!--通知-->
+<div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 10px 0px;display:none">
+    <button class="close" data-dismiss="alert">×</button>
+    <span></span>
+</div>
+<form method="post" action="/Resource/AssignHandler">
+    <div class="form-inline">
+        <label style="font-weight:bold">选择项目</label><br />
+        <select name="project" id="project" class="search-select" onchange="projectChange()">
+            <option value="">选择项目</option>
+            @if (ViewBag.ProjectList != null) {
+                foreach (var project in ViewBag.ProjectList) {
+                    if (project.Id == ViewBag.ProjectId) {
+                        <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                    }
+                    else {
+                        <option value="@project.Id">@project.ProjectName</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="form-inline" style="margin-top:8px">
+        当前共有 <span class="tip" id="unassignedCount"></span> 条资源没有分配
+    </div>
+
+    <div class="form-inline" style="margin-top:15px">
+        <label style="font-weight:bold">分配方式</label><br />
+        <label class="nebula-label">
+            <input class="nebula-radio" type="radio" name="AssignType" value="1" checked="checked" onclick="assignTypeChange()" />
+            <span class="nebula-radioInput"></span>平均分配
+        </label>
+        <label class="nebula-label">
+            <input class="nebula-radio" type="radio" name="AssignType" value="2" onclick="assignTypeChange()" />
+            <span class="nebula-radioInput"></span>等比例分配
+        </label>
+    </div>
+    <div id="assign-tip">
+        按业务组平均分配
+    </div>
+
+    <div class="form-inline" style="margin-top:10px">
+        <table class="table-resource-assign">
+            <tr>
+                <td style="width:100px">分配明细</td>
+                <td>
+                    <table class="table-assign-inner">
+                        <thead>
+                            <tr>
+                                <th style="width:190px">业务组</th>
+                                <th style="width:220px">分配数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.GroupList != null && ViewBag.GroupList.Count > 0) {
+                                foreach (var group in ViewBag.GroupList) {
+                                    <tr>
+                                        <td>@group.GroupName</td>
+                                        <td><input type="text" name="group_@group.Id" class="assign-input" /></td>
+                                    </tr>
+                                }
+                            }
+                            else {
+                                <tr>
+                                    <td colspan="2">请先选择项目</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <button type="submit" class="btn btn-primary" style="margin-top:12px" id="btnAssign" onclick="return checkForm()">开始分配</button>
+    </div>
+    <!--资源分配情况-->
+    <input type="hidden" id="hidAssignInfo" name="hidAssignInfo" />
+</form>
+@section scripts{
+    <script type="text/javascript">
+        /*
+        * 分配方式切换事件
+        */
+        function assignTypeChange() {
+            var assignType = $("input[name='AssignType']:checked").val();
+            if (assignType == 1) {
+                $('#assign-tip').html('按业务组平均分配');
+            }
+            else {
+                $('#assign-tip').html('按业务组等比例分配');
+            }
+            var projectId = $("#project").find("option:selected").val();
+            if (projectId){
+                projectChange();
+            }
+        }
+
+        /*
+        * 项目选择事件
+        */
+        function projectChange() {
+            $(".table-assign-inner tbody").find("tr").remove();
+            var loadingImg = '<tr><td colspan="2"><img src="/images/loading.gif" /></td></tr>';
+            $(".table-assign-inner tbody").append(loadingImg);
+
+            var projectId = $("#project").find("option:selected").val();
+            if (projectId == "") {
+                $(".table-assign-inner tbody").find("tr").remove();
+                $(".table-assign-inner tbody").append('<tr><td colspan="2">请先选择项目</td></tr>');
+                return;
+            }
+            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
+                $(".table-assign-inner tbody").find("tr").remove();
+
+                if (groups) {
+                    // 获得未分配资源个数
+                    $.get("/Resource/GetGroupUnAssignedResourceCount", { "projectId": projectId }, function (count) {
+                        $('#unassignedCount').html(count);
+                        if (count > 0) {
+                            // 存储每组分配个数，形如{groupId:1,assignCount:10}
+                            var assignCountArr = [];
+                            // 分配方式
+                            var assignType = $("input[name='AssignType']:checked").val();
+                            if (assignType == 1) {
+                                // 平均分配
+                                // 生成一个空集合
+                                for (var i = 0; i < groups.length; i++) {
+                                    var group = groups[i];
+                                    assignCountArr.push({ groupId: group.id, assignCount: 0 });
+                                }
+                                // 逐个+1循环分配，直到资源分配完毕
+                                while (count > 0) {
+                                    for (var i = 0; i < groups.length; i++) {
+                                        if (count <= 0) break;
+                                        var group = groups[i];
+                                        var assignObj = getGroupAssignObj(group.id, assignCountArr);
+                                        assignObj.assignCount++;
+                                        count--;
+                                    }
+                                }
+                            }
+                            else {
+                                // 等比例分配
+                                var total = 0;
+                                for (var i = 0; i < groups.length; i++) {
+                                    total += groups[i].userCount;
+                                }
+                                var single = count / total;
+
+                                for (var i = 0; i < groups.length; i++) {
+                                    if (count <= 0) break;
+                                    var group = groups[i];
+                                    var assignCount = Math.ceil(single * group.userCount);
+                                    assignCountArr.push({ groupId: group.id, assignCount: assignCount });
+                                    count = count - assignCount;
+                                }
+                            }
+                            $('#btnAssign').removeAttr("disabled");
+                            $('#hidAssignInfo').val(JSON.stringify(assignCountArr));
+                        }
+                        else {
+                            $('#btnAssign').attr("disabled", "disabled");
+                            $('#hidAssignInfo').val('');
+                        }
+                        // 生成业务组表格
+                        generateGroupAssignTable(groups, assignCountArr, assignType);
+                    });
+                }
+                else {
+                    $.get("/Resource/GetGroupUnAssignedResourceCount", { "projectId": projectId }, function (count) {
+                        $('#unassignedCount').html(count);
+                        if (count > 0) {
+                            $('#btnAssign').removeAttr("disabled");
+                        }
+                        else {
+                            $('#btnAssign').attr("disabled", "disabled");
+                        }
+                    });
+                    $('#hidAssignInfo').val('');
+                    $(".table-assign-inner tbody").append('<tr><td colspan="2">没有业务组</td></tr>');
+                }
+            });
+        }
+
+        /*
+        * 从资源分配情况数组assignCountArr中获取指定组的分配情况对象
+        * @@groupId 业务组Id
+        * @@assignCountArr 业务组分配情况
+        */
+        function getGroupAssignObj(groupId, assignCountArr) {
+            var obj;
+            for (var i = 0; i < assignCountArr.length; i++) {
+                if(assignCountArr[i].groupId == groupId) {
+                    obj = assignCountArr[i];
+                    break;
+                }
+            }
+            return obj;
+        }
+
+        /*
+        * 根据业务组对象，和业务组分配情况对象生成表格
+        * @@param groups 业务组对象
+        * @@assignCountArr 业务组分配情况，格式:{ groupId: 1, assignCount: 5 }
+        * @@assignType 分配方式(1=平均分配，2=等比例分配)
+        */
+        function generateGroupAssignTable(groups, assignCountArr, assignType) {
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i];
+                var html = '';
+                html += '<tr>';
+                html += '<td>' + group.groupName + (assignType == 2 ? '(' + group.userCount + "人)" : "") + '</td>';
+                var _count = 0;
+                for (var j = 0; j < assignCountArr.length; j++) {
+                    if (assignCountArr[j].groupId == group.id) {
+                        _count = assignCountArr[j].assignCount;
+                        break;
+                    }
+                }
+                html += '<td><input type="text" name="groupAssign_' + group.id + '" class="assign-input" value="' + _count + '" /></td>';
+                html += '</tr>';
+
+                $(".table-assign-inner tbody").append(html);
+            }
+        }
+
+        function checkForm() {
+            var result = true;
+
+            try{
+                var projectId = $("#project").find("option:selected").val();
+                if (!projectId) {
+                    result = false;
+                    $('#errorAlert').html('请先选择您要进行资源分配的项目！');
+                    $('#errorAlert').show();
+                    $("#project").focus();
+                }
+                else{
+                    var isAssinged = false;
+                    $("input[name^='groupAssign_']").each(function () {
+                        var val = parseInt($(this).val()) || 0;
+                        if (val > 0) {
+                            isAssinged = true;
+                        }
+                    });
+                    if (isAssinged == false) {
+                        result = false;
+                        $('#errorAlert').html('您至少分配一条资源！');
+                        $('#errorAlert').show();
+                    }
+                }
+            }
+            catch(ex){
+                result = false;
+            }
+
+            if (result) {
+                $('#errorAlert').hide();
+            }
+
+            return true;
+        }
+    </script>
+}

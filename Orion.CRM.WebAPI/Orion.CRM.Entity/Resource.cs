@@ -30,7 +30,6 @@ namespace Orion.CRM.Entity
         public int AppendUserId { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public int DeleteFlag { get; set; }
         public int ProjectId { get; set; }
         public int GroupId { get; set; }
         public int UserId { get; set; }

@@ -24,6 +24,7 @@ namespace Orion.CRM.WebApp.Controllers
         public int Insert(Models.Source.ResourceSource source)
         {
             if (source != null) {
+                source.SourceName = source.SourceName.Trim();
                 source.CreateTime = DateTime.Now;
                 source.UpdateTime = DateTime.Now;
                 source.OrgId = _AppUser.OrgId;
@@ -40,6 +41,7 @@ namespace Orion.CRM.WebApp.Controllers
         public bool Update(Models.Source.ResourceSource source)
         {
             if (source != null && source.Id > 0) {
+                source.SourceName = source.SourceName.Trim();
                 source.UpdateTime = DateTime.Now;
                 source.OrgId = _AppUser.OrgId;
 

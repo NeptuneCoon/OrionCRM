@@ -11,12 +11,14 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string CustomerName { get; set; }
         public int ProjectId { get; set; }
         public string Mobile { get; set; }
+        public string Tel { get; set; }
         public string Wechat { get; set; }
         public string QQ { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public int? SourceFrom { get; set; }
         public int? Inclination { get; set; }
+
         /// <summary>
         /// 备注信息
         /// </summary>
@@ -25,20 +27,21 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// 留言内容
         /// </summary>
         public string Message { get; set; }
-
         /// <summary>
         /// 项目列表
         /// </summary>
         public List<Models.Project.Project> Projects { get; set; }
-        
         /// <summary>
         /// 资源来源
         /// </summary>
         public List<Models.Source.ResourceSource> Sources { get; set; }
-
         /// <summary>
         /// 意向群
         /// </summary>
         public List<App_Data.SelectItem> Inclinations { get; set; }
+        /// <summary>
+        /// 资源归属(1=本人，0=未分配)
+        /// </summary>
+        public int ResourceBelong { get; set; }
     }
 }

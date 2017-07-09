@@ -36,6 +36,7 @@
     <Content Include="wwwroot\images\bg-input-focus.png" />
     <Content Include="wwwroot\images\bg-input.png" />
     <Content Include="wwwroot\images\cover.png" />
+    <Content Include="wwwroot\images\loading.gif" />
     <Content Include="wwwroot\images\sprite.png" />
     <Content Include="wwwroot\lib\bootstrap\.bower.json" />
     <Content Include="wwwroot\lib\bootstrap\bower.json" />

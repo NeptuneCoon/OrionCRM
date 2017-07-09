@@ -66,7 +66,7 @@ namespace Orion.CRM.Toolkit
         }
 
         /// <summary>
-        /// 执行查询，并返回查询结果集中的第一行第一列的内容
+        /// 执行SQL语句，并返回结果集中的第一行第一列的内容
         /// </summary>
         /// <param name="connString">数据库连接字符串</param>
         /// <param name="cmdType">SqlCommand命令类型(存储过程、T-SQL语句等)</param>
@@ -91,6 +91,32 @@ namespace Orion.CRM.Toolkit
                 object obj = cmd.ExecuteScalar();
                 return obj;
             }
+        }
+
+        /// <summary>
+        /// 执行带事务的SQL语句，并返回结果集中的第一行第一列的内容
+        /// </summary>
+        /// <param name="connString">数据库连接字符串</param>
+        /// <param name="cmdType">SqlCommand命令类型(存储过程、T-SQL语句等)</param>
+        /// <param name="cmdText">存储过程的名称或T-SQL语句</param>
+        /// <param name="parameters">以数组形式提供的SqlCommand命令中用到的参数列表</param>
+        /// <returns>结果集中的第一行第一列的内容</returns>
+        public static Object ExecuteScalar(SqlTransaction trans, CommandType cmdType, string cmdText, params SqlParameter[] parameters)
+        {
+            SqlCommand cmd = new SqlCommand(cmdText, trans.Connection);
+            cmd.CommandTimeout = 10;
+            cmd.CommandType = cmdType;
+
+            if (parameters != null) {
+                cmd.Parameters.AddRange(parameters);
+            }
+
+            if (trans.Connection.State != ConnectionState.Open) {
+                trans.Connection.Open();
+            }
+
+            object obj = cmd.ExecuteScalar();
+            return obj;
         }
 
         /// <summary>

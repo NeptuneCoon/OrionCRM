@@ -8,12 +8,12 @@ namespace Orion.CRM.Application
     public class ResourceSourceAppService
     {
         private ResourceSourceAdapter adapter = new ResourceSourceAdapter();
-        public int InsertSource(Entity.ResourceSource source)
+        public int InsertSource(Entity.Source source)
         {
             return adapter.InsertSource(source);
         }
 
-        public bool UpdateSource(Entity.ResourceSource source)
+        public bool UpdateSource(Entity.Source source)
         {
             return adapter.UpdateSource(source);
         }
@@ -23,7 +23,7 @@ namespace Orion.CRM.Application
             return adapter.DeleteSource(id);
         }
 
-        public IEnumerable<Entity.ResourceSource> GetSourcesByOrgId(int orgId)
+        public IEnumerable<Entity.Source> GetSourcesByOrgId(int orgId)
         {
             return adapter.GetSourcesByOrgId(orgId);
         }

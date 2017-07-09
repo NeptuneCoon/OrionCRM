@@ -7,7 +7,7 @@ namespace Orion.CRM.Entity
     /// <summary>
     /// ResourceSource实体类
     /// </summary>
-    public class ResourceSource
+    public class Source
     {
         public int Id { get; set; }
         public string SourceName { get; set; }

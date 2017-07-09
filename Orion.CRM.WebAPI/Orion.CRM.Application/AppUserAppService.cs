@@ -69,14 +69,27 @@ namespace Orion.CRM.Application
             return adapter.UpdateUserRole(userRole);
         }
 
+        public Entity.UserProject GetUserProject(int userId)
+        {
+            return adapter.GetUserProject(userId);
+        }
         public int InsertUserProject(Entity.UserProject userProject)
         {
             return adapter.InsertUserProject(userProject);
+        }
+        public int DeleteUserProject(int userId)
+        {
+            return adapter.DeleteUserProject(userId);
         }
 
         public bool UpdateUserProject(Entity.UserProject userProject)
         {
             return adapter.UpdateUserProject(userProject);
+        }
+
+        public Entity.UserGroup GetUserGroup(int userId)
+        {
+            return adapter.GetUserGroup(userId);
         }
 
         public int InsertUserGroup(Entity.UserGroup userGroup)
@@ -87,6 +100,11 @@ namespace Orion.CRM.Application
         public bool UpdateUserGroup(Entity.UserGroup userGroup)
         {
             return adapter.UpdateUserGroup(userGroup);
+        }
+
+        public int DeleteUserGroup(int userId)
+        {
+            return adapter.DeleteUserGroup(userId);
         }
     }
 }

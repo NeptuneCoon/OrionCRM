@@ -176,6 +176,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult GetUserProject(int userId)
+        {
+            try {
+                var entity = service.GetUserProject(userId);
+                APIDataResult dataResult = new APIDataResult(200, entity);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         [HttpPost]
         public APIDataResult InsertUserProject([FromBody]Entity.UserProject userProject)
         {
@@ -204,6 +217,32 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult DeleteUserProject(int userId)
+        {
+            try {
+                int count = service.DeleteUserProject(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        public APIDataResult GetUserGroup(int userId)
+        {
+            try {
+                var entity = service.GetUserGroup(userId);
+                APIDataResult dataResult = new APIDataResult(200, entity);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         [HttpPost]
         public APIDataResult InsertUserGroup([FromBody]Entity.UserGroup userGroup)
         {
@@ -224,6 +263,19 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 bool res = service.UpdateUserGroup(userGroup);
                 APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        public APIDataResult DeleteUserGroup(int userId)
+        {
+            try {
+                int count = service.DeleteUserGroup(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {

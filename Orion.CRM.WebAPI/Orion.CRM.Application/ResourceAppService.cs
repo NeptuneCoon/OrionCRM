@@ -30,6 +30,11 @@ namespace Orion.CRM.Application
             return adapter.RestoreResource(id);
         }
 
+        public int InsertResourceOrganization(Entity.ResourceOrganization resourceOrg)
+        {
+            return adapter.InsertResourceOrganization(resourceOrg);
+        }
+
         public int InsertResourceProject(Entity.ResourceProject resourceProject)
         {
             return adapter.InsertResourceProject(resourceProject);
@@ -59,6 +64,18 @@ namespace Orion.CRM.Application
         public int GetResourceCountByCondition(Entity.ResourceSearchParams param)
         {
             return adapter.GetResourceCountByCondition(param);
+        }
+
+        // 判断资源是否存在
+        public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        {
+            return adapter.IsResourceExist(orgId, mobile, tel, qq, wechat);
+        }
+
+        // 设置资源状态
+        public bool SetResourceStatus(int resourceId, int status)
+        {
+            return adapter.SetResourceStatus(resourceId, status);
         }
 
         // 添加资源和业务组之间的关系
@@ -95,6 +112,24 @@ namespace Orion.CRM.Application
         public Entity.ResourceUser GetResourceUser(int resourceId)
         {
             return adapter.GetResourceUser(resourceId);
+        }
+
+        // 获取未分配至业务组的资源
+        public IEnumerable<Entity.UnassignedResource> GetGroupUnAssignedResources(int projectId)
+        {
+            return adapter.GetGroupUnAssignedResources(projectId);
+        }
+
+        // 获取未分配至业务组的资源个数
+        public int GetGroupUnAssignedResourceCount(int projectId)
+        {
+            return adapter.GetGroupUnAssignedResourceCount(projectId);
+        }
+
+        // 获取未分配至业务员的资源个数
+        public int GetUserUnAssignedResourceCount(int orgId)
+        {
+            return adapter.GetUserUnAssignedResourceCount(orgId);
         }
     }
 }

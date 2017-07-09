@@ -170,7 +170,16 @@
       <CommandType>Text</CommandType>
       <Description>修改用户和角色之间的关系</Description>
     </SqlMapDetail>
-    
+
+    <SqlMapDetail>
+      <SqlName>GetUserProject</SqlName>
+      <OriginalSqlString>
+        select * from UserProject where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取用户和项目之间的关系</Description>
+    </SqlMapDetail>
     <SqlMapDetail>
       <SqlName>InsertUserProject</SqlName>
       <OriginalSqlString>
@@ -189,7 +198,25 @@
       <CommandType>Text</CommandType>
       <Description>修改用户和项目之间的关系</Description>
     </SqlMapDetail>
-    
+    <SqlMapDetail>
+      <SqlName>DeleteUserProject</SqlName>
+      <OriginalSqlString>
+        delete from UserProject where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除用户和项目之间的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetUserGroup</SqlName>
+      <OriginalSqlString>
+        select * from UserGroup where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取用户和项目之间的关系</Description>
+    </SqlMapDetail>
     <SqlMapDetail>
       <SqlName>InsertUserGroup</SqlName>
       <OriginalSqlString>
@@ -207,6 +234,15 @@
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>修改用户和业务组之间的关系</Description>
+    </SqlMapDetail>
+    <SqlMapDetail>
+      <SqlName>DeleteUserGroup</SqlName>
+      <OriginalSqlString>
+        delete from UserGroup where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除用户和业务组之间的关系</Description>
     </SqlMapDetail>
   
 	</SqlMapConfigurations>

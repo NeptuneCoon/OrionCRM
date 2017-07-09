@@ -33,8 +33,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@InvalidReason", CheckNull(resource.InvalidReason)),
                 new SqlParameter("@AppendUserId", resource.AppendUserId),
                 new SqlParameter("@CreateTime", resource.CreateTime),
-                new SqlParameter("@UpdateTime", resource.UpdateTime),
-                new SqlParameter("@DeleteFlag", resource.DeleteFlag)
+                new SqlParameter("@UpdateTime", resource.UpdateTime)
             };
 
             int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "InsertResource", paramArr);
@@ -67,8 +66,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@Remark", CheckNull(resource.Remark)),
                 new SqlParameter("@InvalidReason", CheckNull(resource.InvalidReason)),
                 new SqlParameter("@AppendUserId", resource.AppendUserId),
-                new SqlParameter("@UpdateTime", resource.UpdateTime),
-                new SqlParameter("@DeleteFlag", resource.DeleteFlag)
+                new SqlParameter("@UpdateTime", resource.UpdateTime)
             };
 
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateResource", paramArr);
@@ -97,6 +95,65 @@ namespace Orion.CRM.DataAccess
 
             int result = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "RestoreResource", param);
             return result > 0;
+        }
+        #endregion
+
+
+        #region 判断资源是否存在
+        public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        {
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "IsResourceExist").Clone();
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+
+            string sqlWhere = "";
+            if (!string.IsNullOrEmpty(mobile)) {
+                sqlWhere += $" and Mobile='{mobile}'";
+            }
+            if (!string.IsNullOrEmpty(tel)) {
+                sqlWhere += $" and Tel='{tel}'";
+            }
+            if (!string.IsNullOrEmpty(qq)) {
+                sqlWhere += $" and QQ='{qq}'";
+            }
+            if (!string.IsNullOrEmpty(wechat)) {
+                sqlWhere += $" and Wechat='{wechat}'";
+            }
+
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
+
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>(mapDetail, param);
+            return count > 0;
+        }
+        #endregion
+
+        #region 设置资源状态
+        public bool SetResourceStatus(int resourceId, int status)
+        {
+            if (resourceId <= 0 || status <= 0) return false;
+
+            SqlParameter[] paramArr = {
+                new SqlParameter("@Id", resourceId),
+                new SqlParameter("@Status", status),
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "SetResourceStatus", paramArr);
+            return count > 0;
+        } 
+        #endregion
+
+        #region 添加资源和组织机构之间的关系
+        public int InsertResourceOrganization(Entity.ResourceOrganization resourceOrg)
+        {
+            if (resourceOrg == null) return -1;
+
+            SqlParameter[] paramArr = {
+                new SqlParameter("@ResourceId", resourceOrg.ResourceId),
+                new SqlParameter("@OrgId", resourceOrg.OrgId),
+                new SqlParameter("@CreateTime", resourceOrg.CreateTime)
+            };
+
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "InsertResourceOrganization", paramArr);
+            return identityId;
         }
         #endregion
 
@@ -248,6 +305,38 @@ namespace Orion.CRM.DataAccess
         }
         #endregion
 
+        #region 获取未分配至业务组的资源
+        public IEnumerable<Entity.UnassignedResource> GetGroupUnAssignedResources(int projectId)
+        {
+            if (projectId <= 0) return null;
+
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            var resources = SqlMapHelper.GetSqlMapResult<Entity.UnassignedResource>("ResourceDomain", "GetGroupUnAssignedResources", param);
+            return resources;
+        }
+        #endregion
+
+        #region 获取未分配至业务组的资源个数
+        public int GetGroupUnAssignedResourceCount(int projectId)
+        {
+            if (projectId <= 0) return 0;
+
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetGroupUnAssignedResourceCount", param);
+            return count;
+        }
+        #endregion
+
+        #region 获取未分配至业务员的资源个数
+        public int GetUserUnAssignedResourceCount(int orgId)
+        {
+            if (orgId <= 0) return 0;
+
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetUserUnAssignedResourceCount", param);
+            return count;
+        } 
+        #endregion
 
         #region 生成SQL查询的where子句
         private string GetSqlWhere(Entity.ResourceSearchParams param)

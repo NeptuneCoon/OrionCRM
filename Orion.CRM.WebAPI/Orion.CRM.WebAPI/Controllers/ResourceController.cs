@@ -72,6 +72,20 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
         [HttpPost]
+        public APIDataResult InsertResourceOrganization([FromBody]Entity.ResourceOrganization resourceOrg)
+        {
+            try {
+                int identityId = service.InsertResourceOrganization(resourceOrg);
+                APIDataResult dataResult = new APIDataResult(200, identityId);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
         public APIDataResult InsertResourceProject([FromBody]Entity.ResourceProject resourceProject)
         {
             try {
@@ -129,6 +143,34 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 Entity.Resource resource = service.GetResourceById(id);
                 APIDataResult dataResult = new APIDataResult(200, resource);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 判断资源是否存在
+        public APIDataResult IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        {
+            try {
+                bool result = service.IsResourceExist(orgId, mobile, tel, qq, wechat);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 设置资源状态
+        public APIDataResult SetResourceStatus(int resourceId, int status)
+        {
+            try {
+                bool result = service.SetResourceStatus(resourceId, status);
+                APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }
             catch (Exception ex) {
@@ -217,6 +259,48 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 Entity.ResourceUser resourceUser = service.GetResourceUser(resourceId);
                 APIDataResult dataResult = new APIDataResult(200, resourceUser);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 获取未分配至业务组的资源
+        public APIDataResult GetGroupUnAssignedResources(int projectId)
+        {
+            try {
+                IEnumerable<Entity.UnassignedResource> resourceIds = service.GetGroupUnAssignedResources(projectId);
+                APIDataResult dataResult = new APIDataResult(200, resourceIds);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 获取未分配至业务组的资源个数
+        public APIDataResult GetGroupUnAssignedResourceCount(int projectId)
+        {
+            try {
+                int count = service.GetGroupUnAssignedResourceCount(projectId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 获取未分配至业务员的资源个数
+        public APIDataResult GetUserUnAssignedResourceCount(int orgId)
+        {
+            try {
+                int count = service.GetUserUnAssignedResourceCount(orgId);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {

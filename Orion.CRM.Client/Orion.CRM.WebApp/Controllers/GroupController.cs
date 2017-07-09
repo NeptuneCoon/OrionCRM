@@ -28,6 +28,7 @@ namespace Orion.CRM.WebApp.Controllers
         public int Insert(Models.Group.Group group)
         {
             if (group != null) {
+                group.GroupName = group.GroupName.Trim();
                 group.ProjectId = group.ProjectId;
                 group.CreateTime = DateTime.Now;
                 group.UpdateTime = DateTime.Now;
@@ -48,7 +49,7 @@ namespace Orion.CRM.WebApp.Controllers
                 string getUrl = _AppConfig.WebApiHost + "api/Group/GetGroupById?id=" + group.Id;
                 Models.Group.Group dbGroup = APIInvoker.Get<Models.Group.Group>(getUrl);
                 if (dbGroup != null) {
-                    dbGroup.GroupName = group.GroupName;
+                    dbGroup.GroupName = group.GroupName.Trim();
                     dbGroup.ProjectId = group.ProjectId;
                     dbGroup.UpdateTime = DateTime.Now;
                     dbGroup.ManagerId = group.ManagerId;

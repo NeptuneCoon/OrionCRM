@@ -52,7 +52,7 @@ namespace Orion.CRM.WebApp.Controllers
                 string apiUrl = _AppConfig.WebApiHost + "api/Role/InsertRole";
                 var role = new
                 {
-                    RoleName = viewModel.RoleName,
+                    RoleName = viewModel.RoleName.Trim(),
                     CreateTime = DateTime.Now,
                     UpdateTime = DateTime.Now,
                     OrgId = _AppUser.OrgId
@@ -180,7 +180,7 @@ namespace Orion.CRM.WebApp.Controllers
                 var role = new
                 {
                     Id = viewModel.Id,
-                    RoleName = viewModel.RoleName,
+                    RoleName = viewModel.RoleName.Trim(),
                     UpdateTime = DateTime.Now,
                     OrgId = _AppUser.OrgId
                 };

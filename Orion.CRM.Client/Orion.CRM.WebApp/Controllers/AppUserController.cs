@@ -59,9 +59,9 @@ namespace Orion.CRM.WebApp.Controllers
                 var user = new
                 {
                     OrgId = _AppUser.OrgId,
-                    UserName = viewModel.UserName,
-                    Password = Md5Encrypt.Md5Bit32(viewModel.Password),
-                    RealName = viewModel.RealName,
+                    UserName = viewModel.UserName.Trim(),
+                    Password = Md5Encrypt.Md5Bit32(viewModel.Password.Trim()),
+                    RealName = viewModel.RealName.Trim(),
                     CreateTime = DateTime.Now,
                     UpdateTime = DateTime.Now,
                     Mobile = viewModel.Mobile,
@@ -136,8 +136,8 @@ namespace Orion.CRM.WebApp.Controllers
                         Id = user.Id,
                         OrgId = user.OrgId,
                         UserName = user.UserName,
-                        Password = user.Password,
-                        RealName = viewModel.RealName,
+                        Password = user.Password.Trim(),
+                        RealName = viewModel.RealName.Trim(),
                         UpdateTime = DateTime.Now,
                         Mobile = viewModel.Mobile,
                         Email = viewModel.Email,
@@ -156,23 +156,63 @@ namespace Orion.CRM.WebApp.Controllers
 
                         bool res1 = APIInvoker.Post<bool>(userRoleApi, userRole);
 
-                        // 修改用户和项目之间的关系
-                        string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserProject";
-                        var userProject = new
-                        {
-                            UserId = user.Id,
-                            ProjectId = viewModel.ProjectId
-                        };
-                        bool res2 = APIInvoker.Post<bool>(userProjectApi, userProject);
+                        if (viewModel.ProjectId == null || viewModel.ProjectId == 0) {
+                            // 删除用户和项目之间的关系
+                            APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/AppUser/DeleteUserProject?userId=" + user.Id);
+                        }
+                        else {
+                            var query = APIInvoker.Get<Models.AppUser.UserProject>(_AppConfig.WebApiHost + "api/AppUser/GetUserProject?userId=" + user.Id);
+                            if (query == null) {
+                                // 插入用户和项目之间的关系
+                                string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserProject";
+                                var userProject = new
+                                {
+                                    UserId = user.Id,
+                                    ProjectId = viewModel.ProjectId,
+                                    CreateTime = DateTime.Now
+                                };
+                                int userProjectId = APIInvoker.Post<int>(userProjectApi, userProject);
+                            }
+                            else { 
+                                // 修改用户和项目之间的关系
+                                string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserProject";
+                                var userProject = new
+                                {
+                                    UserId = user.Id,
+                                    ProjectId = viewModel.ProjectId
+                                };
+                                bool res2 = APIInvoker.Post<bool>(userProjectApi, userProject);
+                            }
+                        }
 
-                        // 修改用户和业务组之间的关系
-                        string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserGroup";
-                        var userGroup = new
-                        {
-                            UserId = user.Id,
-                            GroupId = viewModel.GroupId
-                        };
-                        bool res3 = APIInvoker.Post<bool>(userGroupApi, userGroup);
+                        if(viewModel.GroupId == null || viewModel.GroupId == 0) {
+                            // 删除用户和业务组之间的关系
+                            APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/AppUser/DeleteUserGroup?userId=" + user.Id);
+                        }
+                        else {
+                            var query = APIInvoker.Get<Models.AppUser.UserGroup>(_AppConfig.WebApiHost + "api/AppUser/GetUserGroup?userId=" + user.Id);
+                            if(query == null) {
+                                // 插入用户和业务组之间的关系
+                                string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserGroup";
+                                var userGroup = new
+                                {
+                                    UserId = user.Id,
+                                    GroupId = viewModel.GroupId,
+                                    CreateTime = DateTime.Now
+                                };
+                                var userGroupId = APIInvoker.Post<int>(userGroupApi, userGroup);
+                            }
+                            else { 
+                                // 修改用户和业务组之间的关系
+                                string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserGroup";
+                                var userGroup = new
+                                {
+                                    UserId = user.Id,
+                                    GroupId = viewModel.GroupId
+                                };
+                                bool res3 = APIInvoker.Post<bool>(userGroupApi, userGroup);
+                            }
+                        }
                     }
 
                     TempData["result"] = result;

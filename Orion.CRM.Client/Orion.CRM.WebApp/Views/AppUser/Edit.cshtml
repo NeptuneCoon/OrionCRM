@@ -71,9 +71,9 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
-                        <label class="control-label">所属项目<span class="tip">*</span></label>
+                        <label class="control-label">所属项目</label>
                         <div class="controls">
-                            <select class="span5 m-wrap" name="ProjectId" id="ProjectId" reg="regNum" is-null="required" placeholder="所属项目" onchange="projectChange()">
+                            <select class="span5 m-wrap" name="ProjectId" id="ProjectId" reg="regNum" placeholder="所属项目" onchange="projectChange()">
                                 <option value="">请选择</option>
                                 @if (Model.ProjectList != null) {
                                     foreach (var project in Model.ProjectList) {
@@ -89,9 +89,9 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
-                        <label class="control-label">所属组<span class="tip">*</span></label>
+                        <label class="control-label">所属组</label>
                         <div class="controls">
-                            <select class="span5 m-wrap" name="GroupId" id="GroupId" reg="regNum" is-null="required" placeholder="业务组">
+                            <select class="span5 m-wrap" name="GroupId" id="GroupId" reg="regNum" placeholder="业务组">
                                 <option value="">请选择</option>
                                 @if (Model.GroupList != null) {
                                     foreach (var group in Model.GroupList) {
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:10px">
-                        <label class="control-label">状态<span class="tip">*</span></label>
+                        <label class="control-label" style="margin-top:-4px">状态<span class="tip">*</span></label>
                         <div class="form-inline">
                             <label class="nebula-label">
                                 @if (Model.Enable == 1) {

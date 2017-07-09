@@ -75,6 +75,12 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label">固定电话</label>
+                        <div class="controls">
+                            <input type="text" class="span6" asp-for="@Model.Tel" placeholder="固定电话" reg="regString" maxlength="12" />
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">微信</label>
                         <div class="controls">
                             <input type="text" class="span6" asp-for="@Model.Wechat" placeholder="微信" reg="regWechat" maxlength="20" />
@@ -138,6 +144,31 @@
                             <textarea style="margin: 0px; width: 474px; height: 63px;" asp-for="@Model.Message" maxlength="500"></textarea>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" style="margin-top:-4px">资源归属</label>
+                        <div class="controls">
+                            @if(ViewBag.GroupId != null && ViewBag.GroupId > 0) {
+                                <label class="nebula-label">
+                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" checked="checked" />
+                                    <span class="nebula-radioInput"></span>本人
+                                </label>
+                                <label class="nebula-label">
+                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" />
+                                    <span class="nebula-radioInput"></span>未分配
+                                </label>
+                            }
+                            else {
+                                <label class="nebula-label" title="您还没有被分配到任何业务组，暂不能将资源划分给自己">
+                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" disabled="disabled"  />
+                                    <span class="nebula-radioInput"></span>本人
+                                </label>
+                                <label class="nebula-label">
+                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
+                                    <span class="nebula-radioInput"></span>未分配
+                                </label>
+                            }
+                        </div>
+                    </div>
                     <div class="form-actions" style="padding-left:140px">
                         <button type="submit" class="btn btn-primary" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
                         <a href="/Resource/List" class="btn">返回</a>
@@ -148,6 +179,24 @@
         </div>
     </div>
     <!-- /block -->
+</div>
+
+<!--操作结果-->
+<div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanResult">抱歉，<span class="tip">资源已存在</span>！
+                    <br/>按 <span style="color:#08c">手机号/固定电话/QQ/微信</span> 已找到相同客户。
+                </span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section scripts{
@@ -187,9 +236,31 @@
             }
             console.info('表单验证结果：' + result);
 
-            return result;
-        }
+            // 验证是否已存在
+            if (result) {
+                var mobile = $('#Mobile').val();
+                var tel = $('#Tel').val();
+                var qq = $('#QQ').val();
+                var wechat = $('#Wechat').val();
+                $.ajax({
+                    type: "get",
+                    url: "IsExist",
+                    async: false,
+                    data: { "mobile": mobile, "tel": tel, "qq": qq, "wechat": wechat },
+                    dataType: "json",
+                    success: function (data) {
+                        console.info(data);
+                        if (data) {
+                            result = false;
+                            modalShow($('#panelResult'));
+                        }
+                    }
+                });
 
+            }
+
+            return false;
+        }
     </script>
 
 }

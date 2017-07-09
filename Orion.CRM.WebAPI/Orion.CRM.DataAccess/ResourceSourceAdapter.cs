@@ -8,7 +8,7 @@ namespace Orion.CRM.DataAccess
 {
     public class ResourceSourceAdapter : DataAdapter
     {
-        public int InsertSource(Entity.ResourceSource source)
+        public int InsertSource(Entity.Source source)
         {
             if (source == null) return -1;
 
@@ -23,7 +23,7 @@ namespace Orion.CRM.DataAccess
             return identityId;
         }
 
-        public bool UpdateSource(Entity.ResourceSource source)
+        public bool UpdateSource(Entity.Source source)
         {
             if (source == null || source.Id <= 0) return false;
             SqlParameter[] paramArr = {
@@ -47,10 +47,10 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
-        public IEnumerable<Entity.ResourceSource> GetSourcesByOrgId(int orgId)
+        public IEnumerable<Entity.Source> GetSourcesByOrgId(int orgId)
         {
             SqlParameter param = new SqlParameter("@OrgId", orgId);
-            var sources = SqlMapHelper.GetSqlMapResult<Entity.ResourceSource>("SourceDomain", "GetSourcesByOrgId", param);
+            var sources = SqlMapHelper.GetSqlMapResult<Entity.Source>("SourceDomain", "GetSourcesByOrgId", param);
 
             return sources;
         }

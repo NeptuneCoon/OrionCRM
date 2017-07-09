@@ -84,7 +84,7 @@ namespace Orion.CRM.WebApp.Controllers
             //param.uid = _AppUser.Id;
 
             string groupApiUrl = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=";
-            string groupUserApiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=";
+            string groupMemberApiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=";
 
             switch (viewModel.RoleResourceVisible) {
                 case 4:
@@ -105,7 +105,7 @@ namespace Orion.CRM.WebApp.Controllers
                     //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
                     param.pid = _AppUser.ProjectId;
                     param.gid = _AppUser.GroupId;
-                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(groupUserApiUrl + param.gid);
+                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(groupMemberApiUrl + param.gid);
                     break;
                 case 1:
                     // 资源可见范围：本人资源
@@ -278,6 +278,8 @@ namespace Orion.CRM.WebApp.Controllers
             // 资源来源
             viewModel.Sources = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
 
+            ViewBag.GroupId = _AppUser.GroupId;
+
             return View(viewModel);
         }
 
@@ -289,10 +291,19 @@ namespace Orion.CRM.WebApp.Controllers
 
                 int resourceId = InsertResource(viewModel);
                 if (resourceId > 0) {
+                    // 插入资源和组织机构之间的关系
+                    int resourceOrgId = InsertResourceOrganization(resourceId, _AppUser.OrgId);
                     // 插入资源和项目之间的关系
                     int relationId = InsertResourceProject(resourceId, viewModel.ProjectId);
-                    if (relationId > 0) {
-                        result = true;
+                    // 资源归属
+                    if (viewModel.ResourceBelong == 1 && _AppUser.GroupId != null && _AppUser.GroupId > 0) {
+                        // 划给自己
+                        int resourceGroupId = InsertResourceGroup(resourceId, (int)_AppUser.GroupId);
+                        int resourceUserId = InsertResourceUser(resourceId, _AppUser.Id); 
+                    }
+                    else {
+                        // 划入'未分配'
+                        bool res = SetResourceStatus(resourceId, 3);
                     }
                 }
                 
@@ -311,12 +322,58 @@ namespace Orion.CRM.WebApp.Controllers
         // 批量分配
         public IActionResult Assign()
         {
+            ViewBag.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            ViewBag.ProjectId = _AppUser.ProjectId;
+            if (_AppUser.ProjectId != null && _AppUser.ProjectId > 0) {
+                ViewBag.GroupList = AppDTO.GetGroupsFromDb(_AppConfig.WebApiHost, (int)_AppUser.ProjectId);
+            }
             return View();
         }
 
         [HttpPost]
         public IActionResult AssignHandler()
         {
+            int projectId = Convert.ToInt32(Request.Form["project"]);
+            if (projectId > 0) {
+                string assignInfo = Request.Form["hidAssignInfo"];
+                var type = new[] {
+                    new {
+                        groupId=0,
+                        assignCount=0
+                    }
+                };
+
+                var assignInfoList = JsonConvert.DeserializeAnonymousType(assignInfo, type);
+                if(assignInfoList != null && assignInfoList.Length > 0) {
+                    // 获取尚未分配的资源
+                    string unAssignedResourcesApi = _AppConfig.WebApiHost + $"api/Resource/GetGroupUnAssignedResources?projectId={projectId}";
+                    List<UnassignedResource> resources = APIInvoker.Get<List<UnassignedResource>>(unAssignedResourcesApi);
+
+                    List<ResourceGroup> resourceGroups = new List<ResourceGroup>();//分配关系ResourceGroup集合
+                    // 开始分配
+                    int i = 0;
+                    foreach (var item in assignInfoList) {
+                        if (item.assignCount > 0) {
+                            int spliceCount = Math.Min(i + item.assignCount, resources.Count);
+                            var blocks =  resources.GetRange(i, spliceCount);//切出的数据块
+                            i += spliceCount;
+                            // 生成分配关系ResourceGroup
+                            if(blocks != null && blocks.Count > 0) {
+                                DateTime now = DateTime.Now;
+                                foreach(var resource in blocks) {
+                                    resourceGroups.Add(new ResourceGroup() { ResourceId = resource.ResourceId, GroupId = item.groupId, CreateTime = now });
+                                }
+                            }
+                        }
+                    }
+                    // 插入数据库
+                    foreach(var item in resourceGroups) {
+                        InsertResourceGroup(item.ResourceId, item.GroupId);
+                    }
+                }
+                TempData["result"] = true;
+                return RedirectToAction("Assign");
+            }
             return View();
         }
 
@@ -326,6 +383,11 @@ namespace Orion.CRM.WebApp.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 资源/客户详细信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Detail(int id)
         {
             ResourceDetailViewModel viewModel = new ResourceDetailViewModel();
@@ -374,6 +436,7 @@ namespace Orion.CRM.WebApp.Controllers
                 CustomerName = viewModel.CustomerName,
                 Message = viewModel.Message,
                 Mobile = viewModel.Mobile,
+                Tel = viewModel.Tel,
                 Wechat = viewModel.Wechat,
                 QQ = viewModel.QQ,
                 Email = viewModel.Email,
@@ -393,7 +456,24 @@ namespace Orion.CRM.WebApp.Controllers
             int identityId = APIInvoker.Post<int>(apiUrl, resource);
 
             return identityId;
-        } 
+        }
+        #endregion
+
+        #region 插入资源和组织机构之间的关系
+        private int InsertResourceOrganization(int resourceId, int orgId)
+        {
+            var resourceOrg = new
+            {
+                ResourceId = resourceId,
+                OrgId = orgId,
+                CreateTime = DateTime.Now
+            };
+
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/InsertResourceOrganization";
+            int identityId = APIInvoker.Post<int>(apiUrl, resourceOrg);
+
+            return identityId;
+        }
         #endregion
 
         #region 插入资源和项目的关系
@@ -413,7 +493,41 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
-        #region 资源数据的加工处理
+        #region 插入资源和业务组的关系
+        private int InsertResourceGroup(int resourceId, int groupId)
+        {
+            var resourceGroup = new
+            {
+                ResourceId = resourceId,
+                GroupId = groupId,
+                CreateTime = DateTime.Now
+            };
+
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/InsertResourceGroup";
+            int identityId = APIInvoker.Post<int>(apiUrl, resourceGroup);
+
+            return identityId;
+        }
+        #endregion
+
+        #region 插入资源和用户的关系
+        private int InsertResourceUser(int resourceId, int userId)
+        {
+            var resourceUser = new
+            {
+                ResourceId = resourceId,
+                UserId = userId,
+                CreateTime = DateTime.Now
+            };
+
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/InsertResourceUser";
+            int identityId = APIInvoker.Post<int>(apiUrl, resourceUser);
+
+            return identityId;
+        }
+        #endregion
+
+        #region 资源列表数据的加工处理
         /// <summary>
         /// 资源数据的加工处理
         /// </summary>
@@ -469,7 +583,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
-        #region 资源分配 ResourceAssign
+        #region 单个资源分配 ResourceAssign
         /// <summary>
         /// 资源分配
         /// 资源和业务组，资源和用户都是一对一关系
@@ -543,7 +657,17 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
-        #region DeleteResource
+        #region 外侧代码
+        private bool SetResourceStatus(int resourceId, int status)
+        {
+            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/SetResourceStatus?resourceId={resourceId}&status={status}";
+
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
+        } 
+        #endregion
+
+        #region 删除资源
         /// <summary>
         /// 删除资源 ajax
         /// </summary>
@@ -556,6 +680,15 @@ namespace Orion.CRM.WebApp.Controllers
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         }
+        #endregion
+
+        #region 资源是否存在
+        public bool IsExist(string mobile, string tel, string qq, string wechat)
+        {
+            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/IsResourceExist?orgId={_AppUser.OrgId}&mobile={mobile}&tel={tel}&qq={qq}&wechat={wechat}";
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
+        } 
         #endregion
 
         #region 添加一条洽谈记录
@@ -616,6 +749,30 @@ namespace Orion.CRM.WebApp.Controllers
 
             var query = roleDataPermissions.Where(x => x.PermissionCategoryId == 2).ToList();
             return query;
+        }
+
+        /// <summary>
+        /// 获取未分配至业务组的资源个数
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public int GetGroupUnAssignedResourceCount(int projectId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetGroupUnAssignedResourceCount?projectId=" + projectId;
+            int count = APIInvoker.Get<int>(apiUrl);
+            return count;
+        }
+
+        /// <summary>
+        /// 获取未分配至业务组的资源个数
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public int GetUserUnAssignedResourceCount()
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetUserUnAssignedResourceCount?orgId=" + _AppUser.OrgId;
+            int count = APIInvoker.Get<int>(apiUrl);
+            return count;
         }
     }
 }

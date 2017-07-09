@@ -4,7 +4,7 @@
     <SqlMapDetail>
       <SqlName>InsertSource</SqlName>
       <OriginalSqlString>
-        insert into ResourceSource(SourceName,CreateTime,UpdateTime,OrgId)
+        insert into [Source](SourceName,CreateTime,UpdateTime,OrgId)
         values(@SourceName,@CreateTime,@UpdateTime,@OrgId);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -15,7 +15,7 @@
     <SqlMapDetail>
       <SqlName>UpdateSource</SqlName>
       <OriginalSqlString>
-        update ResourceSource set SourceName=@SourceName,UpdateTime=@UpdateTime where Id=@Id
+        update [Source] set SourceName=@SourceName,UpdateTime=@UpdateTime where Id=@Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -25,7 +25,7 @@
     <SqlMapDetail>
       <SqlName>DeleteSource</SqlName>
       <OriginalSqlString>
-        delete from ResourceSource where Id=@Id
+        delete from [Source] where Id=@Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -35,7 +35,7 @@
     <SqlMapDetail>
       <SqlName>GetSourcesByOrgId</SqlName>
       <OriginalSqlString>
-        select * from ResourceSource where OrgId=@OrgId
+        select * from [Source] where OrgId=@OrgId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

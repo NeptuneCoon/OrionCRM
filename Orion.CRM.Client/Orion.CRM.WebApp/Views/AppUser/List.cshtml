@@ -42,7 +42,7 @@
                     <th>序号</th>
                     <th>用户名</th>
                     <th>真实姓名</th>
-                    <th>手机</th>
+                    @*<th>手机</th>*@
                     <th>可用状态</th>
                     <th>角色</th>
                     <th>所属项目</th>
@@ -57,17 +57,30 @@
                         var item = Model[i];
                         <tr>
                             <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
-                            <td style="width:130px">@item.UserName</td>
+                            <td style="width:100px">@item.UserName</td>
                             <td style="width:80px">@item.RealName</td>
-                            <td style="width:110px">@item.Mobile</td>
+                            @*<td style="width:100px">@(string.IsNullOrEmpty(item.Mobile) ? "-" : item.Mobile)</td>*@
                             <td>@Html.Raw((item.Enable == 1 ? "可用" : "<span class='tip'>禁用</span>"))</td>
                             <td style="width:70px">@item.RoleName</td>
-                            <td>@item.ProjectName</td>
-                            <td>@item.GroupName</td>
+                            <td style="width:90px">@(string.IsNullOrEmpty(item.ProjectName) ? "-" : item.ProjectName)</td>
+                            <td>@(string.IsNullOrEmpty(item.GroupName) ? "-" : item.GroupName)</td>
                             <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                            <td style="width:70px">
-                                <a href="/AppUser/Edit/@item.Id">编辑</a>
+                            <td style="width:100px">
+                                @*<a href="/AppUser/Edit/@item.Id">编辑</a>*@
                                 @*<a href="javascript:;" onclick="deleteUser(@item.Id)">删除</a>*@
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" style="font-size:13px" data-toggle="dropdown" href="#">
+                                        操作
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
+                                        <li><a href="#">删除</a></li>
+                                        <li><a href="#">重置密码</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">资源导出</a></li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     }
