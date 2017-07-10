@@ -37,7 +37,7 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<Models.AppUser.AppUserViewModel> SalerList { get; set; }
         public List<App_Data.SelectItem> StatusList { get; set; }
         public List<App_Data.SelectItem> InclinationList { get; set; }
-        public List<Models.Source.ResourceSource> SourceList { get; set; } 
+        public List<Models.Source.Source> SourceList { get; set; } 
         public List<App_Data.SelectItem> TalkCountList { get; set; }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// <summary>
         /// 资源来源
         /// </summary>
-        public List<Models.Source.ResourceSource> Sources { get; set; }
+        public List<Models.Source.Source> Sources { get; set; }
         /// <summary>
         /// 意向群
         /// </summary>

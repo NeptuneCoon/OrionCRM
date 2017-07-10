@@ -224,3 +224,28 @@ body {
     padding: 5px 5px;
     outline: none;
 }
+
+/* chart css */
+.graph-container {
+    position:relative;
+    margin:10px 30px;
+    padding: 30px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 2px #eee;
+    position: relative;
+}
+.graph-mark {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    padding: 3px 8px;
+    border: 1px solid #ccc;
+    background-color: #eeeeee;
+}
+.graph-container .caption {
+    text-align: center;
+}
+.graph-container .graph {
+    height: 320px;
+}
+

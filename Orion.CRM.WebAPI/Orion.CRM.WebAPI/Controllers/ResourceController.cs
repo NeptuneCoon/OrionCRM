@@ -308,5 +308,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 获取资源来源情况
+        public APIDataResult GetResourceSourceStat(int orgId)
+        {
+            try {
+                IEnumerable<Entity.ResourceSource> query = service.GetResourceSourceStat(orgId);
+                APIDataResult dataResult = new APIDataResult(200, query);
+                return dataResult;
+            }
+            catch(Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

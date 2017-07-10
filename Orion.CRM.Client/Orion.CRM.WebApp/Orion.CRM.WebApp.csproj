@@ -18,6 +18,9 @@
     <Content Include="wwwroot\assets\form-validation.js" />
     <Content Include="wwwroot\assets\jquery\jquery.min.js" />
     <Content Include="wwwroot\assets\modal.css" />
+    <Content Include="wwwroot\assets\morris.chart\0.5.1\morris.css" />
+    <Content Include="wwwroot\assets\morris.chart\0.5.1\morris.min.js" />
+    <Content Include="wwwroot\assets\morris.chart\0.5.1\raphael-min.js" />
     <Content Include="wwwroot\assets\nebula-radio-check.css" />
     <Content Include="wwwroot\assets\scripts.js" />
     <Content Include="wwwroot\assets\styles.css" />

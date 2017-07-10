@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Orion.CRM.WebApp.Models.Source
+namespace Orion.CRM.Entity
 {
     /// <summary>
-    /// 资源来源
+    /// ResourceSource实体类
     /// </summary>
-    public class ResourceSource
+    public class Source
     {
         public int Id { get; set; }
         public string SourceName { get; set; }

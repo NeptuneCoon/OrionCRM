@@ -380,6 +380,10 @@ namespace Orion.CRM.WebApp.Controllers
         // 资源来源统计
         public IActionResult SourceStat()
         {
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceSourceStat?orgId=" + _AppUser.OrgId;
+            var list = APIInvoker.Get<List<Models.Resource.ResourceSource>>(apiUrl);
+            ViewBag.SourceStat = JsonConvert.SerializeObject(list);
+
             return View();
         }
 
@@ -535,7 +539,7 @@ namespace Orion.CRM.WebApp.Controllers
         /// <param name="status"></param>
         /// <param name="sources"></param>
         /// <param name="inclinations"></param>
-        public void ResourceDataFormat(List<Models.Resource.Resource> resources, List<SelectItem> status, List<Models.Source.ResourceSource> sources, List<SelectItem> inclinations)
+        public void ResourceDataFormat(List<Models.Resource.Resource> resources, List<SelectItem> status, List<Models.Source.Source> sources, List<SelectItem> inclinations)
         {
             if (resources != null) {
                 foreach (var resource in resources) {
@@ -657,7 +661,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
-        #region 外侧代码
+        #region 设置资源状态
         private bool SetResourceStatus(int resourceId, int status)
         {
             string apiUrl = _AppConfig.WebApiHost + $"api/Resource/SetResourceStatus?resourceId={resourceId}&status={status}";

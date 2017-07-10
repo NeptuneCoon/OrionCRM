@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Orion.CRM.Entity
+namespace Orion.CRM.WebApp.Models.Resource
 {
     /// <summary>
     /// 资源来源情况

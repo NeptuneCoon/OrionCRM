@@ -335,6 +335,16 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@OrgId", orgId);
             int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetUserUnAssignedResourceCount", param);
             return count;
+        }
+        #endregion
+
+        #region 获取资源来源情况
+        public IEnumerable<Entity.ResourceSource> GetResourceSourceStat(int orgId)
+        {
+            if (orgId <= 0) return null;
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            var list = SqlMapHelper.GetSqlMapResult<Entity.ResourceSource>("ResourceDomain", "GetResourceSourceStat", param);
+            return list;
         } 
         #endregion
 

@@ -15,13 +15,13 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult List()
         {
             string url = _AppConfig.WebApiHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
-            List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
+            List<Models.Source.Source> list = APIInvoker.Get<List<Models.Source.Source>>(url);
 
             return View(list);
         }
 
         [HttpPost]
-        public int Insert(Models.Source.ResourceSource source)
+        public int Insert(Models.Source.Source source)
         {
             if (source != null) {
                 source.SourceName = source.SourceName.Trim();
@@ -38,7 +38,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
 
         [HttpPost]
-        public bool Update(Models.Source.ResourceSource source)
+        public bool Update(Models.Source.Source source)
         {
             if (source != null && source.Id > 0) {
                 source.SourceName = source.SourceName.Trim();
@@ -64,10 +64,10 @@ namespace Orion.CRM.WebApp.Controllers
 
         // Ajax重新加载页面
         [HttpGet]
-        public List<Models.Source.ResourceSource> ReloadList()
+        public List<Models.Source.Source> ReloadList()
         {
             string url = _AppConfig.WebApiHost + "api/ResourceSource/GetSourcesByOrgId?OrgId=" + _AppUser.OrgId;
-            List<Models.Source.ResourceSource> list = APIInvoker.Get<List<Models.Source.ResourceSource>>(url);
+            List<Models.Source.Source> list = APIInvoker.Get<List<Models.Source.Source>>(url);
             return list;
         }
     }

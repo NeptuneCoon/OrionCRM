@@ -101,10 +101,10 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="apiHost">API基地址</param>
         /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
-        public static List<Models.Source.ResourceSource> GetSourcesFromDb(string apiHost, int orgId)
+        public static List<Models.Source.Source> GetSourcesFromDb(string apiHost, int orgId)
         {
             string apiUrl = apiHost + "api/ResourceSource/GetSourcesByOrgId?orgId=" + orgId;
-            var sources = APIInvoker.Get<List<Models.Source.ResourceSource>>(apiUrl);
+            var sources = APIInvoker.Get<List<Models.Source.Source>>(apiUrl);
 
             return sources;
         }

@@ -131,5 +131,11 @@ namespace Orion.CRM.Application
         {
             return adapter.GetUserUnAssignedResourceCount(orgId);
         }
+
+        // 获取资源来源情况
+        public IEnumerable<Entity.ResourceSource> GetResourceSourceStat(int orgId)
+        {
+            return adapter.GetResourceSourceStat(orgId);
+        }
     }
 }

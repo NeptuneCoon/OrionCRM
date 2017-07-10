@@ -307,5 +307,19 @@
       <Description>获取未分配至业务员的资源个数</Description>
     </SqlMapDetail>
 
+    <SqlMapDetail>
+      <SqlName>GetResourceSourceStat</SqlName>
+      <OriginalSqlString>
+        select SourceFrom as SourceId, B.SourceName, count(SourceFrom) as ResourceCount from [Resource] A
+        inner join [Source] B on A.SourceFrom=B.Id
+        inner join [ResourceOrganization] C on A.Id=C.ResourceId
+        where C.OrgId=@OrgId
+        group by SourceFrom,SourceName
+        order by ResourceCount desc
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取资源来源情况</Description>
+    </SqlMapDetail>
 	</SqlMapConfigurations>
 </SqlMap>
