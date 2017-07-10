@@ -103,7 +103,7 @@ namespace Orion.CRM.WebApp.App_Data
         /// <returns></returns>
         public static List<Models.Source.Source> GetSourcesFromDb(string apiHost, int orgId)
         {
-            string apiUrl = apiHost + "api/ResourceSource/GetSourcesByOrgId?orgId=" + orgId;
+            string apiUrl = apiHost + "api/Source/GetSourcesByOrgId?orgId=" + orgId;
             var sources = APIInvoker.Get<List<Models.Source.Source>>(apiUrl);
 
             return sources;

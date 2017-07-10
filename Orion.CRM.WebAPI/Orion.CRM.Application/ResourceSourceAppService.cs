@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Orion.CRM.Application
 {
-    public class ResourceSourceAppService
+    public class SourceAppService
     {
-        private ResourceSourceAdapter adapter = new ResourceSourceAdapter();
+        private SourceAdapter adapter = new SourceAdapter();
         public int InsertSource(Entity.Source source)
         {
             return adapter.InsertSource(source);

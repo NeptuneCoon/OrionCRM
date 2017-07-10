@@ -250,8 +250,6 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>项目</th>
-                    <th>业务员</th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
                     <th>留言时间</th>
@@ -260,7 +258,9 @@
                     <th>状态</th>
                     <th>意向</th>
                     <th>洽谈数</th>
+                    <th>业务员</th>
                     <th>添加人</th>
+                    <th>项目</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -269,8 +269,6 @@
                     foreach (var resource in Model.Resources) {
                         <tr>
                             <td><input type="checkbox" name="ckResource" /></td>
-                            <td>@resource.ProjectName</td>
-                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
                             <td>@resource.ContactInfo</td>
                             <td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
@@ -279,7 +277,9 @@
                             <td>@resource.StatusText</td>
                             <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
+                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
+                            <td>@resource.ProjectName</td>
                             <td>
                                 <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> | 
                                 <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>

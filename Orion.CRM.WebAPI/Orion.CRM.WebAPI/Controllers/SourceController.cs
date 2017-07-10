@@ -10,9 +10,9 @@ namespace Orion.CRM.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    public class ResourceSourceController : Controller
+    public class SourceController : Controller
     {
-        private ResourceSourceAppService service = new ResourceSourceAppService();
+        private SourceAppService service = new SourceAppService();
 
         [HttpPost]
         public APIDataResult InsertSource([FromBody]Entity.Source source)
