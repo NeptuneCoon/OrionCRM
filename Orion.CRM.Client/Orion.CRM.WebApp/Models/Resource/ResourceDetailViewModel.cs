@@ -12,8 +12,9 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string Mobile { get; set; }
         public string QQ { get; set; }
         public string Wechat { get; set; }
+        public string Tel { get; set; }
         public string Email { get; set; }
-        public string SourceFrom { get; set; }
+        public int? SourceFrom { get; set; }
         public int? Sex { get; set; }
         public int? Inclination { get; set; }
         public string Address { get; set; }
@@ -22,5 +23,8 @@ namespace Orion.CRM.WebApp.Models.Resource
 
         public List<Models.Resource.ResourceNote> ResourceNotes { get; set; }
         public List<Models.Resource.TalkRecord> TalkRecords { get; set; }
+        public List<App_Data.SelectItem> StatusList { get; set; }
+        public List<App_Data.SelectItem> InclinationList { get; set; }
+        public List<Models.Source.Source> SourceList { get; set; }
     }
 }

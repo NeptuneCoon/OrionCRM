@@ -396,8 +396,8 @@ namespace Orion.CRM.WebApp.Controllers
         {
             ResourceDetailViewModel viewModel = new ResourceDetailViewModel();
 
-            string apiResource = _AppConfig.WebApiHost + "api/Resource/GetResourceById?id=" + id;
-            Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(apiResource);
+            string resourceApiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceById?id=" + id;
+            Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
 
             if (resource != null) { 
                 // 客户(资源)信息
@@ -406,8 +406,11 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.Mobile = resource.Mobile;
                 viewModel.QQ = resource.QQ;
                 viewModel.Wechat = resource.Wechat;
+                viewModel.Tel = resource.Tel;
                 viewModel.Email = resource.Email;
-                viewModel.SourceFrom = "";
+                viewModel.SourceFrom = resource.SourceFrom;
+                viewModel.Status = resource.Status;
+                viewModel.Inclination = resource.Inclination;
                 viewModel.Sex = resource.Sex;
                 viewModel.Address = resource.Address;
                 viewModel.Remark = resource.Remark;
@@ -418,6 +421,12 @@ namespace Orion.CRM.WebApp.Controllers
                 // 洽谈记录
                 string apiRecord = _AppConfig.WebApiHost + "api/TalkRecord/GetRecordsByResourceId?resourceId=" + id;
                 viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
+
+                // 资源状态&意向&来源
+                viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
+                viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
+                viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+  
             }
             else {
                 return RedirectToAction("Http404", "Error");
@@ -427,9 +436,33 @@ namespace Orion.CRM.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult DetailHandler()
+        public IActionResult DetailHandler(Models.Resource.ResourceDetailViewModel viewModel)
         {
-            return View();
+            if (viewModel != null && viewModel.ResourceId > 0) {
+                string resourceApiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceById?id=" + viewModel.ResourceId;
+                Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
+                if (resource != null) {
+                    resource.CustomerName = viewModel.CustomerName;
+                    resource.Mobile = viewModel.Mobile;
+                    resource.Wechat = viewModel.Wechat;
+                    resource.QQ = viewModel.QQ;
+                    resource.Tel = viewModel.Tel;
+                    resource.SourceFrom = viewModel.SourceFrom;
+                    resource.Sex = viewModel.Sex;
+                    resource.Inclination = viewModel.Inclination;
+                    resource.Address = viewModel.Address;
+                    resource.Status = viewModel.Status;
+                    resource.Remark = viewModel.Remark;
+                    resource.UpdateTime = DateTime.Now;
+
+                    string resourceUpdateApiUrl = _AppConfig.WebApiHost + "api/Resource/UpdateReource";
+                    bool result = APIInvoker.Post<bool>(resourceUpdateApiUrl, resource);
+                    TempData["result"] = result;
+
+                    return RedirectToAction("Detail", new { id = viewModel.ResourceId });
+                }
+            }
+            return RedirectToAction("Index", "Error");
         }
 
         #region 插入资源 InsertResource
