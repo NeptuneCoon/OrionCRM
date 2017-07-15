@@ -19,7 +19,7 @@ namespace Orion.CRM.WebApp.Controllers
             List<Models.Group.Group> list = APIInvoker.Get<List<Models.Group.Group>>(url);
 
             ViewBag.ProjectId = _AppUser.ProjectId;//当前用户所属项目，如果不为空，则创建业务组时默认选中其所属的项目
-            ViewBag.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            ViewBag.Projects = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
 
             return View(list);
         }
@@ -86,7 +86,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
         {
-            return AppDTO.GetGroupsFromDb(_AppConfig.WebApiHost, projectId);
+            return AppDTO.GetGroupsFromDb(projectId);
         }
 
         [HttpPost]

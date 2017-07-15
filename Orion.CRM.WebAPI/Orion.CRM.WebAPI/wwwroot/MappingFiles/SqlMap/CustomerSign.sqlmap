@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertSign</SqlName>
+      <OriginalSqlString>
+        insert into [CustomerSign](ResourceId,SignTime,SignUserId,Amount,CreateTime,AppendUserId)
+        values(@ResourceId,@SignTime,@SignUserId,@Amount,@CreateTime,@AppendUserId);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增资源来源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteSign</SqlName>
+      <OriginalSqlString>
+        delete from [CustomerSign] where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除资源来源</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignByResourceId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.CustomerName,
+        (select RealName from AppUser where Id=A.SignUserId) as SignMan,
+        (select RealName from AppUser where Id=A.AppendUserId) as AppendMan
+        from [CustomerSign] A
+        join [Resource] B on A.ResourceId=B.Id
+        where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据资源Id获取签约记录</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

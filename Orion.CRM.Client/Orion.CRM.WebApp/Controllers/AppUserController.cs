@@ -43,8 +43,8 @@ namespace Orion.CRM.WebApp.Controllers
         {
             Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
 
-            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
 
 
             return View(viewModel);
@@ -115,8 +115,8 @@ namespace Orion.CRM.WebApp.Controllers
             string url = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + id;
             Models.AppUser.AppUserViewModel viewModel = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
 
-            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.RoleList = AppDTO.GetRoleListFromDb(_AppUser.OrgId);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
 
             return View(viewModel);
         }

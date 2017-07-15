@@ -1,6 +1,6 @@
 ﻿@model Orion.CRM.WebApp.Models.Resource.ResourceListViewModel
 
-@using Orion.CRM.WebApp.App_Data
+@using Orion.CRM.WebApp.App_Data;
 @addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
     ViewData["Title"] = "List";
@@ -8,7 +8,7 @@
 }
 
 @section styles{
-    <style>
+    <style type="text/css">
         input[type="radio"], input[type="checkbox"] {
             margin: 0 0 0;
             line-height: normal;

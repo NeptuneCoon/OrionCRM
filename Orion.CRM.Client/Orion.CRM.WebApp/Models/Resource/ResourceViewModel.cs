@@ -16,8 +16,13 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string QQ { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public int? Status { get; set; }
         public int? SourceFrom { get; set; }
         public int? Inclination { get; set; }
+
+        //public string StatusText { get; set; }
+        //public string SourceFromText { get; set; }
+        //public string InclinationText { get; set; }
 
         /// <summary>
         /// 备注信息

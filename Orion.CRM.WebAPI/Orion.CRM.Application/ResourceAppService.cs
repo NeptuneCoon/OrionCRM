@@ -66,6 +66,17 @@ namespace Orion.CRM.Application
             return adapter.GetResourceCountByCondition(param);
         }
 
+        /// <summary>
+        /// 根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源
+        /// </summary>
+        /// <param name="key">查询关键词</param>
+        /// <param name="orgId">组织机构Id</param>
+        /// <returns></returns>
+        public Entity.Resource GetResourceByNameMobileWechatQQ(string key, int orgId)
+        {
+            return adapter.GetResourceByNameMobileWechatQQ(key, orgId);
+        }
+
         // 判断资源是否存在
         public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
         {

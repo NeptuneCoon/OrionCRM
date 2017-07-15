@@ -151,6 +151,25 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// 根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源
+        /// </summary>
+        /// <param name="key">查询关键词</param>
+        /// <param name="orgId">组织机构Id</param>
+        /// <returns></returns>
+        public APIDataResult GetResourceByNameMobileWechatQQ(string key, int orgId)
+        {
+            try {
+                Entity.Resource resource = service.GetResourceByNameMobileWechatQQ(key, orgId);
+                APIDataResult dataResult = new APIDataResult(200, resource);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         // 判断资源是否存在
         public APIDataResult IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
         {

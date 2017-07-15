@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Orion.CRM.WebTools;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,13 +16,39 @@ namespace Orion.CRM.WebApp.App_Data
     /// </summary>
     public class AppDTO
     {
+        //public static IConfigurationRoot Configuration { get; set; }
+        //public AppDTO()
+        //{
+        //    var builder = new ConfigurationBuilder()
+        //    .SetBasePath(Directory.GetCurrentDirectory())
+        //    .AddJsonFile("appsettings.json");
+
+        //    Configuration = builder.Build();
+        //}
+
+        /// <summary>
+        /// 读取配置文件
+        /// </summary>
+        /// <param name="key">配置节点，多级请以:分隔</param>
+        /// <returns></returns>
+        static string GetConfigurationSettings(string key)
+        {
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+            IConfigurationRoot Configuration = builder.Build();
+            string value = Configuration[key];
+            return value;
+        }
+
         /// <summary>
         /// 从json配置文件中获取意向群
         /// </summary>
         /// <returns></returns>
-        public static List<SelectItem> GetInclinationsFromJson(string webRoot)
+        public static List<SelectItem> GetInclinationsFromJson()
         {
-            var jsonPath = webRoot + @"\config\inclination.json";
+            var jsonPath = Directory.GetCurrentDirectory() + @"\wwwroot\config\inclination.json";
             var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
             var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
 
@@ -31,9 +59,9 @@ namespace Orion.CRM.WebApp.App_Data
         /// 从json配置文件中获取资源状态
         /// </summary>
         /// <returns></returns>
-        public static List<SelectItem> GetStatusFromJson(string webRoot)
+        public static List<SelectItem> GetStatusFromJson()
         {
-            var jsonPath = webRoot + @"\config\status.json";
+            var jsonPath = Directory.GetCurrentDirectory() + @"\wwwroot\config\status.json";
             var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
             var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
 
@@ -44,9 +72,9 @@ namespace Orion.CRM.WebApp.App_Data
         /// 从json配置文件中获取洽谈次数
         /// </summary>
         /// <returns></returns>
-        public static List<SelectItem> GetTalkCountFromJson(string webRoot)
+        public static List<SelectItem> GetTalkCountFromJson()
         {
-            var jsonPath = webRoot + @"\config\talkcount.json";
+            var jsonPath = Directory.GetCurrentDirectory() + @"\wwwroot\config\talkcount.json";
             var inclinationJson = System.IO.File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
             var list = JsonConvert.DeserializeObject<List<SelectItem>>(inclinationJson);
 
@@ -59,9 +87,9 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="apiHost">API基地址</param>
         /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
-        public static List<Models.Role.Role> GetRoleListFromDb(string apiHost, int orgId)
+        public static List<Models.Role.Role> GetRoleListFromDb(int orgId)
         {
-            string roleApiUrl = apiHost + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + orgId;
+            string roleApiUrl = GetConfigurationSettings("WebApiHost") + "api/Role/GetRolesByOrgId?pageIndex=1&pageSize=10000&orgId=" + orgId;
             var roleList = APIInvoker.Get<List<Models.Role.Role>>(roleApiUrl);
 
             return roleList;
@@ -73,9 +101,9 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="apiHost">API基地址</param>
         /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
-        public static List<Models.Project.Project> GetProjectsFromDb(string apiHost, int orgId)
+        public static List<Models.Project.Project> GetProjectsFromDb(int orgId)
         {
-            string apiUrl = apiHost + "api/Project/GetProjectsByOrgId?orgId=" + orgId;
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/Project/GetProjectsByOrgId?orgId=" + orgId;
             var projects = APIInvoker.Get<List<Models.Project.Project>>(apiUrl);
 
             return projects;
@@ -87,9 +115,9 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="apiHost">API基地址</param>
         /// <param name="projectId">项目Id</param>
         /// <returns></returns>
-        public static List<Models.Group.Group> GetGroupsFromDb(string apiHost, int projectId)
+        public static List<Models.Group.Group> GetGroupsFromDb(int projectId)
         {
-            string apiUrl = apiHost + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
             var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
 
             return groups;
@@ -101,14 +129,15 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="apiHost">API基地址</param>
         /// <param name="orgId">组织/公司Id</param>
         /// <returns></returns>
-        public static List<Models.Source.Source> GetSourcesFromDb(string apiHost, int orgId)
+        public static List<Models.Source.Source> GetSourcesFromDb(int orgId)
         {
-            string apiUrl = apiHost + "api/Source/GetSourcesByOrgId?orgId=" + orgId;
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/Source/GetSourcesByOrgId?orgId=" + orgId;
             var sources = APIInvoker.Get<List<Models.Source.Source>>(apiUrl);
 
             return sources;
         }
 
+        // 洽谈方式字典
         public static Dictionary<int,string> TalkWayCollection
         {
             get
@@ -125,6 +154,71 @@ namespace Orion.CRM.WebApp.App_Data
             {
                 TalkWayCollection = value;
             }
+        }
+
+        /// <summary>
+        /// 根据资源状态Id获取状态的展示名称
+        /// </summary>
+        /// <param name="status"></param>
+        public static string GetStatusDisplayText(int? status)
+        {
+            if (status == null) return string.Empty;
+
+            List<SelectItem> items = GetStatusFromJson();
+            var query = items.FirstOrDefault(x => x.value == status);
+            if (query != null) {
+                return query.displayText;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 根据意向Id获取意向的展示名称
+        /// </summary>
+        /// <param name="inclination"></param>
+        /// <returns></returns>
+        public static string GetInclinationDisplayText(int? inclination)
+        {
+            if (inclination == null) return string.Empty;
+
+            List<SelectItem> items = GetInclinationsFromJson();
+            var query = items.FirstOrDefault(x => x.value == inclination);
+            if (query != null) {
+                return query.displayText;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 根据资源来源Id获取来源展示名称
+        /// </summary>
+        /// <param name="sourceFrom"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public static string GetSourceDisplayText(int? sourceFrom, int orgId)
+        {
+            if (sourceFrom == null) return string.Empty;
+
+            List<Models.Source.Source> items = GetSourcesFromDb(orgId);
+            var query = items.FirstOrDefault(x => x.Id == sourceFrom);
+            if (query != null) {
+                return query.SourceName;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 根据性别value值获得展示名称
+        /// </summary>
+        /// <param name="sex"></param>
+        /// <returns></returns>
+        public static string GetSexDisplayText(int? sex)
+        {
+            if (sex == null) return string.Empty;
+
+            if (sex == 1) return "男";
+            else if (sex == 2) return "女";
+            else return string.Empty;
         }
 
     }

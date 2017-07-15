@@ -61,26 +61,9 @@ namespace Orion.CRM.DataAccess
             parameters.Add(new SqlParameter("@CreateTime", user.CreateTime));
             parameters.Add(new SqlParameter("@UpdateTime", user.UpdateTime));
             parameters.Add(new SqlParameter("@Enable", user.Enable));
-            if (user.Mobile != null) {
-                parameters.Add(new SqlParameter("@Mobile", user.Mobile));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Mobile", DBNull.Value));
-            }
-
-            if (user.Email != null) {
-                parameters.Add(new SqlParameter("@Email", user.Email));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Email", DBNull.Value));
-            }
-
-            if (user.Wechat != null) {
-                parameters.Add(new SqlParameter("@Wechat", user.Wechat));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Wechat", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Mobile", CheckNull(user.Mobile)));
+            parameters.Add(new SqlParameter("@Email", CheckNull(user.Email)));
+            parameters.Add(new SqlParameter("@Wechat", CheckNull(user.Wechat)));
 
             SqlParameter[] paramArr = parameters.ToArray();
 
@@ -98,26 +81,9 @@ namespace Orion.CRM.DataAccess
             parameters.Add(new SqlParameter("@RealName", user.RealName));
             parameters.Add(new SqlParameter("@UpdateTime", user.UpdateTime));
             parameters.Add(new SqlParameter("@Enable", user.Enable));
-            if (user.Mobile != null) {
-                parameters.Add(new SqlParameter("@Mobile", user.Mobile));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Mobile", DBNull.Value));
-            }
-
-            if (user.Email != null) {
-                parameters.Add(new SqlParameter("@Email", user.Email));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Email", DBNull.Value));
-            }
-
-            if (user.Wechat != null) {
-                parameters.Add(new SqlParameter("@Wechat", user.Wechat));
-            }
-            else {
-                parameters.Add(new SqlParameter("@Wechat", DBNull.Value));
-            }
+            parameters.Add(new SqlParameter("@Mobile", CheckNull(user.Mobile)));
+            parameters.Add(new SqlParameter("@Email", CheckNull(user.Email)));
+            parameters.Add(new SqlParameter("@Wechat", CheckNull(user.Wechat)));
 
             SqlParameter[] paramArr = parameters.ToArray();
 

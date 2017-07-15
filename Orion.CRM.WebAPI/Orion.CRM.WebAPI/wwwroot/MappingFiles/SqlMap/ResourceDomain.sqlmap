@@ -153,6 +153,18 @@
       <CommandType>Text</CommandType>
       <Description>获取符合筛选条件的资源个数</Description>
     </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetResourceByNameMobileWechatQQ</SqlName>
+      <OriginalSqlString>
+        select A.* from [Resource] A
+        left join ResourceOrganization B on A.Id=B.ResourceId
+        where OrgId=@OrgId and (CustomerName=@Key or Mobile=@Key or Tel=@Key or Wechat=@Key or QQ=@Key)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源</Description>
+    </SqlMapDetail>
 
     <SqlMapDetail>
       <SqlName>IsResourceExist</SqlName>

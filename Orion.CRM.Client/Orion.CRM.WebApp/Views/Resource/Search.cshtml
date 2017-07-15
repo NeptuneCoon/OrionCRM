@@ -1,0 +1,150 @@
+﻿@using Orion.CRM.WebApp.App_Data
+@model Orion.CRM.WebApp.Models.Resource.CustomerSearchViewModel
+
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="/css/customer.css" rel="stylesheet" />
+    <style type="text/css">
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 2px !important;
+            padding: 2px 3px;
+            height: 16px !important;
+            width: 91px;
+            font-size: 12px !important;
+        }
+    </style>
+}
+
+<div class="panel panel-default" style="width:1000px;">
+    <div class="panel-heading">
+        <h3 class="panel-title">客户查询工具</h3>
+    </div>
+
+    <div class="panel-body">
+        <form action="/Resource/Search" method="get">
+            <div class="form-inline">
+                <input type="text" style="width:300px" asp-for="@Model.key" placeholder="姓名/电话/微信/QQ" />
+                <button type="submit" class="btn btn-default">
+                    <i class="icon-search"></i> 查询
+                </button>
+            </div>
+
+            @if (Model != null && Model.Id > 0) {
+                <div style="margin-top:20px">
+                    <div class="title gradient">客户信息</div>
+                    <div class="content">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <table class="table-customer">
+                            <tr>
+                                <td style="width:70px">客户姓名：</td>
+                                <td style="width:220px">@Model.CustomerName</td>
+                                <td style="width:70px">手机：</td>
+                                <td style="width:220px">@Model.Mobile</td>
+                            </tr>
+                            <tr>
+                                <td>微信：</td>
+                                <td>@Model.Wechat</td>
+                                <td>QQ：</td>
+                                <td>@Model.QQ</td>
+                            </tr>
+                            <tr>
+                                <td>座机：</td>
+                                <td>@Model.Tel</td>
+                                <td>来源：</td>
+                                <td>
+                                    @Model.SourceFromText
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>客户性别：</td>
+                                <td>
+                                    @Model.SexText
+                                </td>
+                                <td>意向：</td>
+                                <td>
+                                    @Model.InclinationText
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>地址：</td>
+                                <td>@Model.Address</td>
+                                <td>资源状态：</td>
+                                <td>
+                                    @Model.StatusText
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>其他说明：</td>
+                                <td colspan="3">
+                                    @Model.Remark
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="title gradient">洽谈记录</div>
+                    <div class="content">
+                        <table class="table-talk" style="width:700px">
+                            <thead>
+                                <tr>
+                                    <th style="width:120px;text-align:left">时间</th>
+                                    <th style="width:70px;text-align:left">洽谈人</th>
+                                    <th style="width:85px;text-align:left">洽谈方式</th>
+                                    <th style="width:400px;text-align:left">结果</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
+                                    foreach (var record in Model.TalkRecords) {
+                                        <tr>
+                                            <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@record.UserId</td>
+                                            <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
+                                            <td>@record.TalkResult</td>
+                                        </tr>
+                                    }
+                                }
+                                else {
+                                    <tr>
+                                        <td colspan="4">无洽谈记录</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="title gradient">签约</div>
+                    <div class="content">
+                        @if (Model.Sign != null) { 
+                            <span style="color:green">已签约。</span><br/>
+                            <span>签约金额@(Model.Sign.Amount)元。签约人：@Model.Sign.SignMan。</span>
+                        }
+                        else {
+
+                            <table>
+                                <tr>
+                                    <td>金额：</td>
+                                    <td style="width:120px"><input type="text" id="signAmount" class="search-input" /></td>
+                                    <td>签约时间：</td>
+                                    <td style="width:120px"><input type="text" id="signTime" class="search-input" /></td>
+                                    <td>签约人：</td>
+                                    <td style="width:120px">
+                                        <select style="width:80px">
+                                            <option>张三</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="button" value="添加" style="margin-top:-10px" />
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                    </div>
+                </div>
+            }
+        </form>
+    </div>
+</div>

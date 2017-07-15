@@ -31,10 +31,10 @@ namespace Orion.CRM.WebApp.Controllers
 
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             
-            viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
             viewModel.RoleResourceVisible = GetRoleResourceVisible(roleDataPermissions);
             viewModel.RoleResourceHandle = GetRoleResourceHandle(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
@@ -89,7 +89,7 @@ namespace Orion.CRM.WebApp.Controllers
             switch (viewModel.RoleResourceVisible) {
                 case 4:
                     // 资源可见范围：公司资源，需加载[项目列表、业务组列表、业务员列表]
-                    viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+                    viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
                     //viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(groupApiUrl+_AppUser.ProjectId);
                     //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
                     break;
@@ -136,11 +136,11 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
             viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
@@ -203,11 +203,11 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson(_hostingEnv.WebRootPath);
+            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
             viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
@@ -270,13 +270,12 @@ namespace Orion.CRM.WebApp.Controllers
             
             // 当前组织/公司下的项目集合
             viewModel.ProjectId = Convert.ToInt32(_AppUser.ProjectId);
-            viewModel.Projects = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.Projects = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
 
             // 意向群
-            viewModel.Inclinations = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-
+            viewModel.Inclinations = AppDTO.GetInclinationsFromJson();
             // 资源来源
-            viewModel.Sources = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            viewModel.Sources = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
 
             ViewBag.GroupId = _AppUser.GroupId;
 
@@ -322,10 +321,10 @@ namespace Orion.CRM.WebApp.Controllers
         // 批量分配
         public IActionResult Assign()
         {
-            ViewBag.ProjectList = AppDTO.GetProjectsFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+            ViewBag.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
             ViewBag.ProjectId = _AppUser.ProjectId;
             if (_AppUser.ProjectId != null && _AppUser.ProjectId > 0) {
-                ViewBag.GroupList = AppDTO.GetGroupsFromDb(_AppConfig.WebApiHost, (int)_AppUser.ProjectId);
+                ViewBag.GroupList = AppDTO.GetGroupsFromDb((int)_AppUser.ProjectId);
             }
             return View();
         }
@@ -423,9 +422,9 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
 
                 // 资源状态&意向&来源
-                viewModel.StatusList = AppDTO.GetStatusFromJson(_hostingEnv.WebRootPath);
-                viewModel.InclinationList = AppDTO.GetInclinationsFromJson(_hostingEnv.WebRootPath);
-                viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppConfig.WebApiHost, _AppUser.OrgId);
+                viewModel.StatusList = AppDTO.GetStatusFromJson();
+                viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+                viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
   
             }
             else {
@@ -464,6 +463,48 @@ namespace Orion.CRM.WebApp.Controllers
             }
             return RedirectToAction("Index", "Error");
         }
+
+        // 客户查询工具
+        public IActionResult Search(CustomerSearchViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.key)) return View(viewModel);
+
+            string resourceApiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceByNameMobileWechatQQ?key=" + viewModel.key + "&orgId=" + _AppUser.OrgId;
+            Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
+
+            if (resource != null) {
+                // 客户(资源)信息
+                viewModel.Id = resource.Id;
+                viewModel.CustomerName = resource.CustomerName;
+                viewModel.Mobile = resource.Mobile;
+                viewModel.QQ = resource.QQ;
+                viewModel.Wechat = resource.Wechat;
+                viewModel.Tel = resource.Tel;
+                viewModel.Email = resource.Email;
+                viewModel.SourceFromText = AppDTO.GetSourceDisplayText(resource.SourceFrom, _AppUser.OrgId);
+                viewModel.StatusText = AppDTO.GetStatusDisplayText(resource.Status);
+                viewModel.InclinationText = AppDTO.GetInclinationDisplayText(resource.Inclination);
+                viewModel.SexText = AppDTO.GetSexDisplayText(resource.Sex);
+                viewModel.Address = resource.Address;
+                viewModel.Remark = resource.Remark;
+
+                // 洽谈记录
+                string apiRecord = _AppConfig.WebApiHost + "api/TalkRecord/GetRecordsByResourceId?resourceId=" + resource.Id;
+                viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
+
+                // 签约记录
+                string apiSign = _AppConfig.WebApiHost + "api/CustomerSign/GetSignByResourceId?resourceId=" + resource.Id;
+                viewModel.Sign = APIInvoker.Get<Models.Sign.CustomerSign>(apiSign);
+            }
+
+            return View(viewModel);
+        }
+
+        //[HttpPost]
+        //public IActionResult SearchHandler()
+        //{
+        //    return View();
+        //}
 
         #region 插入资源 InsertResource
         private int InsertResource(Models.Resource.ResourceViewModel viewModel)

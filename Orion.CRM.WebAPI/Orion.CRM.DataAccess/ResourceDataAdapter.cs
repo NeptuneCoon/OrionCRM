@@ -98,6 +98,24 @@ namespace Orion.CRM.DataAccess
         }
         #endregion
 
+        /// <summary>
+        /// 根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源
+        /// </summary>
+        /// <param name="key">查询关键词</param>
+        /// <param name="orgId">组织机构Id</param>
+        /// <returns></returns>
+        public Entity.Resource GetResourceByNameMobileWechatQQ(string key, int orgId)
+        {
+            if (string.IsNullOrEmpty(key) || orgId <= 0) return null;
+
+            SqlParameter[] paramArr = {
+                new SqlParameter("OrgId", orgId),
+                new SqlParameter("Key", key)
+            };
+
+            var result = SqlMapHelper.GetSqlMapSingleResult<Entity.Resource>("ResourceDomain", "GetResourceByNameMobileWechatQQ", paramArr);
+            return result;
+        }
 
         #region 判断资源是否存在
         public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
