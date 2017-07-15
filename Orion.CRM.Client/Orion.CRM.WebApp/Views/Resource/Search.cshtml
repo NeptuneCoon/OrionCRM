@@ -8,6 +8,8 @@
 
 @section styles{
     <link href="/css/customer.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/theme.css" rel="stylesheet" />
     <style type="text/css">
         .search-input {
             border: 1px solid gray;
@@ -18,6 +20,42 @@
             font-size: 12px !important;
         }
     </style>
+}
+@section scripts{
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.28.5/date_fns.min.js"></script>*@
+    <script src="~/assets/pikaday/moment.min.js"></script>
+    <script src="~/assets/pikaday/pikaday.js"></script>
+    <script type="text/javascript">
+        var pickerTriangle = new Pikaday(
+            {
+                field: document.getElementById('signTime'),
+                toString: function (date, format) {
+                    return dateFns.format(date, format);
+                },                parse: function (dateString, format) {
+                    return dateFns.parse(dateString);
+                },
+                onSelect: function (selectedDate) {
+                    // not necessary, just showing off
+                    if (dateFns.isValid(selectedDate)) {
+                        console.info('选中');
+                    }
+                },
+                theme: 'triangle-theme'
+            });        
+        //var picker = new Pikaday({
+        //    field: document.getElementById('signTime'),
+        //    format: 'YYYY-MM-DD',
+        //    i18n: {
+        //        previousMonth: '上一月',
+        //        nextMonth: '下一月',
+        //        months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        //        weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+        //        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+        //    },
+        //    showMonthAfterYear: true,
+        //    theme: 'triangle-theme'
+        //});
+    </script>
 }
 
 <div class="panel panel-default" style="width:1000px;">
@@ -126,7 +164,7 @@
 
                             <table>
                                 <tr>
-                                    <td>金额：</td>
+                                    <td>合同金额：</td>
                                     <td style="width:120px"><input type="text" id="signAmount" class="search-input" /></td>
                                     <td>签约时间：</td>
                                     <td style="width:120px"><input type="text" id="signTime" class="search-input" /></td>

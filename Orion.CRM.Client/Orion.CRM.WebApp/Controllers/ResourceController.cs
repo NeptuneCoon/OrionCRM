@@ -500,6 +500,19 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
+        // 插入客户签约记录
+        public bool InsertCustomerSign(Models.Sign.CustomerSign sign)
+        {
+            if (sign != null && sign.Amount > 0) {
+                sign.AppendUserId = _AppUser.Id;
+                sign.CreateTime = DateTime.Now;
+                string signApiUrl = _AppConfig.WebApiHost + "api/CustomerSign/InsertSign";
+                bool result = APIInvoker.Post<bool>(signApiUrl, sign);
+                return result;
+            }
+            return false;
+        }
+
         //[HttpPost]
         //public IActionResult SearchHandler()
         //{
