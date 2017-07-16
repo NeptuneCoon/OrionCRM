@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 
 /*!
  * Pikaday
@@ -70,6 +70,8 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     top: 5px;
     filter: alpha(opacity=0);
     opacity: 0;
+    height:18px !important;/*和bootstrap的全局css样式有冲突*/
+    line-height:18px !important;/*和bootstrap的全局css样式有冲突*/
 }
 
 .pika-prev,
@@ -136,6 +138,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 .pika-table td {
     width: 14.285714285714286%;
     padding: 0;
+    height: 32px;
 }
 
 .pika-table th {
@@ -155,7 +158,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     border: 0;
     margin: 0;
     width: 100%;
-    padding: 5px;
+    padding: 7px;
     color: #666;
     font-size: 12px;
     line-height: 15px;

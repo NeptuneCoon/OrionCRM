@@ -14,84 +14,85 @@
     <link href="/css/customer.css" rel="stylesheet" />
 </head>
 <body>
-    @if (TempData["result"] != null) {
-        if ((bool)TempData["result"]) {
+    <div class="container">
+        @if (TempData["result"] != null) {
+            if ((bool)TempData["result"]) {
             <!--操作成功通知-->
-            <div class="alert alert-success" style="max-width:800px;margin:10px 0px 20px 0px">
-                <button class="close" data-dismiss="alert">×</button>
-                <span>保存成功！</span>
-            </div>
-        }
-        else {
+                <div class="alert alert-success" style="max-width:800px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>保存成功！</span>
+                </div>
+            }
+            else {
             <!--操作失败通知-->
-            <div class="alert alert-error" style="max-width:800px;margin:10px 0px 20px 0px">
-                <button class="close" data-dismiss="alert">×</button>
-                <span>抱歉，保存失败，请重试！</span>
-            </div>
+                <div class="alert alert-error" style="max-width:800px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>抱歉，保存失败，请重试！</span>
+                </div>
+            }
         }
-    }
 
-    <div class="title gradient">客户信息</div>
-    <div class="content">
-        <form action="/Resource/DetailHandler" method="post">
-            <input type="hidden" asp-for="@Model.ResourceId" />
-            <table class="table-customer">
-                <tr>
-                    <td style="width:70px">客户姓名</td>
-                    <td style="width:220px"><input type="text" asp-for="@Model.CustomerName" maxlength="15" /></td>
-                    <td style="width:70px">手机</td>
-                    <td style="width:220px"><input type="text" asp-for="@Model.Mobile" reg="regMobile" maxlength="11" /></td>
-                </tr>
-                <tr>
-                    <td>微信</td>
-                    <td><input type="text" asp-for="@Model.Wechat" maxlength="20" reg="regWechat" /></td>
-                    <td>QQ</td>
-                    <td><input type="text" asp-for="@Model.QQ" maxlength="12" reg="regNum" /></td>
-                </tr>
-                <tr>
-                    <td>座机</td>
-                    <td><input type="text" asp-for="@Model.Tel" /></td>
-                    <td>来源</td>
-                    <td>
-                        <select asp-for="@Model.SourceFrom">
-                            <option value="">请选择</option>
-                            @if (Model.SourceList != null) {
+        <div class="title gradient">客户信息</div>
+        <div class="content">
+            <form action="/Resource/DetailHandler" method="post">
+                <input type="hidden" asp-for="@Model.ResourceId" />
+                <table class="table-customer">
+                    <tr>
+                        <td style="width:70px">客户姓名</td>
+                        <td style="width:220px"><input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" /></td>
+                        <td style="width:70px">手机</td>
+                        <td style="width:220px"><input type="text" asp-for="@Model.Mobile" class="input" reg="regMobile" maxlength="11" /></td>
+                    </tr>
+                    <tr>
+                        <td>微信</td>
+                        <td><input type="text" asp-for="@Model.Wechat" class="input" maxlength="20" reg="regWechat" /></td>
+                        <td>QQ</td>
+                        <td><input type="text" asp-for="@Model.QQ" class="input" maxlength="12" reg="regNum" /></td>
+                    </tr>
+                    <tr>
+                        <td>座机</td>
+                        <td><input type="text" asp-for="@Model.Tel" class="input" /></td>
+                        <td>来源</td>
+                        <td>
+                            <select asp-for="@Model.SourceFrom" class="select">
+                                <option value="">请选择</option>
+                                @if (Model.SourceList != null) {
                                 foreach (var source in Model.SourceList) {
                                     if (source.Id == Model.SourceFrom) {
-                                        <option value="@source.Id" selected="selected">@source.SourceName</option>
+                            <option value="@source.Id" selected="selected">@source.SourceName</option>
                                     }
                                     else {
-                                        <option value="@source.Id">@source.SourceName</option>
+                            <option value="@source.Id">@source.SourceName</option>
                                     }
                                 }
                             }
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>客户性别</td>
-                    <td>
-                        <select asp-for="@Model.Sex">
-                            <option value="">请选择</option>
-                            @if (Model.Sex == 1) {
-                                <option value="1" selected="selected">男</option>
-                            }
-                            else {
-                                <option value="1">男</option>
-                            }
-                            @if (Model.Sex == 2) {
-                                <option value="2" selected="selected">女</option>
-                            }
-                            else {
-                                <option value="2">女</option>
-                            }
-                        </select>
-                    </td>
-                    <td>意向</td>
-                    <td>
-                        <select asp-for="@Model.Inclination">
-                            <option value="">请选择</option>
-                            @if (Model.InclinationList != null) {
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>客户性别</td>
+                        <td>
+                            <select asp-for="@Model.Sex" class="select">
+                                <option value="">请选择</option>
+                                @if (Model.Sex == 1) {
+                                    <option value="1" selected="selected">男</option>
+                                }
+                                else {
+                                    <option value="1">男</option>
+                                }
+                                @if (Model.Sex == 2) {
+                                    <option value="2" selected="selected">女</option>
+                                }
+                                else {
+                                    <option value="2">女</option>
+                                }
+                            </select>
+                        </td>
+                        <td>意向</td>
+                        <td>
+                            <select asp-for="@Model.Inclination" class="select">
+                                <option value="">请选择</option>
+                                @if (Model.InclinationList != null) {
                                 foreach (var inc in Model.InclinationList) {
                                     if (inc.value == Model.Inclination) {
                                         <option value="@inc.value" selected="selected">@inc.displayText</option>
@@ -101,56 +102,56 @@
                                     }
                                 }
                             }
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>地址</td>
-                    <td><input type="text" asp-for="@Model.Address" maxlength="50" /></td>
-                    <td>资源状态</td>
-                    <td>
-                        <select asp-for="@Model.Status">
-                            <option value="">请选择</option>
-                            @if (Model.StatusList != null) {
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>地址</td>
+                        <td><input type="text" asp-for="@Model.Address" class="input" maxlength="50" /></td>
+                        <td>资源状态</td>
+                        <td>
+                            <select asp-for="@Model.Status" class="select">
+                                <option value="">请选择</option>
+                                @if (Model.StatusList != null) {
                                 foreach (var status in Model.StatusList) {
                                     if (status.value == Model.Status) {
-                                        <option value="@status.value" selected="selected">@status.displayText</option>
+                            <option value="@status.value" selected="selected">@status.displayText</option>
                                     }
                                     else {
-                                        <option value="@status.value">@status.displayText</option>
+                            <option value="@status.value">@status.displayText</option>
                                     }
                                 }
                             }
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>其他说明</td>
-                    <td colspan="3">
-                        <textarea asp-for="@Model.Remark"></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <a href="javascript:;" onclick="customerSave()">点击保存</a>
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <div class="title gradient">洽谈记录</div>
-    <div class="content">
-        <table class="table-talk" style="width:700px">
-            <thead>
-                <tr>
-                    <th style="width:120px;text-align:left">时间</th>
-                    <th style="width:70px;text-align:left">洽谈人</th>
-                    <th style="width:85px;text-align:left">洽谈方式</th>
-                    <th style="width:400px;text-align:left">结果</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>其他说明</td>
+                        <td colspan="3">
+                            <textarea asp-for="@Model.Remark" class="textarea"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <a href="javascript:;" onclick="customerSave()">点击保存</a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="title gradient">洽谈记录</div>
+        <div class="content">
+            <table class="table-talk" style="width:700px">
+                <thead>
+                    <tr>
+                        <th style="width:120px;text-align:left">时间</th>
+                        <th style="width:70px;text-align:left">洽谈人</th>
+                        <th style="width:85px;text-align:left">洽谈方式</th>
+                        <th style="width:400px;text-align:left">结果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
                     foreach (var record in Model.TalkRecords) {
                         <tr>
                             <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
@@ -165,40 +166,41 @@
                         <td colspan="4">还没有洽谈记录</td>
                     </tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <table style="border-collapse:collapse">
-            <tr>
-                <td>
-                    洽谈方式：
-                </td>
-                <td style="width:110px">
-                    <select id="talkWay">
-                        <option value="1">电话</option>
-                        <option value="2">网聊</option>
-                        <option value="3">面谈</option>
-                        <option value="4">Email</option>
-                        <option value="5">其他</option>
-                    </select>
-                </td>
-                <td>小结：</td>
-                <td style="width:320px">
-                    <textarea style="width:300px;height:30px" id="talkResult"></textarea>
-                </td>
-                <td>
-                    <input type="button" value="添加" style="cursor:pointer" onclick="addTalkRecord()" />
-                </td>
-            </tr>
-        </table>
+            <table style="border-collapse:collapse">
+                <tr>
+                    <td>
+                        洽谈方式：
+                    </td>
+                    <td style="width:110px">
+                        <select id="talkWay">
+                            <option value="1">电话</option>
+                            <option value="2">网聊</option>
+                            <option value="3">面谈</option>
+                            <option value="4">Email</option>
+                            <option value="5">其他</option>
+                        </select>
+                    </td>
+                    <td>小结：</td>
+                    <td style="width:320px">
+                        <textarea style="width:300px;height:30px" id="talkResult"></textarea>
+                    </td>
+                    <td>
+                        <input type="button" value="添加" style="cursor:pointer" onclick="addTalkRecord()" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="margin-top:33px;display:none">
+            <a href="javascript:;" onclick="javascript:window.close()" class="close_page">关闭页面</a>
+        </div>
+        @*<div class="title gradient">签约</div>
+            <div class="content">
+                <span style="color:green">已签约</span>。签约金额19800元。
+            </div>*@
     </div>
-    <div style="margin-top:33px;display:none">
-        <a href="javascript:;" onclick="javascript:window.close()" class="close_page">关闭页面</a>
-    </div>
-    @*<div class="title gradient">签约</div>
-    <div class="content">
-        <span style="color:green">已签约</span>。签约金额19800元。
-    </div>*@
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script type="text/javascript">
         var regMobile = /^1[3,4,5,7,8]\d{9}$/;
