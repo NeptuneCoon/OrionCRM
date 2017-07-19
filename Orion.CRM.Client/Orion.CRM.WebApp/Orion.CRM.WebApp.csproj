@@ -112,6 +112,7 @@
     <Content Include="wwwroot\vendors\bootstrap-wysihtml5\VERSION" />
     <Content Include="wwwroot\vendors\chosen-sprite%402x.png" />
     <Content Include="wwwroot\vendors\chosen-sprite.png" />
+    <Content Include="wwwroot\vendors\chosen.css" />
     <Content Include="wwwroot\vendors\chosen.jquery.min.js" />
     <Content Include="wwwroot\vendors\chosen.min.css" />
     <Content Include="wwwroot\vendors\ckeditor\adapters\jquery.js" />

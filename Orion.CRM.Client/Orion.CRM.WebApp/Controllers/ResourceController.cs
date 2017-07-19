@@ -421,6 +421,10 @@ namespace Orion.CRM.WebApp.Controllers
                 string apiRecord = _AppConfig.WebApiHost + "api/TalkRecord/GetRecordsByResourceId?resourceId=" + id;
                 viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
 
+                // 签约记录
+                string apiSign = _AppConfig.WebApiHost + "api/CustomerSign/GetSignByResourceId?resourceId=" + id;
+                viewModel.Sign = APIInvoker.Get<Models.Sign.CustomerSign>(apiSign);
+
                 // 资源状态&意向&来源
                 viewModel.StatusList = AppDTO.GetStatusFromJson();
                 viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
@@ -495,6 +499,10 @@ namespace Orion.CRM.WebApp.Controllers
                 // 签约记录
                 string apiSign = _AppConfig.WebApiHost + "api/CustomerSign/GetSignByResourceId?resourceId=" + resource.Id;
                 viewModel.Sign = APIInvoker.Get<Models.Sign.CustomerSign>(apiSign);
+
+                // 组织机构下的业务员
+                string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByProjectId?projectId=" + resource.ProjectId;
+                viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
             }
 
             return View(viewModel);
@@ -508,6 +516,13 @@ namespace Orion.CRM.WebApp.Controllers
                 sign.CreateTime = DateTime.Now;
                 string signApiUrl = _AppConfig.WebApiHost + "api/CustomerSign/InsertSign";
                 bool result = APIInvoker.Post<bool>(signApiUrl, sign);
+
+                if (result) {
+                    // 更新当前资源状态为“已签约”
+                    string statusApi = _AppConfig.WebApiHost + $"api/Resource/SetResourceStatus?resourceId={sign.ResourceId}&status=5";
+                    result = APIInvoker.Get<bool>(statusApi);
+                }
+
                 return result;
             }
             return false;

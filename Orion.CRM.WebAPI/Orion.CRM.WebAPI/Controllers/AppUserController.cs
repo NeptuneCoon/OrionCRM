@@ -53,6 +53,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult GetAllUsersByProjectId(int projectId)
+        {
+            try {
+                IEnumerable<Entity.AppUserComplex> users = service.GetAllUsersByProjectId(projectId);
+                APIDataResult dataResult = new APIDataResult(200, users);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetUserById(int id)
         {
             try {

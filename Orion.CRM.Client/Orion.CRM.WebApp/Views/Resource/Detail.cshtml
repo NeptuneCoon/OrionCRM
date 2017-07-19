@@ -18,17 +18,11 @@
         @if (TempData["result"] != null) {
             if ((bool)TempData["result"]) {
             <!--操作成功通知-->
-                <div class="alert alert-success" style="max-width:800px;margin:10px 0px 20px 0px">
-                    <button class="close" data-dismiss="alert">×</button>
-                    <span>保存成功！</span>
-                </div>
+                <div class="self-alert">保存成功！</div>
             }
             else {
             <!--操作失败通知-->
-                <div class="alert alert-error" style="max-width:800px;margin:10px 0px 20px 0px">
-                    <button class="close" data-dismiss="alert">×</button>
-                    <span>抱歉，保存失败，请重试！</span>
-                </div>
+                <div class="self-alert">抱歉，保存失败，请重试！</div>
             }
         }
 
@@ -59,10 +53,10 @@
                                 @if (Model.SourceList != null) {
                                 foreach (var source in Model.SourceList) {
                                     if (source.Id == Model.SourceFrom) {
-                            <option value="@source.Id" selected="selected">@source.SourceName</option>
+                                        <option value="@source.Id" selected="selected">@source.SourceName</option>
                                     }
                                     else {
-                            <option value="@source.Id">@source.SourceName</option>
+                                        <option value="@source.Id">@source.SourceName</option>
                                     }
                                 }
                             }
@@ -115,10 +109,10 @@
                                 @if (Model.StatusList != null) {
                                 foreach (var status in Model.StatusList) {
                                     if (status.value == Model.Status) {
-                            <option value="@status.value" selected="selected">@status.displayText</option>
+                                        <option value="@status.value" selected="selected">@status.displayText</option>
                                     }
                                     else {
-                            <option value="@status.value">@status.displayText</option>
+                                        <option value="@status.value">@status.displayText</option>
                                     }
                                 }
                             }
@@ -133,7 +127,7 @@
                     </tr>
                     <tr>
                         <td colspan="4">
-                            <a href="javascript:;" onclick="customerSave()">点击保存</a>
+                            <input type="button" value="点击保存" onclick="customerSave()" class="input" style="cursor:pointer" />
                         </td>
                     </tr>
                 </table>
@@ -175,7 +169,7 @@
                         洽谈方式：
                     </td>
                     <td style="width:110px">
-                        <select id="talkWay">
+                        <select id="talkWay" class="select">
                             <option value="1">电话</option>
                             <option value="2">网聊</option>
                             <option value="3">面谈</option>
@@ -188,7 +182,7 @@
                         <textarea style="width:300px;height:30px" id="talkResult"></textarea>
                     </td>
                     <td>
-                        <input type="button" value="添加" style="cursor:pointer" onclick="addTalkRecord()" />
+                        <input type="button" value="添加" style="cursor:pointer" class="input" onclick="addTalkRecord()" />
                     </td>
                 </tr>
             </table>
@@ -196,12 +190,15 @@
         <div style="margin-top:33px;display:none">
             <a href="javascript:;" onclick="javascript:window.close()" class="close_page">关闭页面</a>
         </div>
-        @*<div class="title gradient">签约</div>
+        @if (Model.Sign != null && Model.Sign.Amount > 0) {
+            <div class="title gradient">签约</div>
             <div class="content">
-                <span style="color:green">已签约</span>。签约金额19800元。
-            </div>*@
+                <span style="color:green">已签约。</span><br />
+                <span>签约金额@(Model.Sign.Amount)元。签约人：<b>@Model.Sign.SignMan</b>。</span>
+            </div>
+        }
     </div>
-    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/vendors/jquery-1.9.1.js"></script>
     <script type="text/javascript">
         var regMobile = /^1[3,4,5,7,8]\d{9}$/;
         var regNum = /^\d+$/;//数字

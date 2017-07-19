@@ -34,6 +34,13 @@ namespace Orion.CRM.DataAccess
             return users;
         }
 
+        public IEnumerable<Entity.AppUserComplex> GetAllUsersByProjectId(int projectId)
+        {
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            IEnumerable<Entity.AppUserComplex> users = SqlMapHelper.GetSqlMapResult<Entity.AppUserComplex>("AppUserDomain", "GetAllUsersByProjectId", param);
+            return users;
+        }
+
         public Entity.AppUser GetUserById(int id)
         {
             SqlParameter param = new SqlParameter("@Id", id);

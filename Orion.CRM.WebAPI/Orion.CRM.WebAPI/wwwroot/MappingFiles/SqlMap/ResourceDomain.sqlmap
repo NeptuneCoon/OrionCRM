@@ -157,8 +157,9 @@
     <SqlMapDetail>
       <SqlName>GetResourceByNameMobileWechatQQ</SqlName>
       <OriginalSqlString>
-        select A.* from [Resource] A
+        select A.*,C.ProjectId from [Resource] A
         left join ResourceOrganization B on A.Id=B.ResourceId
+        left join ResourceProject C on A.Id=C.ResourceId
         where OrgId=@OrgId and (CustomerName=@Key or Mobile=@Key or Tel=@Key or Wechat=@Key or QQ=@Key)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

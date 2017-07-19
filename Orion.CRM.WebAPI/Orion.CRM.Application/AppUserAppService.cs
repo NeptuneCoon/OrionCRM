@@ -24,6 +24,11 @@ namespace Orion.CRM.Application
             return adapter.GetAllUsersByGroupId(groupId);
         }
 
+        public IEnumerable<Entity.AppUserComplex> GetAllUsersByProjectId(int projectId)
+        {
+            return adapter.GetAllUsersByProjectId(projectId);
+        }
+
         public Entity.AppUser GetUserById(int id)
         {
             return adapter.GetUserById(id);

@@ -29,6 +29,7 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string SourceFromText { get; set; }
         public string InclinationText { get; set; }
         public List<Models.Resource.TalkRecord> TalkRecords { get; set; }
+        public List<Models.AppUser.AppUserComplex> OrgUsers { get; set; }
         public Models.Sign.CustomerSign Sign { get; set; }
 
     }

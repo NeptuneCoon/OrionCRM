@@ -26,9 +26,18 @@ namespace Orion.CRM.WebApp.Controllers
             return View();
         }
 
+        // 业绩概览
+        public IActionResult Overview()
+        {
+            return View();
+        }
+
+        // 组业绩分析
         public IActionResult Group()
         {
             return View();
         }
+
+
     }
 }

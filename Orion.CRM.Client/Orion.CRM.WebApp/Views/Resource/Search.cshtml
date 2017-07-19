@@ -11,6 +11,7 @@
     <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
     <link href="~/assets/pikaday/theme.css" rel="stylesheet" />
     <link href="~/assets/pikaday/triangle.css" rel="stylesheet" />
+    <link href="~/vendors/chosen.css" rel="stylesheet" />
     <style type="text/css">
         .search-input {
             border: 1px solid gray;
@@ -19,27 +20,131 @@
             height: 16px !important;
             width: 91px;
             font-size: 12px !important;
+            margin-bottom:0px !important;
         }
     </style>
 }
 @section scripts{
     <script src="~/assets/pikaday/moment.min.js"></script>
     <script src="~/assets/pikaday/pikaday.js"></script>
+    <script src="~/vendors/chosen.jquery.min.js"></script>
     <script type="text/javascript">
-        var picker = new Pikaday({
-            field: document.getElementById('signTime'),
-            format: 'YYYY-MM-DD',
-            i18n: {
-                previousMonth: '上一月',
-                nextMonth: '下一月',
-                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                weekdays: ['日', '一', '二', '三', '四', '五', '六'],
-                weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
-            },
-            showMonthAfterYear: true,
-            theme: 'triangle-theme',
-            yearSuffix: '年'
+        $(function () {
+            // 日历控件初始化
+            var picker = new Pikaday({
+                field: document.getElementById('signTime'),
+                format: 'YYYY-MM-DD',
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年'
+            });
+
+            // jquery-chosen下拉控件初始化
+            $(".chzn-select").chosen({
+                width: '190px', no_results_text: "没有业务员"
+            });
         });
+
+        // 创建一条签约记录
+        function createSignRecord() {
+            $('#successAlert').hide();
+            $('#errorAlert').hide();
+            $('#errorTips').hide();
+
+            var res = checkParam();
+            if (res.result) {
+                $('#errorTips').hide();
+                var resourceId = $('#hidResourceId').val();
+                var amount = $.trim($('#signAmount').val());
+                var signTime = $.trim($('#signTime').val());
+                var signUserId = $('#signUser').find("option:selected").val();
+
+                var data = { "ResourceId": resourceId, "Amount": amount, "SignTime": signTime, "SignUserId": signUserId };
+                $.post("/Resource/InsertCustomerSign", data , function (result) {
+                    if (result) {
+                        $('#successAlert').show();
+                        var signMan = $('#signUser').find('option:selected').text();
+                        var p = signMan.indexOf('/');
+                        signMan = signMan.substring(0, p);
+                        var signInfo = '';
+                        signInfo += '<span style="color:green">已签约。</span><br/>';
+                        signInfo += '<span>签约金额' + amount + '元。签约人：<b>' + signMan + '</b>。</span>';
+                        $('#signContent').html(signInfo);
+                    }
+                    else {
+                        $('#errorAlert').show();
+                    }
+                });
+            }
+            else {
+                $('#errorTips').html(res.errorMsg);
+                $('#errorTips').show();
+                if (res.errorElement) {
+                    $(res.errorElement).focus();
+                }
+            }
+        }
+        function checkParam() {
+            var res = { result: true };
+
+            // 签约金额的校验
+            var amount = $.trim($('#signAmount').val());
+            var reg1 = eval($('#signAmount').attr("reg"));
+            if (amount == "") {
+                res.result = false;
+                res.errorMsg = '签约金额不能为空！';
+                res.errorElement = ('#signAmount');
+            }
+            else if (amount <= 0 || !reg1.test(amount)) {
+                res.result = false;
+                res.errorMsg = '签约金额格式有误！';
+                res.errorElement = ('#signAmount');
+            }
+
+            if(res.result){
+                // 签约日期的校验
+                var signTime = $.trim($('#signTime').val());
+                var reg2 = eval($('#signTime').attr("reg"));
+                if (signTime == "") {
+                    res.result = false;
+                    res.errorMsg = '签约日期不能为空！';
+                    res.errorElement = $('#signTime');
+                }
+                else if (!reg2.test(signTime)) {
+                    res.result = false;
+                    res.errorMsg = '签约日期格式有误！';
+                    res.errorElement = $('#signTime');
+                }
+                else {
+                    // 验证日期是否是一个未来的日期
+                    var a = moment(moment().format('YYYY-MM-DD'));
+                    var b = moment(signTime);
+                    if (a.diff(b) < 0) {
+                        res.result = false;
+                        res.errorMsg = '签约日期必须在今天或今天之前！';
+                        res.errorElement = $('#signTime');
+                    }
+                }
+            }
+            if(res.result){
+                // 签约用户的校验
+                var signUserId = $('#signUser').find("option:selected").val();
+                if (!signUserId) {
+                    res.result = false;
+                    res.errorMsg = '请选择完成签约的业务员！';
+                    res.errorElement = $('#signUser');
+                }
+            }
+            console.info(res);
+            return res;
+        }
 
     </script>
 }
@@ -59,7 +164,18 @@
             </div>
 
             @if (Model != null && Model.Id > 0) {
+                <input type="hidden" id="hidResourceId" value="@Model.Id" />
                 <div style="margin-top:20px">
+                    <!--操作成功通知-->
+                    <div class="alert alert-success" id="successAlert" style="max-width:750px;margin:10px 0px 20px 0px;display:none">
+                        <button class="close" data-dismiss="alert">×</button>
+                        <span>恭喜您，操作成功！</span>
+                    </div>
+                    <!--操作失败通知-->
+                    <div class="alert alert-error" id="errorAlert" style="max-width:750px;margin:10px 0px 20px 0px;display:none">
+                        <button class="close" data-dismiss="alert">×</button>
+                        <span>抱歉，操作失败，请重试！</span>
+                    </div>
                     <div class="title gradient">客户信息</div>
                     <div class="content">
                         <input type="hidden" asp-for="@Model.Id" />
@@ -141,29 +257,35 @@
                         </table>
                     </div>
                     <div class="title gradient">签约</div>
-                    <div class="content">
+                    <div class="content" id="signContent">
                         @if (Model.Sign != null) { 
                             <span style="color:green">已签约。</span><br/>
-                            <span>签约金额@(Model.Sign.Amount)元。签约人：@Model.Sign.SignMan。</span>
+                            <span>签约金额@(Model.Sign.Amount)元。签约人：<b>@Model.Sign.SignMan</b>。</span>
                         }
                         else {
                             <table>
                                 <tr>
                                     <td>合同金额：</td>
-                                    <td style="width:120px"><input type="text" id="signAmount" class="search-input" /></td>
+                                    <td style="width:120px;vertical-align:middle"><input type="text" id="signAmount" reg="regNum" class="search-input" maxlength="9" /></td>
                                     <td>签约时间：</td>
-                                    <td style="width:120px"><input type="text" id="signTime" class="search-input" /></td>
+                                    <td style="width:120px"><input type="text" id="signTime" reg="regDate" class="search-input" /></td>
                                     <td>签约人：</td>
-                                    <td style="width:120px">
-                                        <select style="width:80px">
-                                            <option>张三</option>
+                                    <td style="width:200px">
+                                        <select id="signUser" class="chzn-select span4">
+                                            <option value="">请选择业务</option>
+                                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                                                foreach(var user in Model.OrgUsers) {
+                                                    <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                                }
+                                            }
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="button" value="添加" style="margin-top:-10px" />
+                                        <input type="button" value="添加" onclick="createSignRecord()" class="input" style="padding:2px 4px !important"  />
                                     </td>
                                 </tr>
                             </table>
+                            <div style="color:red;margin:10px 0px;display:none" id="errorTips"></div>
                         }
                     </div>
                 </div>

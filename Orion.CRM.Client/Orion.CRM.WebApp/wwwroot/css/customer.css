@@ -98,3 +98,12 @@ a:focus, a:hover {
     color: #106382;
     text-decoration: underline;
 }
+
+/* 警示框 */
+.self-alert {
+    background-color: #faebcc;
+    width: 800px;
+    padding: 5px 8px;
+    border-radius: 3px;
+    margin-bottom:10px;
+}
