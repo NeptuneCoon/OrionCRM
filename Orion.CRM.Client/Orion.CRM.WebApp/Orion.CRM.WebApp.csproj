@@ -1241,8 +1241,6 @@
   <ItemGroup>
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Customer\" />
-    <Folder Include="Views\Settings\" />
-    <Folder Include="Views\Settings\" />
     <Folder Include="Views\Shared\Components\TopMenu\" />
     <Folder Include="Views\Shared\Components\LeftMenu\" />
   </ItemGroup>

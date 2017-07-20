@@ -37,6 +37,21 @@
       <CommandType>Text</CommandType>
       <Description>根据资源Id获取签约记录</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignsByTime</SqlName>
+      <OriginalSqlString>
+        select A.*,C.GroupId,D.GroupName from [CustomerSign] A
+        inner join [ResourceOrganization] B on A.ResourceId=B.ResourceId
+        inner join [UserGroup] C on A.SignUserId=C.UserId
+        inner join [Group] D on C.GroupId=D.Id
+        where SignTime between @BeginTime and @EndTime
+        and B.OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据时间范围和OrgId获取签约记录</Description>
+    </SqlMapDetail>
     
 	</SqlMapConfigurations>
 </SqlMap>

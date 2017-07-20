@@ -14,45 +14,51 @@
     /*
     图表的初始化
     */
-        $(function () {
-        /*
-        var jsonString = $('#hidSourceStat').val();
-        var data = [];
-        if (jsonString) {
-            var jsonArr = JSON.parse(jsonString);
+    $(function () {
+        /* 数据格式化 */
+        var dataFormat = function (jsonArr) {
+            var arr = [];
             for (var i = 0; i < jsonArr.length; i++) {
                 var item = jsonArr[i];
-                data.push({ label: item.SourceName, value: item.ResourceCount });
+                arr.push({ label: item.GroupName, value: item.GroupSaleAmount });
             }
-            console.info(data);
+            return arr;
+            };
+
+        // 月业绩数据准备
+        var monthJsonString = $('#hidMonthSigns').val();
+        var month_data = [];
+        if (monthJsonString) {
+            var jsonArr = JSON.parse(monthJsonString);
+            //for (var i = 0; i < jsonArr.length; i++) {
+            //    var item = jsonArr[i];
+            //    month_data.push({ label: item.GroupName, value: item.GroupSaleAmount });
+            //}
+            //console.info(month_data);
+            month_data = dataFormat(jsonArr);
         }
-        */
+        // 年业绩数据准备
+        var yearJsonString = $('#hidYearSigns').val();
+        var year_data = [];
+        if (yearJsonString) {
+            var jsonArr = JSON.parse(yearJsonString);
+            year_data = dataFormat(jsonArr);
+        }
+
         // 环形图
         Morris.Donut({
             element: 'month',
-            data: [
-                { label: '315', value: 25 },
-                { label: 'Frosted', value: 40 },
-                { label: 'Custard', value: 25 },
-                { label: 'Sugar', value: 10 }
-            ],
-            formatter: function (y) { return y + "条" }
+            data: month_data,
+            formatter: function (y) { return y + "元" }
         });
 
         // 柱状图
         Morris.Bar({
             element: 'year',
-            data: [
-                { device: 'iPhone', geekbench: 136 },
-                { device: 'iPhone 3G', geekbench: 137 },
-                { device: 'iPhone 3GS', geekbench: 275 },
-                { device: 'iPhone 4', geekbench: 380 },
-                { device: 'iPhone 4S', geekbench: 655 },
-                { device: 'iPhone 5', geekbench: 1571 }
-            ],
-            xkey: 'device',
-            ykeys: ['geekbench'],
-            labels: ['总数'],
+            data: year_data,
+            xkey: 'label',
+            ykeys: ['value'],
+            labels: ['业绩'],
             barRatio: 0.4,
             xLabelAngle: 35,
             hideHover: 'auto'
@@ -61,7 +67,8 @@
     </script>
 }
 <h3>业绩概览</h3>
-<input type="hidden" id="hidSourceStat" value="@ViewBag.SourceStat" />
+<input type="hidden" id="hidMonthSigns" value="@Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.MonthSigns)" />
+<input type="hidden" id="hidYearSigns" value="@Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.YearSigns)" />
 
 <!--当月业绩，环形图-->
 <div class="row">
@@ -79,7 +86,7 @@
 <div class="row">
     <div class="span7">
         <div class="graph-container">
-            <span class="graph-mark">本年</span>
+            <span class="graph-mark">年度</span>
             <div class="caption">本年业绩(2017-1-1至今)</div>
             <div id="year" class="graph" style="position:relative;"></div>
         </div>

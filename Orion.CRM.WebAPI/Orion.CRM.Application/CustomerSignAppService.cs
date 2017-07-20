@@ -22,5 +22,10 @@ namespace Orion.CRM.Application
         {
             return adapter.GetSignByResourceId(resourceId);
         }
+
+        public IEnumerable<Entity.CustomerSign> GetSignsByTime(int orgId, string beginTime, string endTime)
+        {
+            return adapter.GetSignsByTime(orgId, beginTime, endTime);
+        }
     }
 }

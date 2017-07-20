@@ -53,5 +53,18 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        public APIDataResult GetSignsByTime(int orgId, string beginTime, string endTime)
+        {
+            try {
+                var result = service.GetSignsByTime(orgId, beginTime, endTime);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

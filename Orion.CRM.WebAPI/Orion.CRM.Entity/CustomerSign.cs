@@ -30,5 +30,13 @@ namespace Orion.CRM.Entity
         /// 此条记录的添加人
         /// </summary>
         public string AppendMan { get; set; }
+        /// <summary>
+        /// 组Id
+        /// </summary>
+        public int GroupId { get; set; }
+        /// <summary>
+        /// 组名
+        /// </summary>
+        public string GroupName { get; set; }
     }
 }
