@@ -36,6 +36,7 @@
     <Content Include="wwwroot\config\status.json" />
     <Content Include="wwwroot\config\inclination.json" />
     <Content Include="wwwroot\config\talkcount.json" />
+    <Content Include="wwwroot\css\chart-extension-rank.css" />
     <Content Include="wwwroot\css\customer.css" />
     <Content Include="wwwroot\fonts\Product Sans.ttf" />
     <Content Include="wwwroot\images\bg-input-focus.png" />

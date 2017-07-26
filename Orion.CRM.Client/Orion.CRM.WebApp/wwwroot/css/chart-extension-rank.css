@@ -1,0 +1,133 @@
+﻿.by {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.tr {
+    width: 100%;
+    /*color: #555;*/
+    color: #FFD39B;
+    text-align: inherit;
+    z-index: 0;
+}
+
+.tr .ts {
+    color: #222;
+}
+
+.tr:focus, .tr:hover {
+    /*color: #555;*/
+    color: #FF7F24;
+    text-decoration: none;
+    background-color: #f7f7f9;
+}
+
+.tr:active {
+    color: #000;
+    background-color: #f5f5f5;
+}
+
+.afz {
+    margin-bottom: 1rem !important;
+}
+
+.yg {
+    -webkit-box-pack: justify !important;
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+}
+
+.rp {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0.55rem 1.05rem;
+    margin-bottom: -1px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    text-decoration:none;
+}
+
+.rp:last-child {
+    margin-bottom: 0;
+}
+
+.rp:focus, .rp:hover {
+    text-decoration: none;
+}
+
+.rp.disabled, .rp:disabled {
+    color: #aaa;
+    cursor: not-allowed;
+    background-color: #fff;
+}
+
+.rp.disabled .ts, .rp:disabled .ts {
+    color: inherit;
+}
+
+.rp.disabled .tt, .rp:disabled .tt {
+    color: #aaa;
+}
+
+.rp.active {
+    z-index: 2;
+    color: #fff;
+    background-color: #1997c6;
+    border-color: #1997c6;
+}
+
+.rp.active .ts,
+.rp.active .ts > small,
+.rp.active .ts > .cr {
+    color: inherit;
+}
+
+.rp.active .tt {
+    color: #e3f5fb;
+}
+
+.tu .rp {
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+}
+
+.tu:first-child .rp:first-child {
+    border-top: 0;
+}
+
+.tu:last-child .rp:last-child {
+    border-bottom: 0;
+}
+
+.azj {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    display: block;
+    /*background-color: #f7f7f7;*/
+    background-color: #0B62A4;
+}
+.axn {
+    color: #999 !important;
+}
+
+a.axn:focus, a.axn:hover {
+    color: gray !important;
+}

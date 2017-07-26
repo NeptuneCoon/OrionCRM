@@ -13,22 +13,6 @@ namespace Orion.CRM.WebApp.Controllers
     /// </summary>
     public class PerformanceController : BaseController
     {
-
-        public IActionResult Month()
-        {
-            return View();
-        }
-
-        public IActionResult Quarter()
-        {
-            return View();
-        }
-
-        public IActionResult Year()
-        {
-            return View();
-        }
-
         // “µº®∏≈¿¿
         public IActionResult Overview()
         {

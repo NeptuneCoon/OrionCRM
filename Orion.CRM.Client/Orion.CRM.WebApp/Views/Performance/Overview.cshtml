@@ -5,11 +5,11 @@
 }
 @section styles{
     <link href="~/assets/morris.chart/0.5.1/morris.css" rel="stylesheet" />
+    <link href="~/css/chart-extension-rank.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
     <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
-
     <script type="text/javascript">
     /*
     图表的初始化
@@ -72,7 +72,7 @@
 
 <!--当月业绩，环形图-->
 <div class="row">
-    <div class="span7">
+    <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">月度</span>
             <div class="caption">当月业绩</div>
@@ -84,7 +84,7 @@
 
 <!--本年业绩，柱状图-->
 <div class="row">
-    <div class="span7">
+    <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">年度</span>
             <div class="caption">本年业绩(2017-1-1至今)</div>
@@ -95,11 +95,44 @@
 
 <!--最佳业务排行-->
 <div class="row">
-    <div class="span7">
+    <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">业务排行</span>
-            <div class="caption">最具潜力业务排行</div>
-            <div id="saler" class="graph" style="position:relative;"></div>
+            <div class="caption">最具潜力业务排行(top20)</div>
+            <div id="saler" style="padding:20px;width:510px">
+                <div class="by afz">
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 62.4%;"></span>
+                        <span>United States</span>
+                        <span class="axn">62.4%</span>
+                    </a>
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 15.0%;"></span>
+                        <span>India</span>
+                        <span class="axn">15.0%</span>
+                    </a>
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 5.0%;"></span>
+                        <span>United Kingdom</span>
+                        <span class="axn">5.0%</span>
+                    </a>
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 5.0%;"></span>
+                        <span>Canada</span>
+                        <span class="axn">5.0%</span>
+                    </a>
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 4.5%;"></span>
+                        <span>Russia</span>
+                        <span class="axn">4.5%</span>
+                    </a>
+                    <a class="rp tr yg" href="#">
+                        <span class="azj" style="width: 2.3%;"></span>
+                        <span>Mexico</span>
+                        <span class="axn">2.3%</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
