@@ -33,6 +33,38 @@ namespace Orion.CRM.WebApp.Controllers
             ViewBag.MonthSigns = ConvertToSignViewModel(monthSignRecords);
             ViewBag.YearSigns = ConvertToSignViewModel(yearSignRecords);
 
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            if(monthSignRecords != null && monthSignRecords.Count > 0) {
+                foreach(var record in monthSignRecords) {
+                    if(dict.ContainsKey(record.SignMan)){
+                        dict[record.SignMan] += record.Amount;
+                    }
+                    else {
+                        dict.Add(record.SignMan, record.Amount);
+                    }
+                }
+            }
+            dict.OrderByDescending(x => x.Value);
+
+            dict.Take(20);
+
+            if(dict != null && dict.Keys.Count > 0) {
+                List<Models.Performance.SignRank> rankRecords = new List<Models.Performance.SignRank>();
+                decimal totalAmount = dict.Sum(x => x.Value);
+                foreach(var item in dict) {
+                    Models.Performance.SignRank rank = new Models.Performance.SignRank();
+                    rank.SignMan = item.Key;
+                    rank.Amount = item.Value;
+                    rank.Percent = (item.Value / totalAmount * 100).ToString("f1");
+
+                    rankRecords.Add(rank);
+                }
+
+                ViewBag.RankRecords = rankRecords;
+            }
+            
+
+
             return View();
         }
 

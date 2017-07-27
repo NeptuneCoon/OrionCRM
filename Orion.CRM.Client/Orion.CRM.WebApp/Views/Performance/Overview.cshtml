@@ -23,18 +23,13 @@
                 arr.push({ label: item.GroupName, value: item.GroupSaleAmount });
             }
             return arr;
-            };
+        };
 
         // 月业绩数据准备
         var monthJsonString = $('#hidMonthSigns').val();
         var month_data = [];
         if (monthJsonString) {
             var jsonArr = JSON.parse(monthJsonString);
-            //for (var i = 0; i < jsonArr.length; i++) {
-            //    var item = jsonArr[i];
-            //    month_data.push({ label: item.GroupName, value: item.GroupSaleAmount });
-            //}
-            //console.info(month_data);
             month_data = dataFormat(jsonArr);
         }
         // 年业绩数据准备
@@ -98,39 +93,21 @@
     <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">业务排行</span>
-            <div class="caption">最具潜力业务排行(top20)</div>
+            <div class="caption">最具潜力业务排行(本月top20)</div>
             <div id="saler" style="padding:20px;width:510px">
                 <div class="by afz">
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 62.4%;"></span>
-                        <span>United States</span>
-                        <span class="axn">62.4%</span>
-                    </a>
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 15.0%;"></span>
-                        <span>India</span>
-                        <span class="axn">15.0%</span>
-                    </a>
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 5.0%;"></span>
-                        <span>United Kingdom</span>
-                        <span class="axn">5.0%</span>
-                    </a>
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 5.0%;"></span>
-                        <span>Canada</span>
-                        <span class="axn">5.0%</span>
-                    </a>
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 4.5%;"></span>
-                        <span>Russia</span>
-                        <span class="axn">4.5%</span>
-                    </a>
-                    <a class="rp tr yg" href="#">
-                        <span class="azj" style="width: 2.3%;"></span>
-                        <span>Mexico</span>
-                        <span class="axn">2.3%</span>
-                    </a>
+                    @if (ViewBag.RankRecords != null && ViewBag.RankRecords.Count > 0) {
+                        foreach (var record in ViewBag.RankRecords) {
+                            <a class="rp tr yg" href="#">
+                                <span class="azj" style="width: @(record.Percent)%;"></span>
+                                <span>@record.SignMan</span>
+                                <span class="axn">@(record.Amount)元</span>
+                            </a>
+                        }
+                    }
+                    else {
+                        <span>还没有数据。</span>
+                    }
                 </div>
             </div>
         </div>

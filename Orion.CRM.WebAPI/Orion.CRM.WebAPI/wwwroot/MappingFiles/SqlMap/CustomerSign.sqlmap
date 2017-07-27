@@ -41,10 +41,11 @@
     <SqlMapDetail>
       <SqlName>GetSignsByTime</SqlName>
       <OriginalSqlString>
-        select A.*,C.GroupId,D.GroupName from [CustomerSign] A
+        select A.*,C.GroupId,D.GroupName,E.RealName as SignMan from [CustomerSign] A
         inner join [ResourceOrganization] B on A.ResourceId=B.ResourceId
         inner join [UserGroup] C on A.SignUserId=C.UserId
         inner join [Group] D on C.GroupId=D.Id
+        inner join [AppUser] E on A.SignUserId=E.Id
         where SignTime between @BeginTime and @EndTime
         and B.OrgId=@OrgId
       </OriginalSqlString>
