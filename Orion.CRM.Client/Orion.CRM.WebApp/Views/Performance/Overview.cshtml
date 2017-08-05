@@ -76,7 +76,7 @@
     <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">月度</span>
-            <div class="caption">当月业绩</div>
+            <div class="caption">本月业绩</div>
             @if (ViewBag.MonthSigns != null && ViewBag.MonthSigns.Count > 0) {
                 <div id="month" class="graph" style="position:relative;">
                 </div>
@@ -115,7 +115,7 @@
         <div class="graph-container">
             <span class="graph-mark">业务排行</span>
             <div class="caption">最具潜力业务排行(本月top20)</div>
-            <div id="saler" style="padding:20px;width:510px">
+            <div id="saler" style="padding:20px;width:540px">
                 <div class="by afz">
                     @if (ViewBag.RankRecords != null && ViewBag.RankRecords.Count > 0) {
                         foreach (var record in ViewBag.RankRecords) {
