@@ -53,5 +53,29 @@ namespace Orion.CRM.DataAccess
             var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>("CustomerSign", "GetSignsByTime", paramArr);
             return result;
         }
+
+        public IEnumerable<Entity.CustomerSign> GetGroupMemberSigns(int groupId, string beginTime, string endTime)
+        {
+            if (groupId <= 0) return null;
+            SqlParameter[] paramArr ={
+                new SqlParameter("@GroupId", groupId),
+                new SqlParameter("@BeginTime", beginTime),
+                new SqlParameter("@EndTime", endTime)
+            };
+            var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>("CustomerSign", "GetGroupMemberSigns", paramArr);
+            return result;
+        }
+
+        public IEnumerable<Entity.CustomerSign> GetProjectGroupSigns(int projectId, string beginTime, string endTime)
+        {
+            if (projectId <= 0) return null;
+            SqlParameter[] paramArr ={
+                new SqlParameter("@ProjectId", projectId),
+                new SqlParameter("@BeginTime", beginTime),
+                new SqlParameter("@EndTime", endTime)
+            };
+            var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>("CustomerSign", "GetProjectGroupSigns", paramArr);
+            return result;
+        }
     }
 }

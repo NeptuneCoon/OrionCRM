@@ -18,9 +18,11 @@
         /* 数据格式化 */
         var dataFormat = function (jsonArr) {
             var arr = [];
-            for (var i = 0; i < jsonArr.length; i++) {
-                var item = jsonArr[i];
-                arr.push({ label: item.GroupName, value: item.GroupSaleAmount });
+            if(jsonArr){
+                for (var i = 0; i < jsonArr.length; i++) {
+                    var item = jsonArr[i];
+                    arr.push({ label: item.GroupName, value: item.GroupSaleAmount });
+                }
             }
             return arr;
         };
@@ -41,23 +43,27 @@
         }
 
         // 环形图
-        Morris.Donut({
-            element: 'month',
-            data: month_data,
-            formatter: function (y) { return y + "元" }
-        });
+        if (month_data.length > 0){
+            Morris.Donut({
+                element: 'month',
+                data: month_data,
+                formatter: function (y) { return y + "元" }
+            });
+        }
 
         // 柱状图
-        Morris.Bar({
-            element: 'year',
-            data: year_data,
-            xkey: 'label',
-            ykeys: ['value'],
-            labels: ['业绩'],
-            barRatio: 0.4,
-            xLabelAngle: 35,
-            hideHover: 'auto'
-        });
+        if (year_data.length > 0) {
+            Morris.Bar({
+                element: 'year',
+                data: year_data,
+                xkey: 'label',
+                ykeys: ['value'],
+                labels: ['业绩'],
+                barRatio: 0.4,
+                xLabelAngle: 35,
+                hideHover: 'auto'
+            });
+        }
     });
     </script>
 }
@@ -71,7 +77,15 @@
         <div class="graph-container">
             <span class="graph-mark">月度</span>
             <div class="caption">当月业绩</div>
-            <div id="month" class="graph" style="position:relative;"></div>
+            @if (ViewBag.MonthSigns != null && ViewBag.MonthSigns.Count > 0) {
+                <div id="month" class="graph" style="position:relative;">
+                </div>
+            }
+            else {
+                <div class="by afz" style="padding:20px;">
+                    <span style="text-align:center">暂无数据</span>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -83,7 +97,14 @@
         <div class="graph-container">
             <span class="graph-mark">年度</span>
             <div class="caption">本年业绩(2017-1-1至今)</div>
-            <div id="year" class="graph" style="position:relative;"></div>
+            @if (ViewBag.YearSigns != null && ViewBag.YearSigns.Count > 0) {
+                <div id="year" class="graph" style="position:relative;"></div>
+            }
+            else {
+                <div class="by afz" style="padding:20px;">
+                    <span style="text-align:center">暂无数据</span>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -106,7 +127,7 @@
                         }
                     }
                     else {
-                        <span>还没有数据。</span>
+                        <span style="text-align:center">暂无数据</span>
                     }
                 </div>
             </div>

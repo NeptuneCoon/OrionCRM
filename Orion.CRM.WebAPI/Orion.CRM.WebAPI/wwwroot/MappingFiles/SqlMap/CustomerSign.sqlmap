@@ -53,6 +53,35 @@
       <CommandType>Text</CommandType>
       <Description>根据时间范围和OrgId获取签约记录</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetGroupMemberSigns</SqlName>
+      <OriginalSqlString>
+        select C.*,A.GroupId,B.GroupName,D.RealName as SignMan from [UserGroup] A
+        inner join [Group] B on A.GroupId=B.Id
+        left join [CustomerSign] C on A.UserId=C.SignUserId
+        left join [AppUser] D on A.UserId=D.Id
+        where A.GroupId=@GroupId and (C.SignTime between @BeginTime and @EndTime or C.SignTime is null)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据GroupId和时间范围获取该业务组每个成员的签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetProjectGroupSigns</SqlName>
+      <OriginalSqlString>
+        select C.*,A.GroupId,B.GroupName,D.RealName as SignMan from [UserGroup] A
+        inner join [Group] B on A.GroupId=B.Id
+        left join [CustomerSign] C on A.UserId=C.SignUserId
+        left join [AppUser] D on A.UserId=D.Id
+        left join [UserProject] E on A.UserId=E.UserId
+        where E.ProjectId=@ProjectId and (C.SignTime between @BeginTime and @EndTime or C.SignTime is null)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ProjectId和时间范围获取该项目下每个组的签约记录</Description>
+    </SqlMapDetail>
     
 	</SqlMapConfigurations>
 </SqlMap>

@@ -27,5 +27,15 @@ namespace Orion.CRM.Application
         {
             return adapter.GetSignsByTime(orgId, beginTime, endTime);
         }
+
+        public IEnumerable<Entity.CustomerSign> GetGroupMemberSigns(int groupId, string beginTime, string endTime)
+        {
+            return adapter.GetGroupMemberSigns(groupId, beginTime, endTime);
+        }
+
+        public IEnumerable<Entity.CustomerSign> GetProjectGroupSigns(int projectId, string beginTime, string endTime)
+        {
+            return adapter.GetProjectGroupSigns(projectId, beginTime, endTime);
+        }
     }
 }

@@ -66,5 +66,31 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        public APIDataResult GetGroupMemberSigns(int groupId, string beginTime, string endTime)
+        {
+            try {
+                var result = service.GetGroupMemberSigns(groupId, beginTime, endTime);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch(Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        public APIDataResult GetProjectGroupSigns(int projectId, string beginTime, string endTime)
+        {
+            try {
+                var result = service.GetProjectGroupSigns(projectId, beginTime, endTime);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }
