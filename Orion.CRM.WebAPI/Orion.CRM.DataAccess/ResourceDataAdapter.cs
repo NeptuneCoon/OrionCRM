@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Linq;
 
 namespace Orion.CRM.DataAccess
 {
@@ -86,6 +87,18 @@ namespace Orion.CRM.DataAccess
         }
         #endregion
 
+        #region 删除用户下的所有资源(仅删除资源关系)
+        public int DeleteResourceUserByUserId(int userId)
+        {
+            if (userId <= 0) return 0;
+
+            SqlParameter param = new SqlParameter("UserId", userId);
+
+            int result = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "DeleteResourceUserByUserId", param);
+            return result;
+        } 
+        #endregion
+
         #region 恢复一条资源
         public bool RestoreResource(int id)
         {
@@ -158,6 +171,34 @@ namespace Orion.CRM.DataAccess
 
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "SetResourceStatus", paramArr);
             return count > 0;
+        }
+        #endregion
+
+        #region 批量设置资源状态
+        public int BatchSetResourceStatus(string resourceIds, int status)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "BatchSetResourceStatus").Clone();
+            SqlParameter param = new SqlParameter("@Status", status);
+
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+            return count;
+        }
+        #endregion
+
+        #region 删除指定资源和Group的关系
+        public int DeleteResourceGroupByResourceIds(string resourceIds)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "DeleteResourceGroupByResourceIds").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, null);
+            return count;
         } 
         #endregion
 
@@ -434,7 +475,68 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@SourceFrom", sourceId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "ClearSourceFrom", param);
             return count;
-        } 
+        }
         #endregion
+
+        #region 获取该用户下的资源个数
+        public int GetResourceCountByUserId(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetResourceCountByUserId", param);
+            return count;
+        }
+        #endregion
+
+        #region 划分某一用户的资源到另一用户名下
+        public int ChangeResourceUserOwner(int sourceUserId, int targetUserId)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@SourceUserId", sourceUserId),
+                new SqlParameter("@TargetUserId", targetUserId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "ChangeResourceUserOwner", parameters);
+            return count;
+        }
+        #endregion
+
+        #region 划分某一用户的资源到另一用户所属组下
+        public int ChangeResourceGroupOwner(int sourceUserId, int targetGroupId)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@SourceUserId", sourceUserId),
+                new SqlParameter("@TargetGroupId", targetGroupId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "ChangeResourceGroupOwner", parameters);
+            return count;
+        }
+        #endregion
+
+        public bool ResourceGroupBatchInsert(IEnumerable<Entity.ResourceGroup> resourceGroups)
+        {
+            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.ResourceGroup>("ResourceDomain", "ResourceGroupBatchInsert", resourceGroups);
+            return result;
+        }
+
+        public List<int> GetResourcesByUserId(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            List<int> resourceIds = SqlMapHelper.GetSqlMapResult<int>("ResourceDomain", "GetResourcesByUserId", param).ToList();
+            return resourceIds;
+        }
+
+        public void AssignUserResourcesToPublic(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "AssignUserResourcesToPublic", param);
+        }
+
+        public void AssignUserResourcesToUnassigned(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "AssignUserResourcesToUnassigned", param);
+        }
     }
 }

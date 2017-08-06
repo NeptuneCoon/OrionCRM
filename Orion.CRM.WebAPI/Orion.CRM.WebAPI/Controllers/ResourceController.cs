@@ -57,6 +57,20 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        // 删除ResourceUser记录
+        public APIDataResult DeleteResourceUserByUserId(int userId)
+        {
+            try {
+                int count = service.DeleteResourceUserByUserId(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         // 恢复一条资源
         public APIDataResult RestoreResource(int id)
         {
@@ -190,6 +204,34 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 bool result = service.SetResourceStatus(resourceId, status);
                 APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 批量设置资源状态
+        public APIDataResult BatchSetResourceStatus(string resourceIds, int status)
+        {
+            try {
+                int count = service.BatchSetResourceStatus(resourceIds, status);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 删除指定资源和Group的关系
+        public APIDataResult DeleteResourceGroupByResourceIds(string resourceIds)
+        {
+            try {
+                int count = service.DeleteResourceGroupByResourceIds(resourceIds);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {
@@ -362,6 +404,110 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 int count = service.ClearSourceFrom(sourceId);
                 APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 获取该用户下的资源个数
+        public APIDataResult GetResourceCountByUserId(int userId)
+        {
+            try {
+                int count = service.GetResourceCountByUserId(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 划分某一用户的资源到另一用户名下
+        public APIDataResult ChangeResourceUserOwner(int sourceUserId, int targetUserId)
+        {
+            try {
+                int count = service.ChangeResourceUserOwner(sourceUserId, targetUserId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 划分某一用户的资源到另一用户所属组下
+        public APIDataResult ChangeResourceGroupOwner(int sourceUserId, int targetGroupId)
+        {
+            try {
+                int count = service.ChangeResourceGroupOwner(sourceUserId, targetGroupId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult ResourceGroupBatchInsert([FromBody]IEnumerable<Entity.ResourceGroup> resourceGroups)
+        {
+            try {
+                bool result = service.ResourceGroupBatchInsert(resourceGroups);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        public APIDataResult GetResourcesByUserId(int userId)
+        {
+            try {
+                List<int> resourceIds = service.GetResourcesByUserId(userId);
+                APIDataResult dataResult = new APIDataResult(200, resourceIds);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+
+        /// <summary>
+        /// 将用户的资源划入公库
+        /// </summary>
+        /// <param name="userId"></param>
+        public APIDataResult AssignUserResourcesToPublic(int userId)
+        {
+            try {
+                service.AssignUserResourcesToPublic(userId);
+                APIDataResult dataResult = new APIDataResult(200, string.Empty);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        /// <summary>
+        /// 将用户的资源划入未分配
+        /// </summary>
+        /// <param name="userId"></param>
+        public APIDataResult AssignUserResourcesToUnassigned(int userId)
+        {
+            try {
+                service.AssignUserResourcesToUnassigned(userId);
+                APIDataResult dataResult = new APIDataResult(200, string.Empty);
                 return dataResult;
             }
             catch (Exception ex) {

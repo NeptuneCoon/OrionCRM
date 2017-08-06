@@ -2,6 +2,7 @@
 <SqlMap>
   <SqlMapConfigurations>
 
+    <!--InsertResource-->
     <SqlMapDetail>
       <SqlName>InsertResource</SqlName>
       <OriginalSqlString>
@@ -14,6 +15,7 @@
       <Description>新增一条资源</Description>
     </SqlMapDetail>
 
+    <!--UpdateResource-->
     <SqlMapDetail>
       <SqlName>UpdateResource</SqlName>
       <OriginalSqlString>
@@ -60,6 +62,28 @@
       <Description>删除一条资源</Description>
     </SqlMapDetail>
 
+    <!--删除用户名下的所有资源(仅删除ResourceUser表中的关系记录)-->
+    <SqlMapDetail>
+      <SqlName>DeleteResourceUserByUserId</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceUser] where UserId=@UserId;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除ResourceUser关系</Description>
+    </SqlMapDetail>
+
+    <!--删除指定资源和Group的关系-->
+    <SqlMapDetail>
+      <SqlName>DeleteResourceGroupByResourceIds</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceGroup] where ResourceId in($ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除指定资源和Group的关系</Description>
+    </SqlMapDetail>
+
     <SqlMapDetail>
       <SqlName>RestoreResource</SqlName>
       <OriginalSqlString>
@@ -79,20 +103,36 @@
       <CommandType>Text</CommandType>
       <Description>根据Id获取资源</Description>
     </SqlMapDetail>
-    
+
     <SqlMapDetail>
       <SqlName>GetResourcesByUserId</SqlName>
       <OriginalSqlString>
-        <![CDATA[
-        select top $PageSize * from
-          (
-            select ROW_NUMBER() OVER (ORDER BY A.Id desc) as RowNumber,A.* from [Resource] A inner join ResourceUser B on A.Id=B.ResourceId
-          )t where RowNumber > $PageSize*($PageIndex-1) and UserId=@UserId
-        ]]>
+        select ResourceId from ResourceUser where UserId=@UserId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>分页获取资源</Description>
+      <Description>根据UserId获取用户的所有资源Id(谨慎使用)</Description>
+    </SqlMapDetail>
+
+    <!--批量插入ResourceGroup-->
+    <SqlMapDetail TableName="ResourceGroup">
+      <SqlName>ResourceGroupBatchInsert</SqlName>
+      <OriginalSqlString>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量插入ResourceGroup</Description>
+    </SqlMapDetail>
+    
+    <!--GetResourceCountByUserId-->
+    <SqlMapDetail>
+      <SqlName>GetResourceCountByUserId</SqlName>
+      <OriginalSqlString>
+        select count(1) from [ResourceUser] where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取该用户下的资源个数</Description>
     </SqlMapDetail>
 
     <SqlMapDetail>
@@ -109,7 +149,6 @@
       <CommandType>Text</CommandType>
       <Description>按项目Id分页获取资源</Description>
     </SqlMapDetail>
-
 
     <SqlMapDetail>
       <SqlName>GetResourcesByCondition</SqlName>
@@ -184,7 +223,17 @@
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>设置资源状态</Description>
+      <Description>设置单个资源状态</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>BatchSetResourceStatus</SqlName>
+      <OriginalSqlString>
+        update [Resource] set Status=@Status where Id in($ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量设置资源状态</Description>
     </SqlMapDetail>
 
     <SqlMapDetail>
@@ -350,12 +399,56 @@
     <SqlMapDetail>
       <SqlName>ClearSourceFrom</SqlName>
       <OriginalSqlString>
-        update [Resource] set SourceFrom=null
-        where SourceFrom=@SourceFrom
+        update [Resource] set SourceFrom=null where SourceFrom=@SourceFrom
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>设置某个来源下的所有资源的SourceFrom为空(当删除资源来源的时候)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>ChangeResourceGroupOwner</SqlName>
+      <OriginalSqlString>
+        update [ResourceGroup] set GroupId=@TargetGroupId where ResourceId in(select ResourceId from [ResourceUser] where UserId=@SourceUserId)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>划分某一用户的资源到另一用户所属组下</Description>
+    </SqlMapDetail>
+    
+    
+    <SqlMapDetail>
+      <SqlName>ChangeResourceUserOwner</SqlName>
+      <OriginalSqlString>
+        update [ResourceUser] set UserId=@TargetUserId where UserId=@SourceUserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>划分某一用户的资源到另一用户名下</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>AssignUserResourcesToPublic</SqlName>
+      <OriginalSqlString>
+        update [Resource] set [Status]=1;
+        delete from [ResourceGroup] where ResourceId in(select ResourceId from ResourceUser where UserId=@UserId);
+        delete from [ResourceUser] where UserId=@UserId;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>将某一用户资源划入公库</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>AssignUserResourcesToUnassigned</SqlName>
+      <OriginalSqlString>
+        update [Resource] set [Status]=3;
+        delete from [ResourceGroup] where ResourceId in(select ResourceId from ResourceUser where UserId=@UserId);
+        delete from [ResourceUser] where UserId=@UserId;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>将某一用户资源划入未分配</Description>
     </SqlMapDetail>
     
 	</SqlMapConfigurations>

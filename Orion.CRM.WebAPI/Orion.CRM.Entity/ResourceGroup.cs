@@ -9,7 +9,7 @@ namespace Orion.CRM.Entity
     /// </summary>
     public class ResourceGroup
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public int ResourceId { get; set; }
         public int GroupId { get; set; }
         public DateTime CreateTime { get; set; }

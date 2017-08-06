@@ -58,19 +58,14 @@ namespace Orion.CRM.WebApp.Controllers
                 case 4:
                     // 资源可见范围：公司资源，需加载[项目列表、业务组列表、业务员列表]
                     viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
-                    //viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(groupApiUrl+_AppUser.ProjectId);
-                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
                     break;
                 case 3:
                     // 资源可见范围：本项目资源，需加载[业务组列表、业务员列表]
                     viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(groupApiUrl + _AppUser.ProjectId);
-
-                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
                     param.pid = _AppUser.ProjectId;
                     break;
                 case 2:
                     // 资源可见范围：本组资源，需加载[业务员列表]
-                    //viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
                     param.pid = _AppUser.ProjectId;
                     param.gid = _AppUser.GroupId;
                     viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(groupMemberApiUrl + param.gid);
@@ -266,11 +261,13 @@ namespace Orion.CRM.WebApp.Controllers
                     if (viewModel.ResourceBelong == 1 && _AppUser.GroupId != null && _AppUser.GroupId > 0) {
                         // 划给自己
                         int resourceGroupId = InsertResourceGroup(resourceId, (int)_AppUser.GroupId);
-                        int resourceUserId = InsertResourceUser(resourceId, _AppUser.Id); 
+                        int resourceUserId = InsertResourceUser(resourceId, _AppUser.Id);
+                        // 设置资源状态为'洽谈中'
+                        SetResourceStatus(resourceId, 4);
                     }
                     else {
                         // 划入'未分配'
-                        bool res = SetResourceStatus(resourceId, 3);
+                        SetResourceStatus(resourceId, 3);
                     }
                     result = true;
                 }
@@ -496,12 +493,6 @@ namespace Orion.CRM.WebApp.Controllers
             }
             return false;
         }
-
-        //[HttpPost]
-        //public IActionResult SearchHandler()
-        //{
-        //    return View();
-        //}
 
         #region 插入资源 InsertResource
         private int InsertResource(Models.Resource.ResourceViewModel viewModel)

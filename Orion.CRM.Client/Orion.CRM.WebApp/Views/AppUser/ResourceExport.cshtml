@@ -1,8 +1,111 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.AppUser.ResourceExportModel
 @{
     ViewData["Title"] = "ResourceExport";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>ResourceExport</h2>
+<h3>资源导出</h3>
+<label>将某一用户的资源导入到公库、未分配或导入到其他业务、业务组下。</label>
+@if (TempData["result"] != null) {
+    if ((bool)TempData["result"]) {
+        <!--操作成功通知-->
+        <div class="alert alert-success" style="max-width:540px;margin:10px 0px 10px 0px">
+            <button class="close" data-dismiss="alert">×</button>
+            <span>恭喜您，导出成功！</span>
+        </div>
+    }
+    else {
+        <!--操作失败通知-->
+        <div class="alert alert-error" style="max-width:540px;margin:10px 0px 10px 0px">
+            <button class="close" data-dismiss="alert">×</button>
+            <span>抱歉，操作失败，请重试！</span>
+        </div>
+    }
+}
 
+<form method="post" action="/AppUser/ResourceExportHandler">
+    <input type="hidden" asp-for="@Model.UserId" />
+
+    <div class="simple-box">
+        <table>
+            <tr>
+                <td colspan="2" style="height:30px;line-height:30px;padding:10px 2px">
+                    <span style="color:red">@Model.RealName</span>目前有 @Model.ResourceCount 条资源正在洽谈中，请选择导出方向：
+                </td>
+            </tr>
+            <tr style="height:40px;line-height:40px">
+                <td style="width:90px"><span class="tip">*</span>导出方向：</td>
+                <td>
+                    <select asp-for="@Model.ExportDirection" onchange="directionChange()">
+                        <option value="">请选择</option>
+                        <option value="public">公共库</option>
+                        <option value="unassign">未分配</option>
+                        @if (Model.GroupList != null && Model.GroupList.ToList().Count > 0) {
+                            foreach (var group in Model.GroupList) {
+                                <option value="@group.Id">@group.GroupName</option>
+                            }
+                        }
+                    </select>
+                    <span style="color:red;margin-left:10px;display:none" id="spanTips">请选择导出方向！</span>
+                </td>
+            </tr>
+            <tr>
+                <td>导出业务：</td>
+                <td>
+                    <select asp-for="@Model.ExportTarget">
+                        <option value="">请选择</option>
+                    </select>
+                </td>
+            </tr>
+            <tr style="height:50px;line-height:50px">
+                <td></td>
+                <td>
+                    <button type="submit" class="btn btn-primary" @(Model.ResourceCount == 0 ? "disabled=disabled" : "") onclick="return checkForm()">导出</button>
+                    <a href="/AppUser/List" class="btn">返回</a>
+                </td>
+            </tr>
+        </table>
+    </div> 
+
+</form>
+@section scripts{
+    <script type="text/javascript">
+        function checkForm() {
+            var result = true;
+
+            var direction = $('#ExportDirection').val();
+            if (direction == "") {
+                $('#spanTips').show();
+                result = false;
+                $('#ExportDirection').focus();
+            }
+            else {
+                $('#spanTips').hide();
+            }
+
+            return result;
+        }
+
+        function directionChange() {
+            $('#ExportTarget>option').not(":first").remove();
+            var direction = $('#ExportDirection').val();
+            if (direction != "") {
+                if (direction == "public" || direction == "unassign") {
+                    $('#ExportTarget').attr("disabled", "disabled");
+                }
+                else {
+                    $('#ExportTarget').removeAttr("disabled");
+
+                    $.get("/AppUser/GetUsersByGroupId", { "groupId": direction }, function (members) {
+                        if (members && members.length > 0) {
+                            for (var i = 0; i < members.length; i++) {
+                                var member = members[i];
+                                $('#ExportTarget').append('<option value="' + member.id + '">' + member.realName + '</option>');
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+}

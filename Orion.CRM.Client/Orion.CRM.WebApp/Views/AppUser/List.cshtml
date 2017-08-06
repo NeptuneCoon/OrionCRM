@@ -59,15 +59,12 @@
                             <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                             <td style="width:100px">@item.UserName</td>
                             <td style="width:80px">@item.RealName</td>
-                            @*<td style="width:100px">@(string.IsNullOrEmpty(item.Mobile) ? "-" : item.Mobile)</td>*@
                             <td>@Html.Raw((item.Enable == 1 ? "可用" : "<span class='tip'>禁用</span>"))</td>
                             <td style="width:70px">@item.RoleName</td>
                             <td style="width:90px">@(string.IsNullOrEmpty(item.ProjectName) ? "-" : item.ProjectName)</td>
                             <td>@(string.IsNullOrEmpty(item.GroupName) ? "-" : item.GroupName)</td>
                             <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td style="width:100px">
-                                @*<a href="/AppUser/Edit/@item.Id">编辑</a>*@
-                                @*<a href="javascript:;" onclick="deleteUser(@item.Id)">删除</a>*@
                                 <div class="btn-group">
                                     <a class="btn btn-small dropdown-toggle" style="font-size:13px" data-toggle="dropdown" href="#">
                                         操作
@@ -77,8 +74,10 @@
                                         <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
                                         <li><a href="#">删除</a></li>
                                         <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="/AppUser/ResourceExport/@item.Id">资源导出</a></li>
+                                        @if(item.ProjectId != null && item.GroupId != null) { 
+                                            <li class="divider"></li>
+                                            <li><a href="/AppUser/ResourceExport/@item.Id">资源导出</a></li>
+                                        }
                                     </ul>
                                 </div>
                             </td>

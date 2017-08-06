@@ -147,7 +147,7 @@ namespace Orion.CRM.Toolkit
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows) {
-                     entities = new List<T>();
+                    entities = new List<T>();
 
                     // 获取SqlDataReader返回的所有字段名称
                     List<string> fieldNames = new List<string>();
@@ -205,7 +205,6 @@ namespace Orion.CRM.Toolkit
                     }
                 }
 
-
                 // batch insert
                 try {
                     using (var reader = ObjectReader.Create<T>(entities, members.ToArray())) {
@@ -226,8 +225,14 @@ namespace Orion.CRM.Toolkit
         /// <typeparam name="T">泛型</typeparam>
         /// <param name="dict">数据库查询中的行记录所对应的值集，key为字段，value为字段值</param>
         /// <returns></returns>
-        private static T EntityConvert<T>(Dictionary<string,object> dict)
+        private static T EntityConvert<T>(Dictionary<string, object> dict)
         {
+            Type type = typeof(T);
+            if(type == typeof(int) || type == typeof(string) || type == typeof(float) || type == typeof(double) 
+                || type == typeof(char) || type == typeof(bool)) {
+                return (T)dict.First().Value;
+            }
+
             T entity = System.Activator.CreateInstance<T>();
 
             foreach (string provertyName in dict.Keys) {

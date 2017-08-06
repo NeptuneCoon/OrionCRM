@@ -79,77 +79,79 @@
     <span></span>
 </div>
 <form method="post" action="/Resource/AssignHandler">
-    <div class="form-inline">
-        <label style="font-weight:bold">选择项目</label><br />
-        <select name="project" id="project" class="search-select" onchange="projectChange()">
-            <option value="">选择项目</option>
-            @if (ViewBag.ProjectList != null) {
+    <div class="simple-box">
+        <div class="form-inline">
+            <label style="font-weight:bold">选择项目</label><br />
+            <select name="project" id="project" class="search-select" onchange="projectChange()">
+                <option value="">选择项目</option>
+                @if (ViewBag.ProjectList != null) {
                 foreach (var project in ViewBag.ProjectList) {
                     if (project.Id == ViewBag.ProjectId) {
-                        <option value="@project.Id" selected="selected">@project.ProjectName</option>
-                    }
-                    else {
-                        <option value="@project.Id">@project.ProjectName</option>
+                            <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                        }
+                        else {
+                            <option value="@project.Id">@project.ProjectName</option>
+                        }
                     }
                 }
-            }
-        </select>
-    </div>
+            </select>
+        </div>
 
-    <div class="form-inline" style="margin-top:8px">
-        当前共有 <span class="tip" id="unassignedCount"></span> 条资源没有分配
-    </div>
+        <div class="form-inline" style="margin-top:8px">
+            当前共有 <span class="tip" id="unassignedCount"></span> 条资源没有分配
+        </div>
 
-    <div class="form-inline" style="margin-top:15px">
-        <label style="font-weight:bold">分配方式</label><br />
-        <label class="nebula-label">
-            <input class="nebula-radio" type="radio" name="AssignType" value="1" checked="checked" onclick="assignTypeChange()" />
-            <span class="nebula-radioInput"></span>平均分配
-        </label>
-        <label class="nebula-label">
-            <input class="nebula-radio" type="radio" name="AssignType" value="2" onclick="assignTypeChange()" />
-            <span class="nebula-radioInput"></span>等比例分配
-        </label>
-    </div>
-    <div id="assign-tip">
-        按业务组平均分配
-    </div>
+        <div class="form-inline" style="margin-top:15px">
+            <label style="font-weight:bold">分配方式</label><br />
+            <label class="nebula-label">
+                <input class="nebula-radio" type="radio" name="AssignType" value="1" checked="checked" onclick="assignTypeChange()" />
+                <span class="nebula-radioInput"></span>平均分配
+            </label>
+            <label class="nebula-label">
+                <input class="nebula-radio" type="radio" name="AssignType" value="2" onclick="assignTypeChange()" />
+                <span class="nebula-radioInput"></span>等比例分配
+            </label>
+        </div>
+        <div id="assign-tip">
+            按业务组平均分配
+        </div>
 
-    <div class="form-inline" style="margin-top:10px">
-        <table class="table-resource-assign">
-            <tr>
-                <td style="width:100px">分配明细</td>
-                <td>
-                    <table class="table-assign-inner">
-                        <thead>
-                            <tr>
-                                <th style="width:190px">业务组</th>
-                                <th style="width:220px">分配数量</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (ViewBag.GroupList != null && ViewBag.GroupList.Count > 0) {
-                                foreach (var group in ViewBag.GroupList) {
+        <div class="form-inline" style="margin-top:10px">
+            <table class="table-resource-assign">
+                <tr>
+                    <td style="width:100px">分配明细</td>
+                    <td>
+                        <table class="table-assign-inner">
+                            <thead>
+                                <tr>
+                                    <th style="width:190px">业务组</th>
+                                    <th style="width:220px">分配数量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.GroupList != null && ViewBag.GroupList.Count > 0) {
+                                    foreach (var group in ViewBag.GroupList) {
+                                        <tr>
+                                            <td>@group.GroupName</td>
+                                            <td><input type="text" name="group_@group.Id" class="assign-input" /></td>
+                                        </tr>
+                                    }
+                                }
+                                else {
                                     <tr>
-                                        <td>@group.GroupName</td>
-                                        <td><input type="text" name="group_@group.Id" class="assign-input" /></td>
+                                        <td colspan="2">请先选择项目</td>
                                     </tr>
                                 }
-                            }
-                            else {
-                                <tr>
-                                    <td colspan="2">请先选择项目</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <button type="submit" class="btn btn-primary" style="margin-top:12px" id="btnAssign" onclick="return checkForm()">开始分配</button>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-primary" style="margin-top:12px" id="btnAssign" onclick="return checkForm()">开始分配</button>
+        </div>
+        <!--资源分配情况-->
+        <input type="hidden" id="hidAssignInfo" name="hidAssignInfo" />
     </div>
-    <!--资源分配情况-->
-    <input type="hidden" id="hidAssignInfo" name="hidAssignInfo" />
 </form>
 @section scripts{
     <script type="text/javascript">

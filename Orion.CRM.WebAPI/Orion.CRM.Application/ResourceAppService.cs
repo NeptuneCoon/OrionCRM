@@ -18,10 +18,15 @@ namespace Orion.CRM.Application
             return adapter.UpdateResource(resource);
         }
 
-        // 软删除一条资源
+        // 删除一条资源
         public bool DeleteResource(int id)
         {
             return adapter.DeleteResource(id);
+        }
+
+        public int DeleteResourceUserByUserId(int userId)
+        {
+            return adapter.DeleteResourceUserByUserId(userId);
         }
 
         // 恢复一条资源
@@ -87,6 +92,18 @@ namespace Orion.CRM.Application
         public bool SetResourceStatus(int resourceId, int status)
         {
             return adapter.SetResourceStatus(resourceId, status);
+        }
+
+        // 批量设置资源状态
+        public int BatchSetResourceStatus(string resourceIds, int status)
+        {
+            return adapter.BatchSetResourceStatus(resourceIds, status);
+        }
+
+        // 删除指定资源和Group的关系
+        public int DeleteResourceGroupByResourceIds(string resourceIds)
+        {
+            return adapter.DeleteResourceGroupByResourceIds(resourceIds);
         }
 
         // 添加资源和业务组之间的关系
@@ -157,6 +174,52 @@ namespace Orion.CRM.Application
         public int ClearSourceFrom(int sourceId)
         {
             return adapter.ClearSourceFrom(sourceId);
+        }
+
+        // 获取该用户下的资源个数
+        public int GetResourceCountByUserId(int userId)
+        {
+            return adapter.GetResourceCountByUserId(userId);
+        }
+
+        // 划分某一用户的资源到另一用户名下
+        public int ChangeResourceUserOwner(int sourceUserId, int targetUserId)
+        {
+            return adapter.ChangeResourceUserOwner(sourceUserId, targetUserId);
+        }
+
+        // 划分某一用户的资源到另一用户所属组下
+        public int ChangeResourceGroupOwner(int sourceUserId, int targetGroupId)
+        {
+            return adapter.ChangeResourceGroupOwner(sourceUserId, targetGroupId);
+        }
+
+        public bool ResourceGroupBatchInsert(IEnumerable<Entity.ResourceGroup> resourceGroups)
+        {
+            return adapter.ResourceGroupBatchInsert(resourceGroups);
+        }
+
+        public List<int> GetResourcesByUserId(int userId)
+        {
+            return adapter.GetResourcesByUserId(userId);
+        }
+
+        /// <summary>
+        /// 将用户的资源划入公库
+        /// </summary>
+        /// <param name="userId"></param>
+        public void AssignUserResourcesToPublic(int userId)
+        {
+            adapter.AssignUserResourcesToPublic(userId);
+        }
+
+        /// <summary>
+        /// 将用户的资源划入未分配
+        /// </summary>
+        /// <param name="userId"></param>
+        public void AssignUserResourcesToUnassigned(int userId)
+        {
+            adapter.AssignUserResourcesToUnassigned(userId);
         }
     }
 }
