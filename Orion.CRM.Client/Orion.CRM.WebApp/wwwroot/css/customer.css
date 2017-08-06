@@ -101,9 +101,12 @@ a:focus, a:hover {
 
 /* 警示框 */
 .self-alert {
-    background-color: #faebcc;
+    /*background-color: #faebcc;*/
     width: 800px;
     padding: 5px 8px;
     border-radius: 3px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
+    color: #468847;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
 }

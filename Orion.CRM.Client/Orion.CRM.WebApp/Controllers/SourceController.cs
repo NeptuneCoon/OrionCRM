@@ -54,12 +54,24 @@ namespace Orion.CRM.WebApp.Controllers
 
         public bool Delete(int id)
         {
-            if (id > 0) { 
-                string url = _AppConfig.WebApiHost + "api/Source/DeleteSource?id=" + id;
-                bool result = APIInvoker.Get<bool>(url);
+            if (id > 0) {
+                // 先设置此来源下所有资源的SourceFrom为null
+                string clearApiUrl = _AppConfig.WebApiHost + "api/Resource/ClearSourceFrom?sourceId=" + id;
+                APIInvoker.Get<int>(clearApiUrl);
+
+                // 再执行删除操作
+                string deleteApiUrl = _AppConfig.WebApiHost + "api/Source/DeleteSource?id=" + id;
+                bool result = APIInvoker.Get<bool>(deleteApiUrl);
                 return result;
             }
             return false;
+        }
+
+        public int GetResourceCount(int sourceId)
+        {
+            string url = _AppConfig.WebApiHost + "api/Resource/GetResourceCountBySourceFrom?orgId=" + _AppUser.OrgId + "&sourceId=" + sourceId;
+            int count = APIInvoker.Get<int>(url);
+            return count;
         }
 
         // Ajax重新加载页面

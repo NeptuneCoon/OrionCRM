@@ -148,5 +148,15 @@ namespace Orion.CRM.Application
         {
             return adapter.GetResourceSourceStat(orgId);
         }
+
+        public int GetResourceCountBySourceFrom(int orgId, int sourceId)
+        {
+            return adapter.GetResourceCountBySourceFrom(orgId, sourceId);
+        }
+
+        public int ClearSourceFrom(int sourceId)
+        {
+            return adapter.ClearSourceFrom(sourceId);
+        }
     }
 }

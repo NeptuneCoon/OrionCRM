@@ -341,5 +341,33 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 获取某个资源来源下的资源数量
+        public APIDataResult GetResourceCountBySourceFrom(int orgId, int sourceId)
+        {
+            try {
+                int count = service.GetResourceCountBySourceFrom(orgId, sourceId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 设置某个来源下的所有资源的SourceFrom为空
+        public APIDataResult ClearSourceFrom(int sourceId)
+        {
+            try {
+                int count = service.ClearSourceFrom(sourceId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

@@ -50,38 +50,6 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Resource/List",
                 QueryString = Request.QueryString.Value
             };
-            /*
-            #region 处理默认值项目(ProjectId，该值为必选)
-            if (string.IsNullOrEmpty(Request.QueryString.Value)) {
-                if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
-                    if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-                        pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
-                        param.pid = viewModel.ProjectList.FirstOrDefault().Id;
-                    }
-                }
-                else {
-                    pageOption.QueryString = "?pid=" + viewModel.ProjectId;
-                    param.pid = viewModel.ProjectId;
-                }
-            }
-            #endregion
-            param.gid = _AppUser.GroupId;
-            param.uid = _AppUser.Id;
-
-            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
-            if (param.pid != null && param.pid > 0) {
-                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
-                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
-                if (param.gid != null && param.gid > 0) {
-                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
-                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
-                }
-            } 
-            #endregion
-            */
-            //param.pid = 1;
-            //param.gid = _AppUser.GroupId;
-            //param.uid = _AppUser.Id;
 
             string groupApiUrl = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=";
             string groupMemberApiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=";
@@ -304,6 +272,7 @@ namespace Orion.CRM.WebApp.Controllers
                         // 划入'未分配'
                         bool res = SetResourceStatus(resourceId, 3);
                     }
+                    result = true;
                 }
                 
                 TempData["result"] = result;

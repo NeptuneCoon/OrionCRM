@@ -334,5 +334,29 @@
       <CommandType>Text</CommandType>
       <Description>获取资源来源情况</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourceCountBySourceFrom</SqlName>
+      <OriginalSqlString>
+        select count(1) from [Resource] A
+        inner join [ResourceOrganization] B on A.Id=B.ResourceId
+        where SourceFrom=@SourceFrom and B.OrgId=@OrgId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取某个资源来源下的资源数量</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>ClearSourceFrom</SqlName>
+      <OriginalSqlString>
+        update [Resource] set SourceFrom=null
+        where SourceFrom=@SourceFrom
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>设置某个来源下的所有资源的SourceFrom为空(当删除资源来源的时候)</Description>
+    </SqlMapDetail>
+    
 	</SqlMapConfigurations>
 </SqlMap>

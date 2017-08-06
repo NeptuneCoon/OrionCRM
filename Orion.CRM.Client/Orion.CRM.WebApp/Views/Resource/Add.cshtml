@@ -242,24 +242,28 @@
                 var tel = $('#Tel').val();
                 var qq = $('#QQ').val();
                 var wechat = $('#Wechat').val();
-                $.ajax({
-                    type: "get",
-                    url: "IsExist",
-                    async: false,
-                    data: { "mobile": mobile, "tel": tel, "qq": qq, "wechat": wechat },
-                    dataType: "json",
-                    success: function (data) {
-                        console.info(data);
-                        if (data) {
-                            result = false;
-                            modalShow($('#panelResult'));
-                        }
-                    }
-                });
 
+                var text = mobile + tel + qq + wechat;
+
+                if(text){
+                    $.ajax({
+                        type: "get",
+                        url: "IsExist",
+                        async: false,
+                        data: { "mobile": mobile, "tel": tel, "qq": qq, "wechat": wechat },
+                        dataType: "json",
+                        success: function (data) {
+                            console.info(data);
+                            if (data) {
+                                result = false;
+                                modalShow($('#panelResult'));
+                            }
+                        }
+                    });
+                }
             }
 
-            return false;
+            return result;
         }
     </script>
 

@@ -14,7 +14,7 @@ namespace Orion.CRM.DataAccess
             if (resource == null) return -1;
 
             SqlParameter[] paramArr = {
-                new SqlParameter("@CustomerName", resource.CustomerName),
+                new SqlParameter("@CustomerName", resource.CustomerName.Trim()),
                 new SqlParameter("@Sex", CheckNull(resource.Sex)),
                 new SqlParameter("@Address", CheckNull(resource.Address)),
                 new SqlParameter("@MsgTime", CheckNull(resource.MsgTime)),
@@ -98,6 +98,7 @@ namespace Orion.CRM.DataAccess
         }
         #endregion
 
+        #region 根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源
         /// <summary>
         /// 根据姓名/电话(Mobile/Tel)/微信/QQ查询一条资源
         /// </summary>
@@ -115,7 +116,8 @@ namespace Orion.CRM.DataAccess
 
             var result = SqlMapHelper.GetSqlMapSingleResult<Entity.Resource>("ResourceDomain", "GetResourceByNameMobileWechatQQ", paramArr);
             return result;
-        }
+        } 
+        #endregion
 
         #region 判断资源是否存在
         public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
@@ -410,6 +412,28 @@ namespace Orion.CRM.DataAccess
 
             string sqlWhere = sb.ToString();
             return sqlWhere;
+        }
+        #endregion
+
+        #region 获取某个资源来源下的资源数量
+        public int GetResourceCountBySourceFrom(int orgId, int sourceId)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@OrgId", orgId),
+                new SqlParameter("@SourceFrom", sourceId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetResourceCountBySourceFrom", parameters);
+            return count;
+        } 
+        #endregion
+
+        #region 设置某个来源下的所有资源的SourceFrom为空
+        public int ClearSourceFrom(int sourceId)
+        {
+            SqlParameter param = new SqlParameter("@SourceFrom", sourceId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "ClearSourceFrom", param);
+            return count;
         } 
         #endregion
     }

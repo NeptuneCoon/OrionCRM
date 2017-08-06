@@ -44,7 +44,7 @@
                             <td>@item.SourceName</td>
                             <td>
                                 <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.SourceName')">编辑</a>
-                                <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>
+                                <a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.SourceName')">删除</a>
                             </td>
                         </tr>
                     }
@@ -78,14 +78,14 @@
 </div>
 
 <!--delete confirm-->
-<div class="modal modal-webpi" id="panelAlert" style="width:300px;display:none" param-id="">
+<div class="modal modal-webpi" id="panelAlert" style="width:500px;display:none" param-id="">
     <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
     <div class="modal-contents">
         <h2>提示</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
-                <h4>确定要删除吗？</h4>
-
+                <h4 id="tip-content">确定要删除吗？</h4>
+                <label style="color:red;display:none" id="tip-desc">删除后不会删除与之绑定的资源，只会将这些资源的“来源”置为空。</label>
                 <div style="margin-top:20px">
                     <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
@@ -152,15 +152,29 @@
             }
         }
         // 删除弹窗确认
-        function deleteConfirm(id) {
+        function deleteConfirm(id, sourceName) {
             var panel = $('#panelAlert');
             panel.attr("param-id", id);
-            modalShow(panel);
+
+            $.ajax({
+                type: 'get',
+                url: '/Source/GetResourceCount?sourceId=' + id,
+                success: function (count) {
+                    if (count > 0) {
+                        $('#tip-content').html('"' + sourceName + '"下已有' + count + '条资源，确认要删除吗?');
+                        $('#tip-desc').show();
+                    }
+                    else {
+                        $('#tip-content').html('确定要删除吗？');
+                        $('#tip-desc').hide();
+                    }
+                    modalShow(panel);
+                }
+            });
         }
         // 删除调用器
         function deleteInvoker(e) {
             var id = $(e).parents(".modal").attr("param-id");
-            console.info(id);
             if (id) {
                 deleteSource(id);
             }
@@ -186,7 +200,6 @@
         function reloadList() {
             $.get("/Source/ReloadList", null, function (data) {
                 if (data && data.length > 0) {
-                    console.info(data);
                     var dataHtml = '';
                     for (var i = 0; i < data.length; i++) {
                         var itemHtml = '';
@@ -195,7 +208,7 @@
                         itemHtml += '<td>' + data[i].sourceName + '</td>';
                         itemHtml += '<td>';
                         itemHtml += '<a href="javascript:;" onclick="showEditPanel(' + data[i].id + ', \'' + data[i].sourceName + '\')">编辑</a> ';
-                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ')">删除</a>';
+                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ', \'' + data[i].sourceName + '\')">删除</a>';
                         itemHtml += '</td>';
                         itemHtml += '</tr>';
 
