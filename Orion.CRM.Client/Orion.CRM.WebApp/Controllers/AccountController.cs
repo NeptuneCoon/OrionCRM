@@ -116,13 +116,28 @@ namespace Orion.CRM.WebApp.Controllers
 
         public IActionResult UserInfo()
         {
-            return View();
+            var apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + _AppUser.Id;
+            Models.Account.UserInfoModel viewModel = APIInvoker.Get<Models.Account.UserInfoModel>(apiUrl);
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult UserInfoHandler()
+        public IActionResult UserInfoHandler(Models.Account.UserInfoModel viewModel)
         {
-            return View();
+            if (viewModel != null) { 
+                var userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
+                Models.Account.UserInfoModel appUser = APIInvoker.Get<Models.Account.UserInfoModel>(userGetApi);
+                appUser.Mobile = viewModel.Mobile.Trim();
+                appUser.Email = viewModel.Email.Trim();
+                appUser.UpdateTime = DateTime.Now;
+
+                var userUpdateApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUser";
+                bool result = APIInvoker.Post<bool>(userUpdateApi, appUser);
+
+                TempData["result"] = result;
+            }
+            return RedirectToAction("UserInfo");
         }
 
 

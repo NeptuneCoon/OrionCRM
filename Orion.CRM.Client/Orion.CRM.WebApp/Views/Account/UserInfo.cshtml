@@ -1,8 +1,92 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Account.UserInfoModel
+
 @{
     ViewData["Title"] = "UserInfo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>该功能将很快上线，敬请期待！</h2>
+<h3>个人资料</h3>
 
+<div class="row-fluid">
+    <!-- block -->
+    <div class="block" style="margin:0px">
+        <div class="navbar navbar-inner block-header">
+            <div class="muted pull-left">个人资料</div>
+        </div>
+        <div class="block-content collapse in">
+            <div class="span12">
+                @if (TempData["result"] != null) {
+                    if ((bool)TempData["result"]) {
+                        <!--操作成功通知-->
+                        <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                            <button class="close" data-dismiss="alert">×</button>
+                            <span>恭喜您，修改成功！</span>
+                        </div>
+                    }
+                    else {
+                        <!--操作失败通知-->
+                        <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                            <button class="close" data-dismiss="alert">×</button>
+                            <span>抱歉，添加失败，请重试！</span>
+                        </div>
+                    }
+                }
+                <form class="form-horizontal" method="post" action="/Account/UserInfoHandler">
+                    <input type="hidden" asp-for="@Model.Id" />
+                    <div class="control-group">
+                        <label class="control-label">个人姓名</label>
+                        <div class="controls">
+                            <label class="control-label" style="text-align:left">@Model.RealName</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">账户</label>
+                        <div class="controls">
+                            <label class="control-label" style="text-align:left">@Model.UserName</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">所属业务组</label>
+                        <div class="controls">
+                            <label class="control-label" style="text-align:left">@Model.GroupName</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">手机</label>
+                        <div class="controls">
+                            <input type="text" class="span6" asp-for="@Model.Mobile" placeholder="手机号码" reg="regMobile" maxlength="11" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">邮箱</label>
+                        <div class="controls">
+                            <input type="text" class="span6" asp-for="@Model.Email" placeholder="Email" reg="regEmail" maxlength="50" />
+                            <p class="help-block">可用于找回密码，建议填写</p>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="padding-left:140px">
+                        <button type="submit" class="btn btn-primary" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
+                        <a href="/Resource/List" class="btn">返回</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function checkForm() {
+            var res = true;
+            if (!inputCheck($('#Mobile'))) {
+                res = false;
+            }
+            if (!inputCheck($('#Email'))) {
+                res = false;
+            }
+
+
+            return res;
+        }
+    </script>
+}
