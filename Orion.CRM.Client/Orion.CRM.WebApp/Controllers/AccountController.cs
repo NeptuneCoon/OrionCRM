@@ -114,6 +114,26 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public IActionResult UpdatePasswordHandler(Models.Account.PasswordModel viewModel)
+        {
+            if (viewModel != null) {
+                viewModel.Password = Md5Encrypt.Md5Bit32(viewModel.Password);
+                string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
+                bool result = APIInvoker.Get<bool>(apiUrl);
+                if (result) {
+                    // 更新token
+                    string tokenContent = _AppUser.UserName + "," + viewModel.Password;
+                    string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
+                    // 将token保存在服务器端缓存中(永不过期)
+                    var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
+                    _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
+                }
+                TempData["result"] = result;
+            }
+            return RedirectToAction("UpdatePassword");
+        }
+
         public IActionResult UserInfo()
         {
             var apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + _AppUser.Id;
@@ -138,27 +158,6 @@ namespace Orion.CRM.WebApp.Controllers
                 TempData["result"] = result;
             }
             return RedirectToAction("UserInfo");
-        }
-
-
-        [HttpPost]
-        public IActionResult UpdatePasswordHandler(Models.Account.PasswordModel viewModel)
-        {
-            if (viewModel != null) {
-                viewModel.Password = Md5Encrypt.Md5Bit32(viewModel.Password);
-                string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
-                bool result = APIInvoker.Get<bool>(apiUrl);
-                if (result) {
-                    // 更新token
-                    string tokenContent = _AppUser.UserName + "," + viewModel.Password;
-                    string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
-                    // 将token保存在服务器端缓存中(永不过期)
-                    var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
-                    _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
-                }
-                TempData["result"] = result;
-            }
-            return RedirectToAction("UpdatePassword");
         }
     }
 }

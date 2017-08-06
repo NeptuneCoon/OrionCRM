@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Orion.CRM.WebTools;
 using Orion.CRM.WebApp.App_Data;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Orion.CRM.WebApp.Controllers
 {
@@ -13,6 +14,13 @@ namespace Orion.CRM.WebApp.Controllers
     /// </summary>
     public class AppUserController : BaseController
     {
+        private IMemoryCache _memoryCache;
+        public AppUserController(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
+
+        #region 用户列表
         /// <summary>
         /// 用户列表
         /// </summary>
@@ -37,8 +45,10 @@ namespace Orion.CRM.WebApp.Controllers
 
             //数据
             return View(list);
-        }
+        } 
+        #endregion
 
+        #region 创建新用户
         public IActionResult Create()
         {
             Models.AppUser.AppUserViewModel viewModel = new Models.AppUser.AppUserViewModel();
@@ -48,9 +58,10 @@ namespace Orion.CRM.WebApp.Controllers
 
 
             return View(viewModel);
-        }
+        } 
+        #endregion
 
-        #region 创建处理程序
+        #region 创建新用户处理程序
         [HttpPost]
         public IActionResult CreateHandler(Models.AppUser.AppUserViewModel viewModel)
         {
@@ -107,9 +118,10 @@ namespace Orion.CRM.WebApp.Controllers
                 return RedirectToAction("List");
             }
             return View();
-        } 
+        }
         #endregion
 
+        #region 编辑新用户
         public IActionResult Edit(int id)
         {
             string url = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + id;
@@ -119,9 +131,10 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
 
             return View(viewModel);
-        }
+        } 
+        #endregion
 
-        #region 修改处理程序
+        #region 编辑用户处理程序
         [HttpPost]
         public IActionResult EditHandler(Models.AppUser.AppUserViewModel viewModel)
         {
@@ -226,7 +239,53 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
+        public IActionResult ResetPassword(int id)
+        {
+            Models.AppUser.AppUserViewModel user = GetUserById(id);
+            if (user != null) {
+                Models.AppUser.ResetPasswordModel viewModel = new Models.AppUser.ResetPasswordModel();
+                viewModel.UserId = id;
+                viewModel.UserName = user.UserName;
+                viewModel.Realname = user.RealName;
+
+                return View(viewModel);
+            }
+
+            return RedirectToAction("List");
+        }
+
+        [HttpPost]
+        public IActionResult ResetPasswordHandler(Models.AppUser.ResetPasswordModel viewModel)
+        {
+            if (viewModel != null) {
+                viewModel.Password = Md5Encrypt.Md5Bit32(viewModel.Password);
+                string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
+                bool result = APIInvoker.Get<bool>(apiUrl);
+                if (result) {
+                    // 更新token
+                    string tokenContent = _AppUser.UserName + "," + viewModel.Password;
+                    string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
+                    // 将token保存在服务器端缓存中(永不过期)
+                    var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
+                    _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
+                }
+                TempData["result"] = result;
+            }
+            return RedirectToAction("ResetPassword");
+        }
+
+        public IActionResult ResourceExport()
+        {
+            return View();
+        }
+
+        public IActionResult ResourceExportHandler()
+        {
+            return View();
+        }
+
         // 通用Ajax方法
+        #region 获取业务组下的成员
         /// <summary>
         /// 获取业务组下的成员
         /// </summary>
@@ -238,8 +297,10 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + groupId;
             List<Models.AppUser.AppUserViewModel> users = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUrl);
             return users;
-        }
+        } 
+        #endregion
 
+        #region 根据Id获取用户
         /// <summary>
         /// 根据Id获取用户
         /// </summary>
@@ -251,8 +312,10 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
             Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
             return appUser;
-        }
+        } 
+        #endregion
 
+        #region 验证密码
         /// <summary>
         /// 验证密码
         /// </summary>
@@ -268,6 +331,7 @@ namespace Orion.CRM.WebApp.Controllers
                 return true;
             }
             return false;
-        }
+        } 
+        #endregion
     }
 }
