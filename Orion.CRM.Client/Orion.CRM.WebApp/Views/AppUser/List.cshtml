@@ -95,6 +95,24 @@
     </div>
 </div>
 
+<!--delete confirm-->
+<div class="modal modal-webpi" id="panelAlert" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <h4 id="tip-content">确定要删除吗？</h4>
+                <label style="color:red;display:none" id="tip-desc">删除后不会删除与之绑定的资源，只会将这些资源的“来源”置为空。</label>
+                <div style="margin-top:20px">
+                    <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script type="text/javascript">
         function deleteUser(id) {

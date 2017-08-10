@@ -773,6 +773,16 @@ namespace Orion.CRM.WebApp.Controllers
 
             bool result = APIInvoker.Post<bool>(apiUrl, record);
             return result;
+        }
+        #endregion
+
+        #region 删除一条洽谈记录
+        public bool DelTalkRecord(int id)
+        {
+            if (id <= 0) return false;
+            string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/DeleteTalkRecord?id=" + id;
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
         } 
         #endregion
 

@@ -126,8 +126,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4">
-                            <input type="button" value="点击保存" onclick="customerSave()" class="input" style="cursor:pointer" />
+                        <td colspan="4" style="text-align:center">
+                            <input type="button" value="保存信息" onclick="customerSave()" class="input" style="cursor:pointer" />
                         </td>
                     </tr>
                 </table>
@@ -141,7 +141,8 @@
                         <th style="width:120px;text-align:left">时间</th>
                         <th style="width:70px;text-align:left">洽谈人</th>
                         <th style="width:85px;text-align:left">洽谈方式</th>
-                        <th style="width:400px;text-align:left">结果</th>
+                        <th style="width:300px;text-align:left">小结</th>
+                        <th style="width:70px;text-align:center">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,9 +150,10 @@
                     foreach (var record in Model.TalkRecords) {
                         <tr>
                             <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                            <td>@record.UserId</td>
+                            <td>@record.RealName</td>
                             <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
                             <td>@record.TalkResult</td>
+                            <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id)" >删除</a></td>
                         </tr>
                     }
                 }
@@ -163,7 +165,7 @@
                 </tbody>
             </table>
 
-            <table style="border-collapse:collapse">
+            <table style="border-collapse:collapse;margin-top:20px">
                 <tr>
                     <td>
                         洽谈方式：
@@ -268,6 +270,19 @@
                     }
                 });
             }
+        }
+        /*
+        * 删除洽谈记录
+        */
+        function delTalkRecord(id) {
+            $.get("/Resource/DelTalkRecord", { "id": id }, function (result) {
+                if (result) {
+                    window.location.reload();
+                }
+                else {
+                    alert('抱歉，删除失败！');
+                }
+            });
         }
         /**
         * 通用文本框内容验证方法：使用正则表达式进行文本框输入内容的验证

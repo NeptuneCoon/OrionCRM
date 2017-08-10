@@ -25,7 +25,9 @@
     <SqlMapDetail>
       <SqlName>GetRecordsByResourceId</SqlName>
       <OriginalSqlString>
-        select * from TalkRecord where ResourceId=@ResourceId
+        select A.*,B.RealName from TalkRecord A
+        inner join AppUser B on A.UserId=B.Id
+        where A.ResourceId=@ResourceId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
