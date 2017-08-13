@@ -93,5 +93,20 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+
+        // 根据业务组下成员数
+        public APIDataResult GetGroupMemberCountByGroupId(int groupId)
+        {
+            try {
+                int count = service.GetGroupMemberCountByGroupId(groupId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

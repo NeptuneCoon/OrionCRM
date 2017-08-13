@@ -60,6 +60,7 @@ namespace Orion.CRM.WebApp.Controllers
             return false;
         }
 
+        // É¾³ýÒµÎñ×é
         public bool Delete(int id)
         {
             if (id > 0) {
@@ -104,6 +105,14 @@ namespace Orion.CRM.WebApp.Controllers
                 }
             }
             return false;
+        }
+
+        [HttpGet]
+        public int GetGroupMemberCountByGroupId(int groupId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Group/GetGroupMemberCountByGroupId?groupId=" + groupId;
+            int count = APIInvoker.Get<int>(apiUrl);
+            return count;
         }
     }
 }

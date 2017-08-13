@@ -37,5 +37,11 @@ namespace Orion.CRM.Application
         {
             return adapter.GetGroupsByOrgId(orgId);
         }
+
+        // 根据业务组下成员数
+        public int GetGroupMemberCountByGroupId(int groupId)
+        {
+            return adapter.GetGroupMemberCountByGroupId(groupId);
+        }
     }
 }

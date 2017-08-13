@@ -45,7 +45,7 @@ namespace Orion.CRM.DataAccess
         {
             if (id <= 0) return false;
 
-            SqlParameter param = new SqlParameter("@Id", id);
+            SqlParameter param = new SqlParameter("@GroupId", id);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("GroupDomain", "DeleteGroup", param);
 
             return count > 0;
@@ -75,6 +75,14 @@ namespace Orion.CRM.DataAccess
             var groups = SqlMapHelper.GetSqlMapResult<Entity.Group>("GroupDomain", "GetGroupsByOrgId", param);
 
             return groups;
+        }
+
+        // 根据业务组下成员数
+        public int GetGroupMemberCountByGroupId(int groupId)
+        {
+            SqlParameter param = new SqlParameter("@GroupId", groupId);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("GroupDomain", "GetGroupMemberCountByGroupId", param);
+            return count;
         }
     }
 }
