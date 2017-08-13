@@ -14,7 +14,6 @@ namespace Orion.CRM.Entity
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public int OrgId { get; set; }
-        public int CreateUserId { get; set; }
     }
 }
 

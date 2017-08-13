@@ -115,6 +115,7 @@
                                 </td>
                             </tr>
                         </table>
+                        <div id="spanDataPermission" class="tip" style="padding-top:10px;display:none">请指定用户可访问的数据</div>
                     </td>
                 </tr>
             </table>
@@ -170,6 +171,15 @@
                     $('html, body').animate({ scrollTop: 0 }, 'slow');
                     validateResult = false;
                 }
+            }
+            // 角色可访问的数据验证
+            var visiblePermission = $("input[name='ResourceVisible']:checked").val();
+            if (!visiblePermission) {
+                validateResult = false;
+                $('#spanDataPermission').show();
+            }
+            else {
+                $('#spanDataPermission').hide();
             }
 
             console.info("表单验证结果：" + validateResult);

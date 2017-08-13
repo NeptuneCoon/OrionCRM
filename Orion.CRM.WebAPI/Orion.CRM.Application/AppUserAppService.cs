@@ -111,5 +111,11 @@ namespace Orion.CRM.Application
         {
             return adapter.DeleteUserGroup(userId);
         }
+
+        // 删除用户及相关数据
+        public int DeleteUser(int userId)
+        {
+            return adapter.DeleteUser(userId);
+        }
     }
 }

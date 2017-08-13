@@ -198,7 +198,7 @@
             initProjectGroupChart();
         });
 
-        function projectChange(e) {
+        function memberProjectChange(e) {
             var projectId = $(e).find("option:selected").val();
             $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
                 var group_select = $(e).parents(".filter").find("select").last();
@@ -215,15 +215,32 @@
                     $(group_select).append('<option>没有业务组</option>');
                 }
 
-                var id = $(e).attr("id");
-                if (id == "projectMember"){
-                    renderMemberChart();
-                }
-                else {
-                    renderTrendChart();
-                }
+                //var id = $(e).attr("id");
+                //if (id == "projectMember"){
+                //    renderMemberChart();
+                //}
+                //else {
+                //    renderTrendChart();
+                //}
             });
         }
+        //function trendProjectChange(e) {
+        //    var projectId = $(e).find("option:selected").val();
+        //    $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+        //        var group_select = $(e).parents(".filter").find("select").last();
+        //        $(group_select).find("option").remove();
+
+        //        if (data && data.length > 0) {
+        //            for (var i = 0; i < data.length; i++) {
+        //                var group = data[i];
+        //                var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
+        //                $(group_select).append(option);
+        //            }
+        //        }
+
+        //        renderTrendChart();                
+        //    });
+        //}
 
         function renderMemberChart() {
             $('#members-chart').html('');
@@ -300,7 +317,7 @@
         <div class="graph-container">
             <span class="graph-mark">组成员业绩</span>
             <div class="filter">
-                <select class="select" style="width:120px" id="projectMember" onchange="projectChange(this)">
+                <select class="select" style="width:120px" id="projectMember" onchange="memberProjectChange(this)">
                     @if (Model.ProjectList != null) {
                         foreach (var project in Model.ProjectList) {
                             <option value="@project.Id">@project.ProjectName</option>
@@ -345,7 +362,7 @@
         <div class="graph-container">
             <span class="graph-mark">变化趋势</span>
             <div class="filter">
-                <select class="select" style="width:120px" id="projectTrend" onchange="projectChange(this)">
+                <select class="select" style="width:120px" id="projectTrend" onchange="renderTrendChart()">
                     @if (Model.ProjectList != null) {
                         foreach (var project in Model.ProjectList) {
                             <option value="@project.Id">@project.ProjectName</option>

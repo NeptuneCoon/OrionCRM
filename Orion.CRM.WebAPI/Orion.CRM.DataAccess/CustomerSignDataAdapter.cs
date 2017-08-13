@@ -12,17 +12,22 @@ namespace Orion.CRM.DataAccess
         {
             if (sign == null) return -1;
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@ResourceId", sign.ResourceId));
-            parameters.Add(new SqlParameter("@SignTime", sign.SignTime));
-            parameters.Add(new SqlParameter("@SignUserId", sign.SignUserId));
-            parameters.Add(new SqlParameter("@Amount", sign.Amount));
-            parameters.Add(new SqlParameter("@CreateTime", sign.CreateTime));
-            parameters.Add(new SqlParameter("@AppendUserId", sign.AppendUserId));
+            SqlParameter[] parameters = {
+                new SqlParameter("@Amount", sign.Amount),
+                new SqlParameter("@ResourceId", sign.ResourceId),
+                new SqlParameter("@SignTime", sign.SignTime),
+                new SqlParameter("@SignUserId", sign.SignUserId),
+                new SqlParameter("@SignMan", sign.SignMan),
+                new SqlParameter("@GroupId", sign.GroupId),
+                new SqlParameter("@GroupName", sign.GroupName),
+                new SqlParameter("@ProjectId", sign.ProjectId),
+                new SqlParameter("@OrgId", sign.OrgId),
+                new SqlParameter("@CreateTime", sign.CreateTime),
+                new SqlParameter("@AppendUserId", sign.AppendUserId),
+                new SqlParameter("@AppendMan", sign.AppendMan)
+            };
 
-            SqlParameter[] paramArr = parameters.ToArray();
-
-            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("CustomerSign", "InsertSign", paramArr);
+            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("CustomerSign", "InsertSign", parameters);
             return identityId;
         }
 

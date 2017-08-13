@@ -32,8 +32,8 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@OrgId",project.OrgId),
                 new SqlParameter("@ProjectName", project.ProjectName),
                 new SqlParameter("@CreateTime", project.CreateTime),
-                new SqlParameter("@UpdateTime", project.UpdateTime),
-                new SqlParameter("@CreateUserId", project.CreateUserId)
+                new SqlParameter("@UpdateTime", project.UpdateTime)
+                //new SqlParameter("@CreateUserId", project.CreateUserId)
             };
 
             int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("ProjectDomain", "InsertProject", paramArr);

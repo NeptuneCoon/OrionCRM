@@ -15,6 +15,11 @@ namespace Orion.CRM.Entity
         public DateTime UpdateTime { get; set; }
         public int OrgId { get; set; }
         public string OrgName { get; set; }
+
+        /// <summary>
+        /// 角色下的用户数
+        /// </summary>
+        public int UserCount { get; set; }
     }
 }
 

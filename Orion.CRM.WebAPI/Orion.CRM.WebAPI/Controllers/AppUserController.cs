@@ -296,5 +296,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 删除用户及相关数据
+        public APIDataResult DeleteUser(int userId)
+        {
+            try {
+                int count = service.DeleteUser(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

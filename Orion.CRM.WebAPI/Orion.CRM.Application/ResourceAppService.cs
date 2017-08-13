@@ -221,5 +221,16 @@ namespace Orion.CRM.Application
         {
             adapter.AssignUserResourcesToUnassigned(userId);
         }
+
+        // 获取资源属于哪个项目
+        public Entity.ResourceProject GetResourceProject(int resourceId)
+        {
+            return adapter.GetResourceProject(resourceId);
+        }
+
+        public int GetTalkingResourceCountByUserId(int userId)
+        {
+            return adapter.GetTalkingResourceCountByUserId(userId);
+        }
     }
 }

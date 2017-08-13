@@ -258,6 +258,25 @@
       <CommandType>Text</CommandType>
       <Description>删除用户和业务组之间的关系</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteUser</SqlName>
+      <OriginalSqlString>
+        update [Group] set ManagerId=null where ManagerId=@UserId;
+        delete from [ResourceUser] where UserId=@UserId;
+        delete from [TalkRecord] where UserId=@UserId;
+        delete from [ResourceTag] where TagId in(select Id from [Tag] where UserId=@UserId);
+        delete from [Tag] where UserId=@UserId;
+        delete from [ResourceNote] where UserId=@UserId;
+        delete from [UserGroup] where UserId=@UserId;
+        delete from [UserProject] where UserId=@UserId;
+        delete from [UserRole] where UserId=@UserId;
+        delete from [AppUser] where Id=@UserId;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除用户及相关数据(物理删除)</Description>
+    </SqlMapDetail>
   
 	</SqlMapConfigurations>
 </SqlMap>

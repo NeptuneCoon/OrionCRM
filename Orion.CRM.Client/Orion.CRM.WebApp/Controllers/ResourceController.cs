@@ -479,7 +479,26 @@ namespace Orion.CRM.WebApp.Controllers
         {
             if (sign != null && sign.Amount > 0) {
                 sign.AppendUserId = _AppUser.Id;
+                sign.AppendMan = _AppUser.RealName;
+                sign.OrgId = _AppUser.OrgId;
                 sign.CreateTime = DateTime.Now;
+
+                // 获取签约用户的姓名、所属组
+                string userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + sign.SignUserId;
+                var appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
+                if (appUser != null) {
+                    sign.SignMan = appUser.RealName;//签约用户姓名
+                    sign.GroupId = Convert.ToInt32(appUser.GroupId);//签约用户所属组Id
+                    sign.GroupName = appUser.GroupName;//签约用户所属组名称
+                }
+
+                // 获取资源属于哪个项目
+                string resourceProjectApi = _AppConfig.WebApiHost + "api/Resource/GetResourceProject?resourceId=" + sign.ResourceId;
+                var resourceProject = APIInvoker.Get<Models.Resource.ResourceProject>(resourceProjectApi);
+                if (resourceProject != null) {
+                    sign.ProjectId = resourceProject.ProjectId;//资源所属项目
+                }
+
                 string signApiUrl = _AppConfig.WebApiHost + "api/CustomerSign/InsertSign";
                 bool result = APIInvoker.Post<bool>(signApiUrl, sign);
 

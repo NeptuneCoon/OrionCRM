@@ -51,8 +51,6 @@ namespace Orion.CRM.WebApp.Controllers
                 if (dbGroup != null) {
                     dbGroup.GroupName = group.GroupName.Trim();
                     dbGroup.ProjectId = group.ProjectId;
-                    dbGroup.UpdateTime = DateTime.Now;
-                    dbGroup.ManagerId = group.ManagerId;
                     
                     string updateUrl = _AppConfig.WebApiHost + "api/Group/UpdateGroup";
                     bool result = APIInvoker.Post<bool>(updateUrl, dbGroup);

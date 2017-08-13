@@ -44,12 +44,12 @@
             
             @if (Model.RoleResourceVisible == 4 || Model.RoleResourceVisible == 3 || Model.RoleResourceVisible == 2) {
                 <div class="form-inline">
-                    <!--客户姓名-->
-                    <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" style="width:200px" />
+                    <!--电话/微信/QQ-->
+                    <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:200px" />
                 </div>
                 <div class="form-inline" style="margin-top:12px">
-                    <!--手机/QQ/微信-->
-                    <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="手机/QQ/微信" />
+                    <!--客户姓名-->
+                    <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="姓名" />
                     <!--项目-->
                     @if(Model.RoleResourceVisible == 4) { 
                         <select name="pid" id="pid" class="search-select" onchange="projectChange()">

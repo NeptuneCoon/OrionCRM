@@ -34,6 +34,8 @@
             var picker = new Pikaday({
                 field: document.getElementById('signTime'),
                 format: 'YYYY-MM-DD',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
                 i18n: {
                     previousMonth: '上一月',
                     nextMonth: '下一月',
@@ -65,8 +67,9 @@
                 var amount = $.trim($('#signAmount').val());
                 var signTime = $.trim($('#signTime').val());
                 var signUserId = $('#signUser').find("option:selected").val();
+                //var signMan = $('#signUser').find("option:selected").text();
 
-                var data = { "ResourceId": resourceId, "Amount": amount, "SignTime": signTime, "SignUserId": signUserId };
+                var data = { "Amount": amount, "ResourceId": resourceId, "SignTime": signTime, "SignUserId": signUserId };
                 $.post("/Resource/InsertCustomerSign", data , function (result) {
                     if (result) {
                         $('#successAlert').show();

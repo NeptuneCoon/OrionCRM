@@ -27,7 +27,7 @@ namespace Orion.CRM.Entity
         public string Email { get; set; }
         public string Remark { get; set; }
         public string InvalidReason { get; set; }
-        public int AppendUserId { get; set; }
+        public int? AppendUserId { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public int ProjectId { get; set; }

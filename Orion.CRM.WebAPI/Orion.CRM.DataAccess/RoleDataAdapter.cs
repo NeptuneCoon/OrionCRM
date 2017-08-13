@@ -50,7 +50,7 @@ namespace Orion.CRM.DataAccess
         {
             if (id <= 0) return false;
 
-            SqlParameter param = new SqlParameter("@Id", id);
+            SqlParameter param = new SqlParameter("@RoleId", id);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("RoleDomain", "DeleteRole", param);
 
             return count > 0;
@@ -67,20 +67,6 @@ namespace Orion.CRM.DataAccess
             };
 
             int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("RoleDomain", "InsertRoleMenu", paramArr);
-            return identityId;
-        }
-
-        public int InsertRolePage(Entity.RolePage rolePage)
-        {
-            if (rolePage == null) return -1;
-
-            SqlParameter[] paramArr = {
-                new SqlParameter("@RoleId", rolePage.RoleId),
-                new SqlParameter("@PageId", rolePage.PageId),
-                new SqlParameter("@CreateTime", DateTime.Now)
-            };
-
-            int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("RoleDomain", "InsertRolePage", paramArr);
             return identityId;
         }
 
@@ -110,26 +96,6 @@ namespace Orion.CRM.DataAccess
 
             SqlParameter param = new SqlParameter("@MenuId", menuId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("RoleDomain", "DeleteRoleMenuByMenuId", param);
-
-            return count > 0;
-        }
-
-        public bool DeleteRolePageByRoleId(int roleId)
-        {
-            if (roleId <= 0) return false;
-
-            SqlParameter param = new SqlParameter("@RoleId", roleId);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("RoleDomain", "DeleteRolePageByRoleId", param);
-
-            return count > 0;
-        }
-
-        public bool DeleteRolePageByPageId(int pageId)
-        {
-            if (pageId <= 0) return false;
-
-            SqlParameter param = new SqlParameter("@PageId", pageId);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("RoleDomain", "DeleteRolePageByPageId", param);
 
             return count > 0;
         }
@@ -186,16 +152,6 @@ namespace Orion.CRM.DataAccess
             return roleMenus;
         }
 
-        public IEnumerable<Entity.RolePage> GetRolePagesByRoleId(int roleId)
-        {
-            if (roleId <= 0) return null;
-
-            SqlParameter param = new SqlParameter("@RoleId", roleId);
-            IEnumerable<Entity.RolePage> rolePages = SqlMapHelper.GetSqlMapResult<Entity.RolePage>("RoleDomain", "GetRolePagesByRoleId", param);
-
-            return rolePages;
-        }
-
         public IEnumerable<Entity.RoleMenu> GetRoleMenusByOrgId(int orgId)
         {
             if (orgId <= 0) return null;
@@ -205,17 +161,6 @@ namespace Orion.CRM.DataAccess
 
             return roleMenus;
         }
-
-        public IEnumerable<Entity.RolePage> GetRolePagesByPageId(int pageId)
-        {
-            if (pageId <= 0) return null;
-
-            SqlParameter param = new SqlParameter("@PageId", pageId);
-            IEnumerable<Entity.RolePage> rolePages = SqlMapHelper.GetSqlMapResult<Entity.RolePage>("RoleDomain", "GetRolePagesByPageId", param);
-
-            return rolePages;
-        }
-
 
         public IEnumerable<Entity.RoleMenuComplex> GetAllRoleMenus()
         {
@@ -242,6 +187,15 @@ namespace Orion.CRM.DataAccess
         {
             bool result = SqlMapHelper.ExecuteBatchInsert<Entity.RoleMenu>("RoleDomain", "RoleMenuBatchInsert", roleMenus);
             return result;
+        }
+
+        // 获取角色下的用户数量
+        public int GetUserCountByRoleId(int roleId)
+        {
+            if (roleId <= 0) return 0;
+            SqlParameter param = new SqlParameter("@RoleId", roleId);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("RoleDomain", "GetUserCountByRoleId", param);
+            return count;
         }
     }
 }

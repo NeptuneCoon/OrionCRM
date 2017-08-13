@@ -35,7 +35,10 @@
     <SqlMapDetail>
       <SqlName>DeleteRole</SqlName>
       <OriginalSqlString>
-        delete from [Role] where Id=@Id
+        delete from [RoleMenu] where RoleId=@RoleId;
+        delete from [RoleDataPermission] where RoleId=@RoleId;
+        delete from [UserRole] where RoleId=@RoleId;
+        delete from [Role] where Id=@RoleId;
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -43,7 +46,7 @@
     </SqlMapDetail>
     
     
-    <!-- 关于RoleMenu，RolePage两张表的操作-->
+    <!-- 关于RoleMenu的操作-->
     <SqlMapDetail>
       <SqlName>InsertRoleMenu</SqlName>
       <OriginalSqlString>
@@ -60,16 +63,6 @@
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>批量新增角色和菜单关系</Description>
-    </SqlMapDetail>
-    
-    <SqlMapDetail>
-      <SqlName>InsertRolePage</SqlName>
-      <OriginalSqlString>
-        insert into RolePage(RoleId,PageId,CreateTime) values(@RoleId,@PageId,@CreateTime);select cast(@@identity as int);
-      </OriginalSqlString>
-      <DBConnectionName>OrionCRM</DBConnectionName>
-      <CommandType>Text</CommandType>
-      <Description>新增角色和页面关系</Description>
     </SqlMapDetail>
     
     <SqlMapDetail>
@@ -100,26 +93,6 @@
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>按MenuId删除和菜单有关的角色关系</Description>
-    </SqlMapDetail>
-    
-    <SqlMapDetail>
-      <SqlName>DeleteRolePageByRoleId</SqlName>
-      <OriginalSqlString>
-        delete from RolePage where RoleId=@RoleId
-      </OriginalSqlString>
-      <DBConnectionName>OrionCRM</DBConnectionName>
-      <CommandType>Text</CommandType>
-      <Description>按RoleId删除角色下的所有页面关系</Description>
-    </SqlMapDetail>
-    
-    <SqlMapDetail>
-      <SqlName>DeleteRolePageByPageId</SqlName>
-      <OriginalSqlString>
-        delete from RolePage where PageId=@PageId
-      </OriginalSqlString>
-      <DBConnectionName>OrionCRM</DBConnectionName>
-      <CommandType>Text</CommandType>
-      <Description>按PageId删除和页面有关的角色关系</Description>
     </SqlMapDetail>
     
     
@@ -163,7 +136,7 @@
           (
             select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
 		        (
-			        select A.*,B.OrgName from [Role] A inner join Organization B on A.OrgId=B.Id where A.OrgId=$OrgId
+			        select A.*,B.OrgName,(select count(1) from [UserRole] where RoleId=A.Id) as UserCount from [Role] A inner join Organization B on A.OrgId=B.Id where A.OrgId=$OrgId
 		        )as temp
           )as A 
         where RowNumber > $PageSize*($PageIndex-1)
@@ -269,23 +242,13 @@
     </SqlMapDetail>
 
     <SqlMapDetail>
-      <SqlName>GetRolePagesByRoleId</SqlName>
+      <SqlName>GetUserCountByRoleId</SqlName>
       <OriginalSqlString>
-        select * from RolePage where RoleId=@RoleId
+        select count(1) from UserRole where RoleId=@RoleId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>获取角色和页面之间的关系(根据RoleId)</Description>
-    </SqlMapDetail>
-
-    <SqlMapDetail>
-      <SqlName>GetRolePagesByPageId</SqlName>
-      <OriginalSqlString>
-        select * from RolePage where PageId=@PageId
-      </OriginalSqlString>
-      <DBConnectionName>OrionCRM</DBConnectionName>
-      <CommandType>Text</CommandType>
-      <Description>获取角色和页面之间的关系(根据PageId)</Description>
+      <Description>获取角色下的用户数量</Description>
     </SqlMapDetail>
 
 	</SqlMapConfigurations>

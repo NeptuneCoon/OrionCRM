@@ -4,8 +4,8 @@
     <SqlMapDetail>
       <SqlName>InsertSign</SqlName>
       <OriginalSqlString>
-        insert into [CustomerSign](ResourceId,SignTime,SignUserId,Amount,CreateTime,AppendUserId)
-        values(@ResourceId,@SignTime,@SignUserId,@Amount,@CreateTime,@AppendUserId);
+        insert into [CustomerSign](Amount,ResourceId,SignTime,SignUserId,SignMan,GroupId,GroupName,ProjectId,OrgId,CreateTime,AppendUserId,AppendMan)
+        values(@Amount,@ResourceId,@SignTime,@SignUserId,@SignMan,@GroupId,@GroupName,@ProjectId,@OrgId,@CreateTime,@AppendUserId,@AppendMan);
         select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -26,10 +26,7 @@
     <SqlMapDetail>
       <SqlName>GetSignByResourceId</SqlName>
       <OriginalSqlString>
-        select A.*,B.CustomerName,
-        (select RealName from AppUser where Id=A.SignUserId) as SignMan,
-        (select RealName from AppUser where Id=A.AppendUserId) as AppendMan
-        from [CustomerSign] A
+        select A.*,B.CustomerName from [CustomerSign] A
         join [Resource] B on A.ResourceId=B.Id
         where ResourceId=@ResourceId
       </OriginalSqlString>
@@ -41,13 +38,7 @@
     <SqlMapDetail>
       <SqlName>GetSignsByTime</SqlName>
       <OriginalSqlString>
-        select A.*,C.GroupId,D.GroupName,E.RealName as SignMan from [CustomerSign] A
-        inner join [ResourceOrganization] B on A.ResourceId=B.ResourceId
-        inner join [UserGroup] C on A.SignUserId=C.UserId
-        inner join [Group] D on C.GroupId=D.Id
-        inner join [AppUser] E on A.SignUserId=E.Id
-        where SignTime between @BeginTime and @EndTime
-        and B.OrgId=@OrgId
+        select * from [CustomerSign] where SignTime between @BeginTime and @EndTime and OrgId=@OrgId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -57,11 +48,9 @@
     <SqlMapDetail>
       <SqlName>GetGroupMemberSigns</SqlName>
       <OriginalSqlString>
-        select C.*,A.GroupId,B.GroupName,D.RealName as SignMan from [UserGroup] A
-        inner join [Group] B on A.GroupId=B.Id
-        left join [CustomerSign] C on A.UserId=C.SignUserId
-        left join [AppUser] D on A.UserId=D.Id
-        where A.GroupId=@GroupId and (C.SignTime between @BeginTime and @EndTime or C.SignTime is null)
+        select * from [Group] A
+        left join [CustomerSign] B on A.Id=B.GroupId
+        where A.Id=@GroupId and (B.SignTime between @BeginTime and @EndTime or B.SignTime is null)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -71,12 +60,9 @@
     <SqlMapDetail>
       <SqlName>GetProjectGroupSigns</SqlName>
       <OriginalSqlString>
-        select C.*,A.GroupId,B.GroupName,D.RealName as SignMan from [UserGroup] A
-        inner join [Group] B on A.GroupId=B.Id
-        left join [CustomerSign] C on A.UserId=C.SignUserId
-        left join [AppUser] D on A.UserId=D.Id
-        left join [UserProject] E on A.UserId=E.UserId
-        where E.ProjectId=@ProjectId and (C.SignTime between @BeginTime and @EndTime or C.SignTime is null)
+        select * from [Project] A
+        left join [CustomerSign] B on A.Id=B.ProjectId
+        where A.Id=@ProjectId and (B.SignTime between @BeginTime and @EndTime or B.SignTime is null)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

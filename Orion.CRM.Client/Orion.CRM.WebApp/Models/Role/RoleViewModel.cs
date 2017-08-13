@@ -15,6 +15,10 @@ namespace Orion.CRM.WebApp.Models.Role
         public int OrgId { get; set; }
         public string OrgName { get; set; }
         /// <summary>
+        /// 角色下的用户数
+        /// </summary>
+        public int UserCount { get; set; }
+        /// <summary>
         /// 菜单
         /// </summary>
         public IEnumerable<Menu> MenuList { get; set; }

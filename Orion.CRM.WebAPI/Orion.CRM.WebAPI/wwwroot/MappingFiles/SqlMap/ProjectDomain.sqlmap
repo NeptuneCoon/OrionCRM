@@ -25,8 +25,8 @@
     <SqlMapDetail>
       <SqlName>InsertProject</SqlName>
       <OriginalSqlString>
-        insert into Project(OrgId,ProjectName,CreateTime,UpdateTime,CreateUserId)
-        values(@OrgId,@ProjectName,@CreateTime,@UpdateTime,@CreateUserId);select cast(@@identity as int);
+        insert into Project(OrgId,ProjectName,CreateTime,UpdateTime)
+        values(@OrgId,@ProjectName,@CreateTime,@UpdateTime);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

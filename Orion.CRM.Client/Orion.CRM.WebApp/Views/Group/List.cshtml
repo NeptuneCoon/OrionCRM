@@ -42,14 +42,15 @@
             <strong></strong>
         </div>
 
-        <table class="table table-bordered" style="margin-top:8px">
+        <table class="table table-bordered" style="margin-top:8px" id="group-list">
             <thead>
                 <tr>
-                    <th>序号</th>
-                    <th>业务组</th>
-                    <th>负责人(组长)</th>
-                    <th>所属项目</th>
-                    <th>操作</th>
+                    <th style="width:60px">序号</th>
+                    <th style="width:150px">业务组</th>
+                    <th style="width:100px">负责人(组长)</th>
+                    <th style="width:80px">成员</th>
+                    <th style="width:100px">所属项目</th>
+                    <th style="width:150px">操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +61,7 @@
                             <td>@(i + 1)</td>
                             <td>@item.GroupName</td>
                             <td>@(string.IsNullOrEmpty(item.ManagerName) ? "--" : item.ManagerName)</td>
+                            <td>@(item.UserCount)人</td>
                             <td>@item.ProjectName</td>
                             <td>
                                 <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.GroupName', @item.ProjectId)">编辑</a>
@@ -261,7 +263,6 @@
         // 删除调用器
         function deleteInvoker(e) {
             var id = $(e).parents(".modal").attr("param-id");
-            console.info(id);
             if (id) {
                 deleteSource(id);
             }
@@ -335,19 +336,22 @@
                         itemHtml += '<td>' + (i + 1) + '</td>';
                         itemHtml += '<td>' + data[i].groupName + '</td>';
                         itemHtml += '<td>' + (data[i].managerName == null ? "--" : data[i].managerName) + '</td>';
+                        itemHtml += '<td>' + data[i].userCount + '人</td>';
                         itemHtml += '<td>' + data[i].projectName + '</td>';
                         itemHtml += '<td>';
                         itemHtml += '<a href="javascript:;" onclick="showEditPanel(' + data[i].id + ', \'' + data[i].groupName + '\',' + data[i].projectId + ')">编辑</a> ';
-                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ')">删除</a>';
+                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ')">删除</a> ';
+                        itemHtml += '<a href="javascript:;" onclick="showLeaderSetPanel(' + data[i].id + ',\'' + data[i].groupName + '\', ' + data[i].managerId + ')">任命组长</a>';
                         itemHtml += '</td>';
                         itemHtml += '</tr>';
 
                         dataHtml += itemHtml;
                     }
-                    $(".table>tbody").html(dataHtml);
+                    console.info(dataHtml);
+                    $("#group-list>tbody").html(dataHtml);
                 }
                 else {
-                    $(".table>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
+                    $("#group-list>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
                 }
             });
         }

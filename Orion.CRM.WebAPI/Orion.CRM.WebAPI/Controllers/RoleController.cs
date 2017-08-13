@@ -82,20 +82,6 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public APIDataResult InsertRolePage([FromBody]Entity.RolePage rolePage)
-        {
-            try {
-                int identityId = service.InsertRolePage(rolePage);
-                APIDataResult dataResult = new APIDataResult(200, identityId);
-                return dataResult;
-            }
-            catch (Exception ex) {
-                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
-                return dataResult;
-            }
-        }
-
         public APIDataResult DeleteRoleMenuById(int id)
         {
             try {
@@ -126,32 +112,6 @@ namespace Orion.CRM.WebAPI.Controllers
         {
             try {
                 bool res = service.DeleteRoleMenuByMenuId(menuId);
-                APIDataResult dataResult = new APIDataResult(200, res);
-                return dataResult;
-            }
-            catch (Exception ex) {
-                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
-                return dataResult;
-            }
-        }
-
-        public APIDataResult DeleteRolePageByRoleId(int roleId)
-        {
-            try {
-                bool res = service.DeleteRolePageByRoleId(roleId);
-                APIDataResult dataResult = new APIDataResult(200, res);
-                return dataResult;
-            }
-            catch (Exception ex) {
-                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
-                return dataResult;
-            }
-        }
-
-        public APIDataResult DeleteRolePageByPageId(int pageId)
-        {
-            try {
-                bool res = service.DeleteRolePageByPageId(pageId);
                 APIDataResult dataResult = new APIDataResult(200, res);
                 return dataResult;
             }
@@ -252,33 +212,6 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
-        public APIDataResult GetRolePagesByRoleId(int roleId)
-        {
-            try {
-                IEnumerable<Entity.RolePage> rolePages = service.GetRolePagesByRoleId(roleId);
-                APIDataResult dataResult = new APIDataResult(200, rolePages);
-                return dataResult;
-            }
-            catch (Exception ex) {
-                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
-                return dataResult;
-            }
-        }
-
-        public APIDataResult GetRolePagesByPageId(int pageId)
-        {
-            try {
-                IEnumerable<Entity.RolePage> rolePages = service.GetRolePagesByPageId(pageId);
-                APIDataResult dataResult = new APIDataResult(200, rolePages);
-                return dataResult;
-            }
-            catch (Exception ex) {
-                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
-                return dataResult;
-            }
-        }
-
-
         public APIDataResult GetAllRoleMenus()
         {
             try {
@@ -324,6 +257,20 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 bool res = service.RoleMenuBatchInsert(roleMenus);
                 APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
+        public APIDataResult GetUserCountByRoleId(int roleId)
+        {
+            try {
+                int count = service.GetUserCountByRoleId(roleId);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {

@@ -291,5 +291,26 @@ namespace Orion.CRM.WebApp.Controllers
             return View();
         } 
         #endregion
+
+
+        [HttpGet]
+        public int GetUserCountByRoleId(int roleId)
+        {
+            string url = _AppConfig.WebApiHost + "api/Role/GetUserCountByRoleId?roleId=" + roleId;
+            int count = APIInvoker.Get<int>(url);
+            return count;
+        }
+
+        [HttpGet]
+        public bool Delete(int id)
+        {
+            string url = _AppConfig.WebApiHost + "api/Role/DeleteRole?id=" + id;
+            bool result = APIInvoker.Get<bool>(url);
+
+            if (result) {
+                TempData["result"] = true;
+            }
+            return result;
+        }
     }
 }

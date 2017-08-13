@@ -515,5 +515,33 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 获取资源属于哪个项目
+        public APIDataResult GetResourceProject(int resourceId)
+        {
+            try {
+                var entity = service.GetResourceProject(resourceId);
+                APIDataResult dataResult = new APIDataResult(200, entity);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        // 获取用户洽谈中的资源总条数(洽谈中的)
+        public APIDataResult GetTalkingResourceCountByUserId(int userId)
+        {
+            try {
+                int count = service.GetTalkingResourceCountByUserId(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

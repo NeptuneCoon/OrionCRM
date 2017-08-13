@@ -239,6 +239,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
+        #region 重置用户密码
         public IActionResult ResetPassword(int id)
         {
             Models.AppUser.AppUserViewModel user = GetUserById(id);
@@ -273,7 +274,9 @@ namespace Orion.CRM.WebApp.Controllers
             }
             return RedirectToAction("ResetPassword");
         }
+        #endregion
 
+        #region 资源导出
         public IActionResult ResourceExport(int id)
         {
             Models.AppUser.ResourceExportModel viewModel = new Models.AppUser.ResourceExportModel();
@@ -284,12 +287,14 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.GroupList = AppDTO.GetGroupsFromDb(Convert.ToInt32(appUser.ProjectId));
                 viewModel.UserName = appUser.UserName;
                 viewModel.RealName = appUser.RealName;
-                viewModel.ResourceCount = GetResourceCountByUserId(id);
+                viewModel.ResourceCount = GetTalkingResourceCountByUserId(id);
             }
 
             return View(viewModel);
-        }
+        } 
+        #endregion
 
+        #region 资源导出-处理程序
         [HttpPost]
         public IActionResult ResourceExportHandler(Models.AppUser.ResourceExportModel viewModel)
         {
@@ -310,7 +315,7 @@ namespace Orion.CRM.WebApp.Controllers
                         if (!string.IsNullOrEmpty(viewModel.ExportTarget)) {
                             // --------------------导入到某一用户名下--------------------
                             int targetUserId = int.Parse(viewModel.ExportTarget);
-                            
+
                             // ResourceGroup关系处理
                             string resourceGroupChangeApi = _AppConfig.WebApiHost + "api/Resource/ChangeResourceGroupOwner?sourceUserId=" + viewModel.UserId + "&targetGroupId=" + targetGroupId;
                             int count1 = APIInvoker.Get<int>(resourceGroupChangeApi);
@@ -323,7 +328,7 @@ namespace Orion.CRM.WebApp.Controllers
                             // --------------------导入到业务组--------------------
                             // step1.获取该用户的所有资源Id
                             List<int> resourceIds = APIInvoker.Get<List<int>>(_AppConfig.WebApiHost + "api/Resource/GetResourcesByUserId?userId=" + viewModel.UserId);
-                            if(resourceIds != null && resourceIds.Count > 0) {
+                            if (resourceIds != null && resourceIds.Count > 0) {
                                 string resourceIdStr = string.Join(",", resourceIds);
                                 // step2.删除Resource和该用户的关系
                                 string deleteUserApi = _AppConfig.WebApiHost + "api/Resource/DeleteResourceUserByUserId?userId=" + viewModel.UserId;
@@ -336,10 +341,11 @@ namespace Orion.CRM.WebApp.Controllers
                                 // step4.添加新的ResourceGroup关系
                                 string resourceGroupBatchApi = _AppConfig.WebApiHost + "api/Resource/ResourceGroupBatchInsert";
                                 List<object> resourceGroups = new List<object>();
-                                if(resourceIds != null && resourceIds.Count > 0) {
+                                if (resourceIds != null && resourceIds.Count > 0) {
                                     DateTime now = DateTime.Now;
-                                    foreach(var resourceId in resourceIds) {
-                                        resourceGroups.Add(new{
+                                    foreach (var resourceId in resourceIds) {
+                                        resourceGroups.Add(new
+                                        {
                                             ResourceId = resourceId,
                                             GroupId = targetGroupId,
                                             CreateTime = now
@@ -358,10 +364,11 @@ namespace Orion.CRM.WebApp.Controllers
                         break;
                 }
                 TempData["result"] = true;
-                return RedirectToAction("ResourceExport","AppUser",new { id = viewModel.UserId });
+                return RedirectToAction("ResourceExport", "AppUser", new { id = viewModel.UserId });
             }
             return RedirectToAction("Index", "Error");
-        }
+        } 
+        #endregion
 
         // 通用Ajax方法
         #region 获取业务组下的成员
@@ -391,13 +398,18 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
             Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
             return appUser;
-        } 
+        }
         #endregion
 
-        //public List<Models.Resource.Resource> GetResourcesByUserId(int userId)
-        //{
-        //    string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourcesByUserId"
-        //}
+        // 获取用户洽谈中的资源的总条数(注意洽谈中)
+        [HttpGet]
+        public int GetTalkingResourceCountByUserId(int userId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetTalkingResourceCountByUserId?userId=" + userId;
+            int count = APIInvoker.Get<int>(apiUrl);
+
+            return count;
+        }
 
         #region 验证密码
         /// <summary>
@@ -444,5 +456,16 @@ namespace Orion.CRM.WebApp.Controllers
             return identityId;
         }
         #endregion
+
+        public bool DeleteUser(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/DeleteUser?userId=" + id;
+            int count = APIInvoker.Get<int>(apiUrl);
+            if(count > 0) {
+                TempData["result"] = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

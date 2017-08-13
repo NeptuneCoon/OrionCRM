@@ -134,6 +134,18 @@
       <CommandType>Text</CommandType>
       <Description>获取该用户下的资源个数</Description>
     </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetTalkingResourceCountByUserId</SqlName>
+      <OriginalSqlString>
+        select count(1) from [ResourceUser] A
+        inner join [Resource] B on A.ResourceId=B.Id
+        where UserId=@UserId and B.Status=4
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取用户洽谈中的资源的总条数</Description>
+    </SqlMapDetail>
 
     <SqlMapDetail>
       <SqlName>GetResourcesByProjectId</SqlName>
@@ -449,6 +461,16 @@
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>将某一用户资源划入未分配</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetResourceProject</SqlName>
+      <OriginalSqlString>
+        select * from ResourceProject where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取资源属于哪个项目</Description>
     </SqlMapDetail>
     
 	</SqlMapConfigurations>

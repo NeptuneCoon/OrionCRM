@@ -42,11 +42,6 @@ namespace Orion.CRM.Application
             return true;
         }
 
-        public int InsertRolePage(Entity.RolePage rolePage)
-        {
-            return adapter.InsertRolePage(rolePage);
-        }
-
         public bool DeleteRoleMenuById(int id)
         {
             return adapter.DeleteRoleMenuById(id);
@@ -60,16 +55,6 @@ namespace Orion.CRM.Application
         public bool DeleteRoleMenuByMenuId(int menuId)
         {
             return adapter.DeleteRoleMenuByMenuId(menuId);
-        }
-
-        public bool DeleteRolePageByRoleId(int roleId)
-        {
-            return adapter.DeleteRolePageByRoleId(roleId);
-        }
-
-        public bool DeleteRolePageByPageId(int pageId)
-        {
-            return adapter.DeleteRolePageByPageId(pageId);
         }
 
         public IEnumerable<Entity.Role> GetRoles(int pageIndex, int pageSize)
@@ -107,17 +92,6 @@ namespace Orion.CRM.Application
             return adapter.GetRoleMenusByOrgId(orgId);
         }
 
-        public IEnumerable<Entity.RolePage> GetRolePagesByRoleId(int roleId)
-        {
-            return adapter.GetRolePagesByRoleId(roleId);
-        }
-
-        public IEnumerable<Entity.RolePage> GetRolePagesByPageId(int pageId)
-        {
-            return adapter.GetRolePagesByPageId(pageId);
-        }
-
-
         public IEnumerable<Entity.RoleMenuComplex> GetAllRoleMenus()
         {
             return adapter.GetAllRoleMenus();
@@ -152,6 +126,11 @@ namespace Orion.CRM.Application
         public bool RoleMenuBatchInsert(IEnumerable<Entity.RoleMenu> roleMenus)
         {
             return adapter.RoleMenuBatchInsert(roleMenus);
+        }
+
+        public int GetUserCountByRoleId(int roleId)
+        {
+            return adapter.GetUserCountByRoleId(roleId);
         }
     }
 }

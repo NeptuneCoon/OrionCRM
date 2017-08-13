@@ -72,7 +72,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
-                                        <li><a href="#">删除</a></li>
+                                        <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
                                         <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>
                                         @if(item.ProjectId != null && item.GroupId != null) { 
                                             <li class="divider"></li>
@@ -103,10 +103,14 @@
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
                 <h4 id="tip-content">确定要删除吗？</h4>
-                <label style="color:red;display:none" id="tip-desc">删除后不会删除与之绑定的资源，只会将这些资源的“来源”置为空。</label>
-                <div style="margin-top:20px">
+                <label style="color:red;display:none" id="tip-desc"></label>
+                <div style="margin-top:20px" id="div-action1">
                     <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+                <div style="margin-top:20px;display:none;text-align:right" id="div-action2">
+                    <a href="javascript:;" onclick="exportResource(this)" class="btn btn-inverse" >即刻导出</a>
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
         </div>
@@ -115,32 +119,57 @@
 
 @section Scripts{
     <script type="text/javascript">
-        function deleteUser(id) {
-            if (confirm("你确认要删除吗？")){
-                $.get("/AppUser/DeleteUser", { "id": id }, function (data) {
-                    if (data) {
-                        alert('删除成功！');
-                        window.location = "/Role/RoleList";
-                    }
-                    else {
-                        alert('删除失败！');
-                    }
-                });
-            }
+
+        function deleteConfirm(id, realName) {
+            var panel = $('#panelAlert');
+            panel.attr("param-id", id);
+
+            $.get("/AppUser/GetTalkingResourceCountByUserId", { "userId": id }, function (count) {
+                if (count > 0) {
+                    $('#tip-content').html('"' + realName + '"下有' + count + '条洽谈中的资源，请先导出后再删除。');
+                    $('#tip-desc').html('抱歉，你需要先将这' + count + '条资源导出后才能删除"' + realName + '"！');
+                    $('#tip-desc').show();
+
+                    $('#div-action1').hide();
+                    $('#div-action2').show();
+                }
+                else {
+                    $('#tip-content').html('确定要删除"' + realName + '"吗？');
+                    $('#tip-desc').hide();
+
+                    $('#div-action1').show();
+                    $('#div-action2').hide();
+                }
+                modalShow(panel);
+            });
         }
 
-        //$(function () {
-        //    var operateResult = $('#hidOperateResult').val();
-        //    if (operateResult) {
-        //        if (operateResult == "success") {
-        //            $(".alert>span").html('操作成功！');
-        //        }
-        //        else if (operateResult == "fail") {
-        //            $(".alert>span").html('操作失败！');
-        //        }
-        //        $(".alert").show();
+        function deleteInvoker(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            $.get("/AppUser/DeleteUser", { "id": id }, function (data) {
+                window.location = "/AppUser/List";
+            });
+        }
+
+        function exportResource(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            window.location = "/AppUser/ResourceExport/" + id;
+
+        }
+
+        //function deleteUser(id) {
+        //    if (confirm("你确认要删除吗？")){
+        //        $.get("/AppUser/DeleteUser", { "id": id }, function (data) {
+        //            if (data) {
+        //                alert('删除成功！');
+        //                window.location = "/Role/RoleList";
+        //            }
+        //            else {
+        //                alert('删除失败！');
+        //            }
+        //        });
         //    }
-        //});
+        //}
     </script>
 }
 

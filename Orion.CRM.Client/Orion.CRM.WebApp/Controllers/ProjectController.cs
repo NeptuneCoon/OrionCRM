@@ -17,11 +17,11 @@ namespace Orion.CRM.WebApp.Controllers
         {
             string url = _AppConfig.WebApiHost + "api/Project/GetProjectsByOrgId?orgId="+ _AppUser.OrgId;
             List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
-            if(list != null && list.Count > 0) {
-                foreach(var project in list) {
-                    project.CreateUserName = GetUserNameById(project.CreateUserId);
-                }
-            }
+            //if(list != null && list.Count > 0) {
+            //    foreach(var project in list) {
+            //        project.CreateUserName = GetUserNameById(project.CreateUserId);
+            //    }
+            //}
 
             return View(list);
         }
@@ -34,7 +34,7 @@ namespace Orion.CRM.WebApp.Controllers
                 project.OrgId = _AppUser.OrgId;
                 project.CreateTime = DateTime.Now;
                 project.UpdateTime = DateTime.Now;
-                project.CreateUserId = _AppUser.Id;
+                //project.CreateUserId = _AppUser.Id;
 
                 string url = _AppConfig.WebApiHost + "api/Project/InsertProject";
                 int identityId = APIInvoker.Post<int>(url, project);
@@ -75,25 +75,25 @@ namespace Orion.CRM.WebApp.Controllers
         {
             string url = _AppConfig.WebApiHost + "api/Project/GetProjectsByOrgId?orgId=" + _AppUser.OrgId;
             List<Models.Project.ProjectViewModel> list = APIInvoker.Get<List<Models.Project.ProjectViewModel>>(url);
-            if (list != null && list.Count > 0) {
-                foreach (var project in list) {
-                    project.CreateUserName = GetUserNameById(project.CreateUserId);
-                }
-            }
+            //if (list != null && list.Count > 0) {
+            //    foreach (var project in list) {
+            //        project.CreateUserName = GetUserNameById(project.CreateUserId);
+            //    }
+            //}
 
             return list;
         }
 
         #region 根据用户Id获取用户登录名
-        private string GetUserNameById(int userId)
-        {
-            string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
-            Models.Account.AppUserModel appUser = APIInvoker.Get<Models.Account.AppUserModel>(apiUrl);
-            if (appUser != null) {
-                return appUser.UserName;
-            }
-            return string.Empty;
-        }
+        //private string GetUserNameById(int userId)
+        //{
+        //    string apiUrl = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
+        //    Models.Account.AppUserModel appUser = APIInvoker.Get<Models.Account.AppUserModel>(apiUrl);
+        //    if (appUser != null) {
+        //        return appUser.UserName;
+        //    }
+        //    return string.Empty;
+        //}
         #endregion
     }
 }

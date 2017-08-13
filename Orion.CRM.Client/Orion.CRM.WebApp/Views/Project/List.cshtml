@@ -33,7 +33,7 @@
                     <th>序号</th>
                     <th>项目名称</th>
                     <th>创建时间</th>
-                    <th>创建人</th>
+                    @*<th>创建人</th>*@
                     <th>操作</th>
                 </tr>
             </thead>
@@ -45,7 +45,7 @@
                             <td>@(i + 1)</td>
                             <td>@item.ProjectName</td>
                             <td>@item.CreateTime</td>
-                            <td>@item.CreateUserName</td>
+                            @*<td>@item.CreateUserName</td>*@
                             <td>
                                 <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.ProjectName')">编辑</a>
                                 <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>

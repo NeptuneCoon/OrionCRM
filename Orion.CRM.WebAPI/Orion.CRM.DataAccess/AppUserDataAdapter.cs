@@ -218,5 +218,13 @@ namespace Orion.CRM.DataAccess
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUserGroup", param);
             return count;
         }
+
+        // 删除用户及相关数据
+        public int DeleteUser(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUser", param);
+            return count;
+        }
     }
 }

@@ -538,5 +538,20 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@UserId", userId);
             SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "AssignUserResourcesToUnassigned", param);
         }
+
+        // 获取资源属于哪个项目
+        public Entity.ResourceProject GetResourceProject(int resourceId)
+        {
+            SqlParameter param = new SqlParameter("@ResourceId", resourceId);
+            var entity = SqlMapHelper.GetSqlMapSingleResult<Entity.ResourceProject>("ResourceDomain", "GetResourceProject", param);
+            return entity;
+        }
+
+        public int GetTalkingResourceCountByUserId(int userId)
+        {
+            SqlParameter param = new SqlParameter("@UserId", userId);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetTalkingResourceCountByUserId", param);
+            return count;
+        }
     }
 }
