@@ -15,7 +15,9 @@
     <Content Include="wwwroot\MappingFiles\SqlMap\GroupDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceDomain.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\ResourceNote.sqlmap" />
+    <Content Include="wwwroot\MappingFiles\SqlMap\ResourceTag.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\SourceDomain.sqlmap" />
+    <Content Include="wwwroot\MappingFiles\SqlMap\Tag.sqlmap" />
     <Content Include="wwwroot\MappingFiles\SqlMap\TalkRecord.sqlmap" />
   </ItemGroup>
   <ItemGroup>
