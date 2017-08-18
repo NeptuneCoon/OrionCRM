@@ -7,6 +7,10 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="App_Data\PagerTagHelper.cs" />
