@@ -8,6 +8,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  </PropertyGroup>
 
   <ItemGroup>
     <Content Include="wwwroot\MappingFiles\SqlMap\CustomerSign.sqlmap" />
