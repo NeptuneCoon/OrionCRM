@@ -39,6 +39,14 @@ namespace Orion.CRM.DataAccess
             return count;
         }
 
+        public int DeleteSignByProjectId(int projectId)
+        {
+            if (projectId <= 0) return 0;
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("CustomerSign", "DeleteSignByProjectId", param);
+            return count;
+        }
+
         public Entity.CustomerSign GetSignByResourceId(int resourceId)
         {
             if (resourceId <= 0) return null;

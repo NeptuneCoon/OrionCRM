@@ -43,5 +43,16 @@
       <CommandType>Text</CommandType>
       <Description>修改项目</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteProject</SqlName>
+      <OriginalSqlString>
+        delete from Project where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除项目(仅删除Project表数据，其他和项目有关的数据在Application层进行删除)</Description>
+    </SqlMapDetail>
+    
 	</SqlMapConfigurations>
 </SqlMap>

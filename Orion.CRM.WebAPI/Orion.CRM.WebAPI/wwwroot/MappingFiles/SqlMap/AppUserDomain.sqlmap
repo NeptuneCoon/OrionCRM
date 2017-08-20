@@ -223,6 +223,16 @@
     </SqlMapDetail>
 
     <SqlMapDetail>
+      <SqlName>DeleteUserProjectByProjectId</SqlName>
+      <OriginalSqlString>
+        delete from UserProject where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除某一项目和用户的关系</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
       <SqlName>GetUserGroup</SqlName>
       <OriginalSqlString>
         select * from UserGroup where UserId=@UserId

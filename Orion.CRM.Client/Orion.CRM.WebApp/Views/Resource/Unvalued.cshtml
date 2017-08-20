@@ -32,7 +32,7 @@
     </style>
 }
 
-<div class="panel panel-default" style="width:1000px">
+<div class="panel panel-default span9">
     <div class="panel-heading">
         <h3 class="panel-title">无意向资源</h3>
     </div>
@@ -40,48 +40,9 @@
     <div class="panel-body">
         <form action="/Resource/List" method="get">
             <div class="form-inline">
-                <label>姓名</label>
-                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" />
-                
-                <select name="pid" id="pid" class="search-select" onchange="projectChange()">
-                    @if (Model.ProjectList != null) {
-                        var defaultPId = Model.Params.pid == null ? Model.ProjectId : Model.Params.pid;
-                        foreach (var project in Model.ProjectList) {
-                            if (project.Id == defaultPId) {
-                                <option value="@project.Id" selected="selected">@project.ProjectName</option>
-                            }
-                            else {
-                                <option value="@project.Id">@project.ProjectName</option>
-                            }
-                        }
-                    }
-                </select>
-                <select name="gid" id="gid" class="search-select" onchange="groupChange()">
-                    <option value="">业务组</option>
-                    @if (Model.GroupList != null) {
-                        foreach (var group in Model.GroupList) {
-                            if (group.Id == Model.Params.gid) {
-                                <option value="@group.Id" selected="selected">@group.GroupName</option>
-                            }
-                            else {
-                                <option value="@group.Id">@group.GroupName</option>
-                            }
-                        }
-                    }
-                </select>
-                <select name="uid" id="uid" class="search-select">
-                    <option value="">业务员</option>
-                    @if (Model.SalerList != null) {
-                        foreach (var saler in Model.SalerList) {
-                            if (saler.Id == Model.Params.uid) {
-                                <option value="@saler.Id" selected="selected">@saler.RealName</option>
-                            }
-                            else {
-                                <option value="@saler.Id">@saler.RealName</option>
-                            }
-                        }
-                    }
-                </select>
+                <!--电话/微信/QQ-->
+                <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
+                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="姓名" />
                 <select name="talk" id="talk" class="search-select">
                     <option value="">洽谈次数</option>
                     @if (Model.TalkCountList != null) {
@@ -95,20 +56,7 @@
                         }
                     }
                 </select>
-                <label>来源</label>
-                <select name="source" id="source" class="search-select">
-                    <option value="">请选择</option>
-                    @if (Model.SourceList != null) {
-                        foreach (var source in Model.SourceList) {
-                            if (source.Id == Model.Params.source) {
-                                <option value="@source.Id" selected="selected">@source.SourceName</option>
-                            }
-                            else {
-                                <option value="@source.Id">@source.SourceName</option>
-                            }
-                        }
-                    }
-                </select>
+                <input type="text" class="search-input" placeholder="开始时间" />到<input type="text" class="search-input" placeholder="结束时间" />
                 <button type="submit" class="btn btn-default">
                     <i class="icon-search"></i> 查询
                 </button>

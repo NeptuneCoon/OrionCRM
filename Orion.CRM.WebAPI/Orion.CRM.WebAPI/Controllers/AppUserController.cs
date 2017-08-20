@@ -243,6 +243,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult DeleteUserProjectByProjectId(int projectId)
+        {
+            try {
+                int count = service.DeleteUserProjectByProjectId(projectId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetUserGroup(int userId)
         {
             try {

@@ -18,6 +18,11 @@ namespace Orion.CRM.Application
             return adapter.DeleteSign(resourceId);
         }
 
+        public int DeleteSignByProjectId(int projectId)
+        {
+            return adapter.DeleteSignByProjectId(projectId);
+        }
+
         public Entity.CustomerSign GetSignByResourceId(int resourceId)
         {
             return adapter.GetSignByResourceId(resourceId);

@@ -110,6 +110,19 @@
             margin-top: 20px;
             border-radius:2px;
         }
+        .content-body {
+            margin-top: 10px;
+            background-color: white;
+            padding-left: 20px;
+            padding-bottom: 20px;
+            padding-right: 20px
+        }
+
+        .tag {
+            cursor: pointer;
+            padding: 4px 6px;
+            margin-right: 5px
+        }
     </style>
 </head>
 
@@ -156,7 +169,7 @@
                 @await Component.InvokeAsync("LeftMenu")
             </div>
             
-            <div class="span9" id="content" style="margin-top:10px;background-color:white;padding-left:20px;padding-bottom:20px">
+            <div class="span9 content-body" id="content">
                 @RenderBody()
             </div>
         </div>
@@ -172,6 +185,7 @@
     <script src="~/vendors/jquery-1.9.1.min.js"></script>
     <script src="~/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/vendors/easypiechart/jquery.easy-pie-chart.js"></script>
+    <script src="~/assets/pikaday/moment.min.js"></script>
     <script src="~/assets/scripts.js"></script>
     @RenderSection("scripts", required: false)
     <script>

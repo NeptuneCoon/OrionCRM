@@ -29,6 +29,7 @@ namespace Orion.CRM.DataAccess
 
 
             SqlParameter[] paramArr = {
+                new SqlParameter("@Id", tag.Id),
                 new SqlParameter("@TagName", tag.TagName),
                 new SqlParameter("@UpdateTime", tag.UpdateTime)
             };

@@ -553,5 +553,14 @@ namespace Orion.CRM.DataAccess
             int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetTalkingResourceCountByUserId", param);
             return count;
         }
+
+        // 获取项目下所有资源Id
+        public IEnumerable<int> GetProjectResourceIds(int projectId)
+        {
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            IEnumerable<int> resourceIds = SqlMapHelper.GetSqlMapResult<int>("ResourceDomain", "GetProjectResourceIds", param);
+
+            return resourceIds;
+        }
     }
 }

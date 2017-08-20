@@ -53,5 +53,13 @@ namespace Orion.CRM.DataAccess
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ProjectDomain", "UpdateProject", paramArr);
             return count > 0;
         }
+
+        public int DeleteProject(int id)
+        {
+            if (id <= 0) return 0;
+            SqlParameter param = new SqlParameter("@Id", id);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ProjectDomain", "DeleteProject", param);
+            return count;
+        }
     }
 }

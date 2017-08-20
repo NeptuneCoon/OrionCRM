@@ -57,5 +57,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// 查询到的当页资源列表数据
         /// </summary>
         public List<Models.Resource.Resource> Resources { get; set; }
+
+        /// <summary>
+        /// 用户定义的资源标签
+        /// </summary>
+        public List<Models.Tag.Tag> Tags { get; set; }
     }
 }

@@ -55,6 +55,7 @@
         delete from [ResourceGroup] where ResourceId=@Id;
         delete from [ResourceProject] where ResourceId=@Id;
         delete from [ResourceOrganization] where ResourceId=@Id;
+        delete from [ResourceTag] where ResourceId=@Id;
         delete from [Resource] where Id=@Id;
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -471,6 +472,16 @@
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>获取资源属于哪个项目</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetProjectResourceIds</SqlName>
+      <OriginalSqlString>
+        select ResourceId from ResourceProject where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取项目下所有资源Id</Description>
     </SqlMapDetail>
     
 	</SqlMapConfigurations>

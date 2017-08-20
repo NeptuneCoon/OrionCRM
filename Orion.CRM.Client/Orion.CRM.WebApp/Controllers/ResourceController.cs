@@ -89,6 +89,9 @@ namespace Orion.CRM.WebApp.Controllers
             ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
             viewModel.Resources = resources;
 
+            // 获取用户自定义的标签
+            viewModel.Tags = GetTagList(_AppUser.Id);
+
             return View(viewModel);
         }
 
@@ -868,6 +871,18 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetUserUnAssignedResourceCount?orgId=" + _AppUser.OrgId;
             int count = APIInvoker.Get<int>(apiUrl);
             return count;
+        }
+
+        /// <summary>
+        /// 获取用户自定义的标签
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private List<Models.Tag.Tag> GetTagList(int userId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "api/Tag/GetTagsByUserId?userId=" + userId;
+            var tags = APIInvoker.Get<List<Models.Tag.Tag>>(apiUrl);
+            return tags;
         }
     }
 }

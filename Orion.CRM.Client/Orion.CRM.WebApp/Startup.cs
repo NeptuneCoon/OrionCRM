@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Orion.CRM.WebApp.App_Data;
 using Orion.CRM.WebTools;
 using Enyim.Caching;
+using Newtonsoft.Json.Serialization;
 
 namespace Orion.CRM.WebApp
 {

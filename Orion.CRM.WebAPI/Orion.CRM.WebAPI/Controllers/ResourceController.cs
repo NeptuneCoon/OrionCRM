@@ -543,5 +543,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 获取项目下所有资源Id
+        public APIDataResult GetProjectResourceIds(int projectId)
+        {
+            try {
+                IEnumerable<int> resourceIds = service.GetProjectResourceIds(projectId);
+                APIDataResult dataResult = new APIDataResult(200, resourceIds);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

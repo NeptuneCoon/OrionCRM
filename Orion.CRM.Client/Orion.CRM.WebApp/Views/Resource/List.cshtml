@@ -32,7 +32,7 @@
     </style>
 }
 
-<div class="panel panel-default" style="width:1000px;">
+<div class="panel panel-default span12">
     <div class="panel-heading">
         <h3 class="panel-title">资源列表</h3>
     </div>
@@ -245,6 +245,14 @@
                     </div>
                 </div>
             }
+
+            <div style="margin-top:10px">
+                @if (Model.Tags != null && Model.Tags.Count > 0) {
+                    foreach(var tag in Model.Tags) {
+                        <span class="label label-info tag" style="">@tag.TagName</span>
+                    }
+                }
+            </div>
         </form>
         <table class="table table-bordered table-data">
             <thead>

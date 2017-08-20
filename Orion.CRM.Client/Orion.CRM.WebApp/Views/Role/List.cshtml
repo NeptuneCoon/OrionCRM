@@ -53,7 +53,7 @@
                         <tr>
                             <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                             <td>@item.RoleName</td>
-                            <td>@item.CreateTime.ToString("yyyy-M-d")</td>
+                            <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>@(item.UserCount)人</td>
                             <td>
                                 <a href="/Role/Edit/@item.Id">编辑</a>

@@ -232,5 +232,11 @@ namespace Orion.CRM.Application
         {
             return adapter.GetTalkingResourceCountByUserId(userId);
         }
+
+        // 获取项目下所有资源Id
+        public IEnumerable<int> GetProjectResourceIds(int projectId)
+        {
+            return adapter.GetProjectResourceIds(projectId);
+        }
     }
 }

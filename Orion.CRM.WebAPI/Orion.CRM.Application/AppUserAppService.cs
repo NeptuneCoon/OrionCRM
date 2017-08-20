@@ -87,6 +87,11 @@ namespace Orion.CRM.Application
             return adapter.DeleteUserProject(userId);
         }
 
+        public int DeleteUserProjectByProjectId(int projectId)
+        {
+            return adapter.DeleteUserProjectByProjectId(projectId);
+        }
+
         public bool UpdateUserProject(Entity.UserProject userProject)
         {
             return adapter.UpdateUserProject(userProject);

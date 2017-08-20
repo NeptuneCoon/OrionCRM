@@ -182,6 +182,13 @@ namespace Orion.CRM.DataAccess
             return count;
         }
 
+        public int DeleteUserProjectByProjectId(int projectId)
+        {
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUserProjectByProjectId", param);
+            return count;
+        }
+
         public Entity.UserGroup GetUserGroup(int userId)
         {
             SqlParameter param = new SqlParameter("@UserId", userId);

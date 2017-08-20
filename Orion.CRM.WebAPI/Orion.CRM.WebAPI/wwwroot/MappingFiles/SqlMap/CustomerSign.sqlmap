@@ -10,7 +10,7 @@
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>新增资源来源</Description>
+      <Description>新增签约记录</Description>
     </SqlMapDetail>
 
     <SqlMapDetail>
@@ -20,7 +20,17 @@
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>删除资源来源</Description>
+      <Description>删除签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteSignByProjectId</SqlName>
+      <OriginalSqlString>
+        delete from [CustomerSign] where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除某项目下所有签约记录(用于删除Project时)</Description>
     </SqlMapDetail>
 
     <SqlMapDetail>

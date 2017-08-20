@@ -25,7 +25,8 @@
     <SqlMapDetail>
       <SqlName>DeleteTag</SqlName>
       <OriginalSqlString>
-        delete from [Tag] where Id=@Id
+        delete from [ResourceTag] where TagId=@Id;
+        delete from [Tag] where Id=@Id;
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

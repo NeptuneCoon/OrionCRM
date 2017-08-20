@@ -41,6 +41,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult DeleteSignByProjectId(int projectId)
+        {
+            try {
+                int count = service.DeleteSignByProjectId(projectId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetSignByResourceId(int resourceId)
         {
             try {
