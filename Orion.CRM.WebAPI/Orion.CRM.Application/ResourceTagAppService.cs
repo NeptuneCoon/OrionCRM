@@ -17,5 +17,16 @@ namespace Orion.CRM.Application
         {
             return adapter.DeleteResourceTag(resourceId);
         }
+
+        // 批量删除资源和标签的关系
+        public int BatchDeleteResourceTag(string resourceIds)
+        {
+            return adapter.BatchDeleteResourceTag(resourceIds);
+        }
+
+        public bool ResourceTagBatchInsert(IEnumerable<Entity.ResourceTagBatchInsert> resourceTags)
+        {
+            return adapter.ResourceTagBatchInsert(resourceTags);
+        }
     }
 }

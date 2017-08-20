@@ -29,6 +29,15 @@
             border-radius: 2px !important;
             padding: 0px 3px
         }
+
+        .ul-menulist {
+            list-style: none;
+        }
+
+        .ul-menulist > li {
+            float: left;
+            padding: 3px 10px;
+        }
     </style>
 }
 
@@ -55,7 +64,6 @@
                         <select name="pid" id="pid" class="search-select" onchange="projectChange()">
                             <option value="">项目</option>
                             @if (Model.ProjectList != null) {
-                                //var defaultPId = Model.Params.pid == null ? Model.ProjectId : Model.Params.pid;
                                 foreach (var project in Model.ProjectList) {
                                     if (project.Id == Model.Params.pid) {
                                         <option value="@project.Id" selected="selected">@project.ProjectName</option>
@@ -139,10 +147,20 @@
                     </select>
 
                     <div style="float:right">
-                        <button type="submit" class="btn btn-default">
+                        <button type="submit" class="btn btn-default btn-small" >
                             <i class="icon-search"></i> 查询
                         </button>
-                        <button type="button" class="btn btn-default">批量分配</button>
+                        @*<button type="button" class="btn btn-default">批量分配</button>*@
+                        <div class="btn-group">
+                            <a class="btn btn-small dropdown-toggle"  data-toggle="dropdown" href="#">
+                                操作
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:;">分配</a></li>
+                                <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="form-inline" style="margin-top:12px">
@@ -238,18 +256,40 @@
                     </select>
 
                     <div style="float:right">
-                        <button type="submit" class="btn btn-default">
+                        <button type="submit" class="btn btn-default btn-small">
                             <i class="icon-search"></i> 查询
                         </button>
-                        <button type="button" class="btn btn-default">批量分配</button>
+                        @*<button type="button" class="btn btn-default">批量分配</button>*@
+                        <div class="btn-group">
+                            <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                                操作
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:;">分配</a></li>
+                                <li><a href="javascript:;">打标签</a></li>
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
             }
-
+            <!--标签-->
             <div style="margin-top:10px">
                 @if (Model.Tags != null && Model.Tags.Count > 0) {
                     foreach(var tag in Model.Tags) {
-                        <span class="label label-info tag" style="">@tag.TagName</span>
+                        @if (Model.Params.tagids != null && Model.Params.tagids.Contains(tag.Id)) {
+                            <span class="label label-info tag tag-checked" onclick="tagChecked(this)">
+                                @tag.TagName
+                                <input type="checkbox" value="@tag.Id" name="tagids" style="display:none" checked="checked" />
+                            </span>
+                        }
+                        else {
+                            <span class="label label-info tag" onclick="tagChecked(this)">
+                                @tag.TagName
+                                <input type="checkbox" value="@tag.Id" name="tagids" style="display:none" />
+                            </span>
+                        }
                     }
                 }
             </div>
@@ -257,7 +297,9 @@
         <table class="table table-bordered table-data">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>
+                        <input type="checkbox" id="ckAll" onclick="checkToggle()" />
+                    </th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
                     <th>留言时间</th>
@@ -276,7 +318,7 @@
                 @if (Model.Resources != null && Model.Resources.Count > 0) {
                     foreach (var resource in Model.Resources) {
                         <tr>
-                            <td><input type="checkbox" name="ckResource" /></td>
+                            <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
                             <td>@resource.ContactInfo</td>
                             <td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
@@ -297,7 +339,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="13" style="text-align:center">没有查询到数据</td>
+                        <td colspan="13" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
@@ -344,6 +386,27 @@
     </div>
 </div>
 
+<!--打标签-->
+<div class="modal modal-webpi" id="panelTag" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>资源打标签</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <label>请选择：</label>
+                <ul class="ul-menulist" id="ul-tags">
+                </ul>
+                <div style="clear:both"></div>
+                <div id="tagTips" style="padding:3px;color:red;display:none">请先选择一个标签。</div>
+                <div style="margin-top:30px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceTag()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--资源删除确认-->
 <div class="modal modal-webpi" id="panelAlert" style="width:300px;display:none" param-id="">
     <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
@@ -370,6 +433,22 @@
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
                 <span id="spanResult">操作已成功！</span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--警告弹窗-->
+<div class="modal modal-webpi" id="panelError" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>错误操作</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanAlertContent"></span>
                 <div style="margin-top:20px">
                     <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
                 </div>
@@ -504,6 +583,87 @@
                     modalShow($('#panelResult'));
                 });
             }
+        }
+
+        // 弹出打标签模态窗体
+        function showTagPanel() {
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push($(this).val());
+            });
+            if (resourceIdArr.length == 0) {
+                $('#spanAlertContent').html('请至少选择一条资源！');
+                modalShow($('#panelError'));
+            }
+            else{
+                $('#ul-tags').find("li").remove();
+                $.get("/Tag/ReloadList", null, function (tags) {
+                    if (tags && tags.length > 0) {
+                        for (var i = 0; i < tags.length; i++) {
+                            var item = '<li onclick="tagClick()">';
+                            item += '<label>';
+                            item += '<input class="nebula-radio" type="radio" name="ResourceTag" value="' + tags[i].id + '">';
+                            item += '<span class="nebula-radioInput"></span>' + tags[i].tagName;
+                            item += '</label>';
+                            item += '</li>';
+
+                            $('#ul-tags').append(item);
+                        }
+                    }
+                });
+                modalShow($('#panelTag'));
+            }
+        }
+        // 打标签
+        function resourceTag() {
+            var tagId = $("input[name='ResourceTag']:checked").val();
+            if (!tagId) {
+                $('#tagTips').show();
+            }
+            else {
+                $('#tagTips').hide();
+            }
+
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push($(this).val());
+            });
+            var resourceIds = resourceIdArr.join(",");
+            $.get("/Tag/AddTag", { "resourceIds": resourceIds, "tagId": tagId }, function (result) {
+                if (result) {
+                    modalClose($('#panelTag'));
+                    if (result) {
+                        $('#spanResult').attr("class", "panel-alert-info");
+                        $('#spanResult').html('操作已成功！');
+                    }
+                    else {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                    }
+                    modalShow($('#panelResult'));
+                }
+            });
+        }
+        function tagClick() {
+            $("#tagTips").hide();
+        }
+
+        function tagChecked(e) {
+            var className = $(e).attr("class");
+            if (className.indexOf("tag-checked") > 0) {
+                $(e).removeClass("tag-checked");
+                $(e).find("input[name='tagids']").prop("checked", false);
+            }
+            else {
+                $(e).addClass("tag-checked");
+                $(e).find("input[name='tagids']").prop("checked", true);
+            }
+        }
+
+        function checkToggle() {
+            $('input[name="ckResource"]').each(function () {
+                $(this).prop('checked', $('#ckAll').prop('checked'))
+            });
         }
 
         function reload() {

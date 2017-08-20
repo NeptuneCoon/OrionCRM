@@ -169,13 +169,14 @@
         <![CDATA[
           select top $PageSize * from(
 	          select ROW_NUMBER() OVER (ORDER BY id desc) as RowNumber,* from (
-		          select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,H.RealName as AppendMan from [Resource] A
+		          select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,G.RealName as AppendMan,H.TagId from [Resource] A
 		          left join [ResourceProject] B on A.Id= B.ResourceId
 		          left join [ResourceGroup] C on A.Id=C.ResourceId
 		          left join [ResourceUser] D on A.Id=D.ResourceId
 				      left join [Project] E on B.ProjectId=E.Id
 				      left join [AppUser] F on D.UserId=F.Id
-				      left join [AppUser] H on A.AppendUserId=H.Id
+				      left join [AppUser] G on A.AppendUserId=G.Id
+              left join [ResourceTag] H on A.Id=H.ResourceId
 	          )t1 where 1=1 $SqlWhere 
           )t2
           where RowNumber > $PageSize*($PageIndex-1) 
@@ -191,13 +192,14 @@
       <OriginalSqlString>
         <![CDATA[
           select count(1) from (
-              select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,H.RealName as AppendMan from [Resource] A
+              select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,G.RealName as AppendMan,H.TagId from [Resource] A
 		          left join [ResourceProject] B on A.Id= B.ResourceId
 		          left join [ResourceGroup] C on A.Id=C.ResourceId
 		          left join [ResourceUser] D on A.Id=D.ResourceId
 				      left join [Project] E on B.ProjectId=E.Id
 				      left join [AppUser] F on D.UserId=F.Id
-				      left join [AppUser] H on A.AppendUserId=H.Id
+				      left join [AppUser] G on A.AppendUserId=G.Id
+              left join [ResourceTag] H on A.Id=H.ResourceId
 	          )t1 where 1=1 $SqlWhere 
         ]]>
       </OriginalSqlString>

@@ -65,5 +65,36 @@ namespace Orion.CRM.WebApp.Controllers
 
             return list;
         }
+
+        [HttpGet]
+        public bool AddTag(string resourceIds, int tagId)
+        {
+            if(tagId > 0 && !string.IsNullOrEmpty(resourceIds)) {
+                string[] resourceIdArr = resourceIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (resourceIdArr != null && resourceIdArr.Length > 0) {
+
+                    // 1.删除和这些资源已有标签
+                    int count = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/ResourceTag/BatchDeleteResourceTag?resourceIds=" + resourceIds);
+                    // 2.重新为这些资源插入新标签
+                    DateTime now = DateTime.Now;
+                    List<object> resourceTags = new List<object>();
+                    foreach (var resourceId in resourceIdArr) {
+                        var resourceTag = new
+                        {
+                            TagId = tagId,
+                            ResourceId = Convert.ToInt32(resourceId),
+                            CreateTime = now
+                        };
+                        resourceTags.Add(resourceTag);
+                    }
+
+                    string insertApi = _AppConfig.WebApiHost + "api/ResourceTag/ResourceTagBatchInsert";
+                    bool result = APIInvoker.Post<bool>(insertApi, resourceTags);
+                    return result;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -39,5 +39,33 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 批量删除资源和标签的关系
+        public APIDataResult BatchDeleteResourceTag(string resourceIds)
+        {
+            try {
+                int count = service.BatchDeleteResourceTag(resourceIds);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult ResourceTagBatchInsert([FromBody]IEnumerable<Entity.ResourceTagBatchInsert> resourceTags)
+        {
+            try {
+                bool res = service.ResourceTagBatchInsert(resourceTags);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

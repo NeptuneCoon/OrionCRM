@@ -26,5 +26,6 @@ namespace Orion.CRM.WebApp.Models.Resource
         public int? inc { get; set; }
         public int? source { get; set; }
         public int? assign { get; set; }
+        public List<int> tagids { get; set; }
     }
 }

@@ -450,6 +450,10 @@ namespace Orion.CRM.DataAccess
                     sb.Append($" and UserId is null");
                 }
             }
+            if (param.tagids != null && param.tagids.Count > 0) {
+                string strTagIds = string.Join(",", param.tagids);
+                sb.Append($" and TagId in({strTagIds})");
+            }
 
             string sqlWhere = sb.ToString();
             return sqlWhere;

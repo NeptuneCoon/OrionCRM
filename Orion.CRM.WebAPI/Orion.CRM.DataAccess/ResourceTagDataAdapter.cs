@@ -32,5 +32,23 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        // 批量删除资源和标签的关系
+        public int BatchDeleteResourceTag(string resourceIds)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceTag", "BatchDeleteResourceTag").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ResourceId", resourceIds);
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+            return count;
+        }
+
+        public bool ResourceTagBatchInsert(IEnumerable<Entity.ResourceTagBatchInsert> resourceTags)
+        {
+            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.ResourceTagBatchInsert>("ResourceTag", "ResourceTagBatchInsert", resourceTags);
+            return result;
+        }
+
     }
 }

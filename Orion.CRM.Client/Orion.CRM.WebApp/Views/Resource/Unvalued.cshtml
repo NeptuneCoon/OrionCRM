@@ -38,7 +38,7 @@
     </div>
 
     <div class="panel-body">
-        <form action="/Resource/List" method="get">
+        <form action="/Resource/Unvalued" method="get">
             <div class="form-inline">
                 <!--电话/微信/QQ-->
                 <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
@@ -84,7 +84,7 @@
                 @if (Model.Resources != null && Model.Resources.Count > 0) {
                     foreach (var resource in Model.Resources) {
                         <tr>
-                            <td><input type="checkbox" name="ckResource" /></td>
+                            <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
                             <td>@resource.ProjectName</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
@@ -105,7 +105,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="13" style="text-align:center">没有查询到数据</td>
+                        <td colspan="13" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>

@@ -67,7 +67,8 @@ namespace Orion.CRM.WebApp.App_Data
                 return "?pi=" + newPageIndex;
             }
 
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            //Dictionary<string, string> dict = new Dictionary<string, string>();
+            List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>();
             string[] arr = queryString.Split(new char[] { '&', '?' });//inc=1  pageindex=
             foreach(var item in arr) {
                 string[] paramInfo = item.Split('=');
@@ -77,14 +78,31 @@ namespace Orion.CRM.WebApp.App_Data
                     if (key.ToLower() == "pi") {
                         value = newPageIndex.ToString();
                     }
-                    dict.Add(key, value);
+                    //dict.Add(key, value);
+                    list.Add(new KeyValuePair<string, string>(key, value));
                 }
             }
+            /*
+            #region 重新组合成QueryString old
             // 重新组合成QueryString
             string newQueryString = "?";
             int i = 0;
-            foreach(var item in dict) {
-                if (i < dict.Count - 1) { 
+            foreach (var item in dict) {
+                if (i < dict.Count - 1) {
+                    newQueryString += item.Key + "=" + item.Value + "&";
+                }
+                else {
+                    newQueryString += item.Key + "=" + item.Value;
+                }
+                i++;
+            } 
+            #endregion
+            */
+            // 重新组合成QueryString
+            string newQueryString = "?";
+            int i = 0;
+            foreach (var item in list) {
+                if (i < list.Count - 1) {
                     newQueryString += item.Key + "=" + item.Value + "&";
                 }
                 else {
@@ -92,7 +110,18 @@ namespace Orion.CRM.WebApp.App_Data
                 }
                 i++;
             }
-            if (!dict.ContainsKey("pi")) {
+
+            //if (!dict.ContainsKey("pi")) {
+            //    newQueryString += "&pi=" + newPageIndex;
+            //}
+            bool hasPiKey = false;
+            foreach(var item in list) {
+                if(item.Key == "pi") {
+                    hasPiKey = true;
+                    break;
+                }
+            }
+            if (!hasPiKey) {
                 newQueryString += "&pi=" + newPageIndex;
             }
             return newQueryString;
