@@ -16,6 +16,7 @@ namespace Orion.CRM.WebAPI
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
+                .UseSetting("detailedErrors", "true")//显示详细错误信息
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
                 .Build();
