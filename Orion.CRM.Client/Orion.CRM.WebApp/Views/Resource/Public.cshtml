@@ -97,7 +97,7 @@
                             <td>@resource.TalkCount</td>
                             <td>@resource.AppendMan</td>
                             <td>
-                                <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">划分给自己</a> |
+                                <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">划分给自己</a>
                             </td>
                         </tr>
                     }
@@ -186,6 +186,8 @@
 
         // 弹出资源分配模态窗体
         function showAssignPanel(resourceId, projectId) {
+            alert('暂不可用');
+            return false;
             $('#assignResourceId').val(resourceId);
             $("#assignSelectGroup option").not(":first").remove();
             $('#assignSelectSaler option').not(":first").remove();
