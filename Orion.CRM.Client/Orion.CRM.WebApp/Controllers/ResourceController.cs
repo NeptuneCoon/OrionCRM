@@ -884,5 +884,13 @@ namespace Orion.CRM.WebApp.Controllers
             var tags = APIInvoker.Get<List<Models.Tag.Tag>>(apiUrl);
             return tags;
         }
+
+        [HttpGet]
+        public bool ResourceBatchAssign(string resourceIds, int groupId, int userId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/ResourceBatchAssign?resourceIds={resourceIds}&groupId={groupId}&userId={userId}";
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
+        }
     }
 }

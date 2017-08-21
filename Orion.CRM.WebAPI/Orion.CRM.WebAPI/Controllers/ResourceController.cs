@@ -557,5 +557,22 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        /// <summary>
+        /// 资源批量分配
+        /// </summary>
+        /// <returns></returns>
+        public APIDataResult ResourceBatchAssign(string resourceIds, int groupId, int userId)
+        {
+            try {
+                bool result = service.ResourceBatchAssign(resourceIds, groupId, userId);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

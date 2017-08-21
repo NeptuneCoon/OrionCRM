@@ -566,5 +566,25 @@ namespace Orion.CRM.DataAccess
 
             return resourceIds;
         }
+
+        public int BatchDeleteResourceGroup(string resourceIds)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "BatchDeleteResourceGroup").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ResourceIds", resourceIds);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+            return count;
+        }
+
+        public int BatchDeleteResourceUser(string resourceIds)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "BatchDeleteResourceUser").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ResourceIds", resourceIds);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+            return count;
+        }
     }
 }

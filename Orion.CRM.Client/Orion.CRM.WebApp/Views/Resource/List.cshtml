@@ -157,7 +157,7 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;">分配</a></li>
+                                <li><a href="javascript:;" onclick="showBatchAssignPanel(@Model.ProjectId)">批量分配</a></li>
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
@@ -198,10 +198,10 @@
             }
             else {
                 <div class="form-inline" style="margin-top:12px">
+                    <!--电话/微信/QQ-->
+                    <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
                     <!--客户姓名-->
-                    <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" style="width:200px" />
-                    <!--手机/QQ/微信-->
-                    <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="手机/QQ/微信" />
+                    <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="姓名" />
                     <select name="status" id="status" class="search-select">
                         <option value="">资源状态</option>
                         @if (Model.StatusList != null) {
@@ -266,8 +266,8 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;">分配</a></li>
-                                <li><a href="javascript:;">打标签</a></li>
+                                <li><a href="javascript:;" onclick="showBatchAssignPanel(@Model.ProjectId)">批量分配</a></li>
+                                <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
 
@@ -379,6 +379,44 @@
                 <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
                 <div style="margin-top:20px">
                     <input type="button" value="确定" class="btn btn-inverse" onclick="resourceAssign()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--资源批量分配-->
+<div class="modal modal-webpi" id="panelBatchAssign" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>资源批量分配</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <label class="tip">将选中资源分配至：</label>
+                <table>
+                    <tr>
+                        <td style="width:100px">请选择所属组：</td>
+                        <td>
+                            <select class="panel-select" id="batchAssignSelectGroup" onchange="batchAssignGroupChange()">
+                                <option value="">请选择所属组</option>
+                                <option>业务一组</option>
+                                <option>业务二组</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>请选择业务：</td>
+                        <td>
+                            <select class="panel-select" id="batchAssignSelectSaler">
+                                <option value="">请选择业务</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="batchAssignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceBatchAssign()" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
@@ -585,6 +623,86 @@
             }
         }
 
+        // begin
+        // 资源批量分配模态窗体中的组(Group)切换事件
+        function batchAssignGroupChange() {
+            var groupId = $('#batchAssignSelectGroup').find("option:selected").val();
+            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
+                $("#batchAssignSelectSaler option").not(":first").remove();
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
+                        $('#batchAssignSelectSaler').append(option);
+                    }
+                }
+            });
+        }
+
+        // 弹出资源批量分配模态窗体
+        function showBatchAssignPanel(projectId) {
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push($(this).val());
+            });
+            if (resourceIdArr.length == 0) {
+                $('#spanAlertContent').html('请先选择一条资源！');
+                modalShow($('#panelError'));
+            }
+            else{
+                $("#batchAssignSelectGroup option").not(":first").remove();
+                $('#batchAssignSelectSaler option').not(":first").remove();
+
+                $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
+                    if (groups && groups.length > 0) {
+                        for (var i = 0; i < groups.length; i++) {
+                            var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
+                            $('#batchAssignSelectGroup').append(option);
+                        }
+                    }
+                });
+                modalShow($('#panelBatchAssign'));
+            }
+        }
+
+        // 资源批量分配
+        function resourceBatchAssign() {
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push($(this).val());
+            });
+            var resourceIds = resourceIdArr.join(",");
+            var groupId = $('#batchAssignSelectGroup').find("option:selected").val();
+            var userId = $('#batchAssignSelectSaler').find("option:selected").val();
+
+            if (!groupId) {
+                $('#batchAssignTips').html('请先选择业务组');
+                $('#batchAssignTips').show();
+            }
+            else if (!userId) {
+                $('#batchAssignTips').html('请选择你要分配的业务人员');
+                $('#batchAssignTips').show();
+            }
+            else {
+                $('#batchAssignTips').hide();
+            }
+
+            if (resourceIds && groupId && userId) {
+                $.get("/Resource/ResourceBatchAssign", { "resourceIds": resourceIds, "groupId": groupId, "userId": userId }, function (result) {
+                    modalClose($('#panelBatchAssign'));
+                    if (result) {
+                        $('#spanResult').attr("class", "panel-alert-info");
+                        $('#spanResult').html('操作已成功！');
+                    }
+                    else {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                    }
+                    modalShow($('#panelResult'));
+                });
+            }
+        }//end
+
         // 弹出打标签模态窗体
         function showTagPanel() {
             var resourceIdArr = [];
@@ -592,7 +710,7 @@
                 resourceIdArr.push($(this).val());
             });
             if (resourceIdArr.length == 0) {
-                $('#spanAlertContent').html('请至少选择一条资源！');
+                $('#spanAlertContent').html('请先选择一条资源！');
                 modalShow($('#panelError'));
             }
             else{

@@ -485,6 +485,26 @@
       <CommandType>Text</CommandType>
       <Description>获取项目下所有资源Id</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>BatchDeleteResourceGroup</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceGroup] where ResourceId in(@ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceIds批量删除ResourceGroup</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>BatchDeleteResourceUser</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceUser] where ResourceId in(@ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceIds批量删除ResourceUser</Description>
+    </SqlMapDetail>
     
 	</SqlMapConfigurations>
 </SqlMap>
