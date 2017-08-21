@@ -574,5 +574,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 根据ResourceId集合批量删除ResourceUser
+        public APIDataResult BatchDeleteResourceUser(string resourceIds)
+        {
+            try {
+                int count = service.BatchDeleteResourceUser(resourceIds);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

@@ -239,6 +239,12 @@ namespace Orion.CRM.Application
             return adapter.GetProjectResourceIds(projectId);
         }
 
+        // 根据ResourceId集合批量删除ResourceUser
+        public int BatchDeleteResourceUser(string resourceIds)
+        {
+            return adapter.BatchDeleteResourceUser(resourceIds);
+        }
+
         /// <summary>
         /// 资源批量分配
         /// </summary>

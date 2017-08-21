@@ -431,6 +431,18 @@ namespace Orion.CRM.WebApp.Controllers
                     bool result = APIInvoker.Post<bool>(resourceUpdateApiUrl, resource);
                     TempData["result"] = result;
 
+                    // 如果将资源划入公共库、垃圾库、未分配则需要删除Resource和Group、User的绑定关系
+                    // 1=公共，2=垃圾，3=未分配，4=洽谈中，5=已签约
+                    if(viewModel.Status !=4 && viewModel.Status != 5) { 
+                        // 删除ResourceGroup
+                        string rgDeleteApiUrl = _AppConfig.WebApiHost + "api/Resource/DeleteResourceGroupByResourceIds?resourceIds=" + viewModel.ResourceId;
+                        int count1 = APIInvoker.Get<int>(rgDeleteApiUrl);
+
+                        // 删除ResourceUser
+                        string ruDeleteApiUrl = _AppConfig.WebApiHost + "api/Resource/BatchDeleteResourceUser?resourceIds=" + viewModel.ResourceId;
+                        int count2 = APIInvoker.Get<int>(ruDeleteApiUrl);
+                    }
+
                     return RedirectToAction("Detail", new { id = viewModel.ResourceId });
                 }
             }
