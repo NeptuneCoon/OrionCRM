@@ -97,7 +97,12 @@
                             <td>@resource.TalkCount</td>
                             <td>@resource.AppendMan</td>
                             <td>
-                                <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">划分给自己</a>
+                                @if(ViewBag.UserGroupId != null && ViewBag.UserGroupId > 0) { 
+                                    <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
+                                }
+                                else {
+                                    <a href="javascript:;" disabled="disabled">划分给自己</a>
+                                }
                             </td>
                         </tr>
                     }
@@ -110,44 +115,6 @@
             </tbody>
         </table>
         <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
-    </div>
-</div>
-
-<!--资源分配-->
-<div class="modal modal-webpi" id="panelAssign" style="width:500px;display:none" param-id="">
-    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
-    <div class="modal-contents">
-        <h2>资源分配</h2>
-        <div style="border:1px solid #e1e2e2;padding:15px;">
-            <div>
-                <input type="hidden" id="assignResourceId" />
-                <table>
-                    <tr>
-                        <td style="width:100px">请选择所属组：</td>
-                        <td>
-                            <select class="panel-select" id="assignSelectGroup" onchange="assignGroupChange()">
-                                <option value="">请选择所属组</option>
-                                <option>业务一组</option>
-                                <option>业务二组</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>请选择业务：</td>
-                        <td>
-                            <select class="panel-select" id="assignSelectSaler">
-                                <option value="">请选择业务</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
-                <div style="margin-top:20px">
-                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceAssign()" />
-                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -169,72 +136,19 @@
 
 @section scripts{
     <script type="text/javascript">
-        // 资源分配模态窗体中的组(Group)切换事件
-        function assignGroupChange() {
-            var groupId = $('#assignSelectGroup').find("option:selected").val();
-            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
-                $("#assignSelectSaler option").not(":first").remove();
-                if (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
-                        $('#assignSelectSaler').append(option);
-                    }
+        function divideToMe(resourceId) {
+            $.get("/Resource/DivideToMe", { "resourceId": resourceId }, function (result) {
+                if (result) {
+                    $('#spanResult').attr("class", "panel-alert-info");
+                    $('#spanResult').html('操作已成功！');
                 }
-            });
-        }
-
-        // 弹出资源分配模态窗体
-        function showAssignPanel(resourceId, projectId) {
-            alert('暂不可用');
-            return false;
-            $('#assignResourceId').val(resourceId);
-            $("#assignSelectGroup option").not(":first").remove();
-            $('#assignSelectSaler option').not(":first").remove();
-
-            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
-                if (groups && groups.length > 0) {
-                    for (var i = 0; i < groups.length; i++) {
-                        var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
-                        $('#assignSelectGroup').append(option);
-                    }
+                else {
+                    $('#spanResult').attr("class", "panel-alert-error");
+                    $('#spanResult').html('抱歉，操作失败！请重试。');
                 }
+                modalShow($('#panelResult'));
+                setTimeout(reload, 1000);
             });
-            modalShow($('#panelAssign'));
-        }
-
-        // 资源分配
-        function resourceAssign() {
-            var resourceId = $('#assignResourceId').val();
-            var groupId = $('#assignSelectGroup').find("option:selected").val();
-            var userId = $('#assignSelectSaler').find("option:selected").val();
-
-            if (!groupId) {
-                $('#assignTips').html('请先选择业务组');
-                $('#assignTips').show();
-            }
-            else if (!userId) {
-                $('#assignTips').html('请选择你要分配的业务人员');
-                $('#assignTips').show();
-            }
-            else {
-                $('#assignTips').hide();
-            }
-
-            if (resourceId && groupId && userId) {
-                $.get("/Resource/ResourceAssign", { "resourceId": resourceId, "groupId": groupId, "userId": userId }, function (result) {
-                    modalClose($('#panelAssign'));
-                    if (result) {
-                        $('#spanResult').attr("class", "panel-alert-info");
-                        $('#spanResult').html('操作已成功！');
-                    }
-                    else {
-                        $('#spanResult').attr("class", "panel-alert-error");
-                        $('#spanResult').html('抱歉，操作失败！请重试。');
-                    }
-                    modalShow($('#panelResult'));
-                });
-            }
         }
 
         function reload() {

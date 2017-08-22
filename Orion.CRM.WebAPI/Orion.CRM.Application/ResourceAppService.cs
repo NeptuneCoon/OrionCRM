@@ -267,5 +267,20 @@ namespace Orion.CRM.Application
             }
             return true;
         }
+
+        // 将某一资源划分给自己
+        public bool DivideToMe(int resourceId, int groupId, int userId)
+        {
+            var resourceGroup = new Entity.ResourceGroup() { ResourceId = resourceId, GroupId = groupId, CreateTime = DateTime.Now };
+            int count1 = InsertResourceGroup(resourceGroup);
+
+            var resourceUser = new Entity.ResourceUser() { ResourceId = resourceId, UserId = userId, CreateTime = DateTime.Now };
+            int count2 = InsertResourceUser(resourceUser);
+
+            // 将资源状态设置为洽谈中
+            SetResourceStatus(resourceId, 4);
+
+            return count1 > 0 && count2 > 0;
+        }
     }
 }

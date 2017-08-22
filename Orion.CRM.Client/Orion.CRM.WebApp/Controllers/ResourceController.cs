@@ -159,6 +159,9 @@ namespace Orion.CRM.WebApp.Controllers
             ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
             viewModel.Resources = resources;
 
+            // 用户所属的业务组
+            ViewBag.UserGroupId = _AppUser.GroupId;
+
             return View(viewModel);
         }
 
@@ -901,6 +904,14 @@ namespace Orion.CRM.WebApp.Controllers
         public bool ResourceBatchAssign(string resourceIds, int groupId, int userId)
         {
             string apiUrl = _AppConfig.WebApiHost + $"api/Resource/ResourceBatchAssign?resourceIds={resourceIds}&groupId={groupId}&userId={userId}";
+            bool result = APIInvoker.Get<bool>(apiUrl);
+            return result;
+        }
+
+        [HttpGet]
+        public bool DivideToMe(int resourceId)
+        {
+            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/DivideToMe?resourceId={resourceId}&groupId={_AppUser.GroupId}&userId={_AppUser.Id}";
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         }

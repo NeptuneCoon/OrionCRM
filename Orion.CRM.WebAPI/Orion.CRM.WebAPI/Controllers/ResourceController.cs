@@ -588,5 +588,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        // 将某一资源划分给自己
+        public APIDataResult DivideToMe(int resourceId, int groupId, int userId)
+        {
+            try {
+                bool result = service.DivideToMe(resourceId, groupId, userId);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }
