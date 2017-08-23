@@ -32,6 +32,7 @@
                 <tr>
                     <th>序号</th>
                     <th>项目名称</th>
+                    <th>业务组</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -43,6 +44,7 @@
                         <tr>
                             <td>@(i + 1)</td>
                             <td>@item.ProjectName</td>
+                            <td>@(item.GroupCount)个</td>
                             <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
                                 <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.ProjectName')">编辑</a>
@@ -53,7 +55,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="4" style="text-align:center">没有数据</td>
+                        <td colspan="5" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
@@ -79,14 +81,14 @@
 </div>
 
 <!--delete confirm-->
-<div class="modal modal-webpi" id="panelAlert" style="width:300px;display:none" param-id="">
+<div class="modal modal-webpi" id="panelAlert" style="width:320px;display:none" param-id="">
     <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
     <div class="modal-contents">
         <h2>提示</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
                 <h4>确定要删除吗？</h4>
-                <label class="tip">删除后以下数据都将被删除：</label>
+                <label class="tip">删除后以下数据将同时被删除：</label>
                 <ol>
                     <li>该项目下所有资源</li>
                     <li>该项目下所有业务组</li>
@@ -205,6 +207,7 @@
                         itemHtml += '<tr>';
                         itemHtml += '<td>' + (i + 1) + '</td>';
                         itemHtml += '<td>' + data[i].projectName + '</td>';
+                        itemHtml += '<td>' + data[i].groupCount + '</td>';
                         itemHtml += '<td>' + moment(data[i].createTime).format('YYYY-MM-DD HH:mm') + '</td>';
                         itemHtml += '<td>';
                         itemHtml += '<a href="javascript:;" onclick="showEditPanel(' + data[i].id + ', \'' + data[i].projectName + '\')">编辑</a> ';
@@ -217,7 +220,7 @@
                     $(".table>tbody").html(dataHtml);
                 }
                 else {
-                    $(".table>tbody").html('<tr><td colspan="4" style="text-align:center">没有数据</td></tr>');
+                    $(".table>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
                 }
              });
         }

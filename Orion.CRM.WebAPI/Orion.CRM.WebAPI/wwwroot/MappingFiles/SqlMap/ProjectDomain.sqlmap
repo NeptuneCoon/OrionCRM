@@ -5,7 +5,7 @@
     <SqlMapDetail>
       <SqlName>GetProjectsByOrgId</SqlName>
       <OriginalSqlString>
-        select * from Project where OrgId=@OrgId
+        select *,(select count(1) from [Group] where ProjectId=p.Id) GroupCount from Project p where OrgId=@OrgId
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
