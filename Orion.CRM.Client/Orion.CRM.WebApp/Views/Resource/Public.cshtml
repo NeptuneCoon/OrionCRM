@@ -70,7 +70,7 @@
                     <th>业务员</th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
-                    <th>留言时间</th>
+                    @*<th>留言时间</th>*@
                     <th>最后时间</th>
                     <th>来源</th>
                     <th>状态</th>
@@ -89,7 +89,7 @@
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
                             <td>@resource.ContactInfo</td>
-                            <td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
+                            @*<td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>*@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td>@resource.StatusText</td>
@@ -109,7 +109,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="13" style="text-align:center">没有数据</td>
+                        <td colspan="12" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
