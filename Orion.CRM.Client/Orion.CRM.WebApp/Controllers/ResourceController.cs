@@ -785,6 +785,14 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
+        #region 还原资源
+        [HttpGet]
+        public bool RestoreResource(int id)
+        {
+            return SetResourceStatus(id, 1);//还原至公共库
+        } 
+        #endregion
+
         #region 资源是否存在
         public bool IsExist(string mobile, string tel, string qq, string wechat)
         {

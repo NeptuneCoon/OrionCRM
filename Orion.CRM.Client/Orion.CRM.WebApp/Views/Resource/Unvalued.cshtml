@@ -66,8 +66,6 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>项目</th>
-                    <th>业务员</th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
                     @*<th>留言时间</th>*@
@@ -76,7 +74,9 @@
                     <th>状态</th>
                     <th>意向</th>
                     <th>洽谈数</th>
+                    <th>业务员</th>
                     <th>添加人</th>
+                    <th>项目</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -85,8 +85,6 @@
                     foreach (var resource in Model.Resources) {
                         <tr>
                             <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
-                            <td>@resource.ProjectName</td>
-                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
                             <td>@resource.ContactInfo</td>
                             @*<td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>*@
@@ -95,10 +93,12 @@
                             <td>@resource.StatusText</td>
                             <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
+                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
+                            <td>@resource.ProjectName</td>
                             <td>
-                                <a href="javascript:;" onclick="showRestorePanel(@resource.Id, '@resource.ProjectId')">还原</a> |
-                                <a href="javascript:;">删除</a>
+                                <a href="javascript:;" onclick="restoreConfirm(@resource.Id)">还原</a> |
+                                <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
                             </td>
                         </tr>
                     }
@@ -152,9 +152,26 @@
     </div>
 </div>
 
+<!--操作确认-->
+<div class="modal modal-webpi" id="panelConfirm" style="width:500px;display:none" param-id="" param-type="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>操作确认</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanTipContent"></span>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="_invoker()">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--操作结果-->
 <div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
-    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this,reload)">✖</a>
     <div class="modal-contents">
         <h2>结果</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
@@ -265,6 +282,58 @@
             }
         }
 
+        function restoreConfirm(resourceId) {
+            var panel = $('#panelConfirm');
+            panel.attr("param-id", resourceId);
+            panel.attr("param-type", "restore");
+
+            $('#spanTipContent').html('确定要还原该资源至公共库吗？');
+            modalShow(panel);
+        }
+
+
+        function deleteConfirm(resourceId) {
+            var panel = $('#panelConfirm');
+            panel.attr("param-id", resourceId);
+            panel.attr("param-type", "delete");
+
+            $('#spanTipContent').html('确定要删除该资源吗？');
+            modalShow(panel);
+        }
+
+        function _invoker() {
+            var panel = $('#panelConfirm');
+            var resourceId = panel.attr("param-id");
+            var oper_type = panel.attr("param-type");
+            if (oper_type == "restore") {
+                // 还原
+                $.get("/Resource/RestoreResource", { "id": resourceId }, function (result) {
+                    modalClose($('#panelConfirm'));
+                    if (result) {
+                        $('#spanResult').html('还原成功！');
+                        modalShow($('#panelResult'));
+                    }
+                    else {
+                        $('#spanResult').html('抱歉，还原失败！');
+                        modalShow($('#panelResult'));
+                    }
+                });
+            }
+            else {
+                // 删除
+                $.get("/Resource/DeleteResource", { "id": resourceId }, function (result) {
+                    modalClose($('#panelConfirm'));
+                    if (result) {
+                        $('#spanResult').html('删除成功！');
+                        modalShow($('#panelResult'));
+                    }
+                    else {
+                        $('#spanResult').html('抱歉，删除失败！');
+                        modalShow($('#panelResult'));
+                    }
+                });
+            }
+        }
         function reload() {
             window.location.reload();
         }

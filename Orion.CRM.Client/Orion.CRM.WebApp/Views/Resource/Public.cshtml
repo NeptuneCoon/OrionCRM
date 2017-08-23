@@ -39,6 +39,7 @@
 
     <div class="panel-body">
         <form action="/Resource/Public" method="get">
+            <input type="hidden" id="hidGroupId" value="@ViewBag.UserGroupId" />
             <div class="form-inline">
                 <!--电话/微信/QQ-->
                 <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
@@ -66,8 +67,6 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>项目</th>
-                    <th>业务员</th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
                     @*<th>留言时间</th>*@
@@ -76,7 +75,9 @@
                     <th>状态</th>
                     <th>意向</th>
                     <th>洽谈数</th>
+                    <th>业务员</th>
                     <th>添加人</th>
+                    <th>项目</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -85,8 +86,6 @@
                     foreach (var resource in Model.Resources) {
                         <tr>
                             <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
-                            <td>@resource.ProjectName</td>
-                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
                             <td>@resource.ContactInfo</td>
                             @*<td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>*@
@@ -95,14 +94,11 @@
                             <td>@resource.StatusText</td>
                             <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
+                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
+                            <td>@resource.ProjectName</td>
                             <td>
-                                @if(ViewBag.UserGroupId != null && ViewBag.UserGroupId > 0) { 
-                                    <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
-                                }
-                                else {
-                                    <a href="javascript:;" disabled="disabled">划分给自己</a>
-                                }
+                                <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
                             </td>
                         </tr>
                     }
@@ -137,18 +133,26 @@
 @section scripts{
     <script type="text/javascript">
         function divideToMe(resourceId) {
-            $.get("/Resource/DivideToMe", { "resourceId": resourceId }, function (result) {
-                if (result) {
-                    $('#spanResult').attr("class", "panel-alert-info");
-                    $('#spanResult').html('操作已成功！');
-                }
-                else {
-                    $('#spanResult').attr("class", "panel-alert-error");
-                    $('#spanResult').html('抱歉，操作失败！请重试。');
-                }
+            var groupId = $('#hidGroupId').val();
+            if (groupId != null && groupId > 0) {
+                $.get("/Resource/DivideToMe", { "resourceId": resourceId }, function (result) {
+                    if (result) {
+                        $('#spanResult').attr("class", "panel-alert-info");
+                        $('#spanResult').html('操作已成功！');
+                    }
+                    else {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                    }
+                    modalShow($('#panelResult'));
+                    setTimeout(reload, 1000);
+                });
+            }
+            else {
+                $('#spanResult').attr("class", "panel-alert-error");
+                $('#spanResult').html('抱歉，您不是业务人员，无法划分给自己！');
                 modalShow($('#panelResult'));
-                setTimeout(reload, 1000);
-            });
+            }
         }
 
         function reload() {
