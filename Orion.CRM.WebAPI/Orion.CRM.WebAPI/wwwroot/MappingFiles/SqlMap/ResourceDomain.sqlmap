@@ -505,6 +505,16 @@
       <CommandType>Text</CommandType>
       <Description>根据ResourceIds批量删除ResourceUser</Description>
     </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateLastTimeTalkCount</SqlName>
+      <OriginalSqlString>
+        update [Resource] set LastTime=@LastTime,TalkCount=TalkCount+1 where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>更新资源的最后联系时间和洽谈次数</Description>
+    </SqlMapDetail>
     
 	</SqlMapConfigurations>
 </SqlMap>

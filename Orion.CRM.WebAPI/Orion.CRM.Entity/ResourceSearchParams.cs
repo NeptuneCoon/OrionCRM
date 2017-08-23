@@ -26,5 +26,10 @@ namespace Orion.CRM.Entity
         public int? source { get; set; }
         public int? assign { get; set; }
         public List<int> tagids { get; set; }
+        
+        // 开始时间(指资源的创建时间)
+        public string start { get; set; }
+        // 结束时间(指资源的创建时间)
+        public string end { get; set; }
     }
 }

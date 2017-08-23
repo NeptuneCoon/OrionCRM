@@ -454,6 +454,12 @@ namespace Orion.CRM.DataAccess
                 string strTagIds = string.Join(",", param.tagids);
                 sb.Append($" and TagId in({strTagIds})");
             }
+            if (!string.IsNullOrEmpty(param.start)) {
+                sb.Append($" and CreateTime >='{param.start}'"); ;
+            }
+            if (!string.IsNullOrEmpty(param.end)) {
+                sb.Append($" and CreateTime <='{param.end}'"); ;
+            }
 
             string sqlWhere = sb.ToString();
             return sqlWhere;
@@ -585,6 +591,19 @@ namespace Orion.CRM.DataAccess
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ResourceIds", resourceIds);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
             return count;
+        }
+
+        // 更新资源的最后联系时间
+        public bool UpdateLastTimeTalkCount(int resourceId, DateTime lastTime)
+        {
+            if (lastTime == null) return false;
+
+            SqlParameter[] parameters = {
+                 new SqlParameter("@LastTime", lastTime),
+                 new SqlParameter("@Id", resourceId)
+            };
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateLastTimeTalkCount", parameters);
+            return count > 0;
         }
     }
 }

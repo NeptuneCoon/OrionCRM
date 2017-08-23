@@ -27,5 +27,13 @@ namespace Orion.CRM.WebApp.Models.Resource
         public int? source { get; set; }
         public int? assign { get; set; }
         public List<int> tagids { get; set; }
+        /// <summary>
+        /// 开始时间(指资源的创建时间)
+        /// </summary>
+        public string start { get; set; }
+        /// <summary>
+        /// 结束时间(指资源的创建时间)
+        /// </summary>
+        public string end { get; set; }
     }
 }

@@ -39,7 +39,8 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 
 .pika-lendar {
     float: left;
-    width: 240px;
+    /*width: 240px;*/
+    width:230px;/*by choon*/
     margin: 8px;
 }
 
@@ -138,7 +139,8 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 .pika-table td {
     width: 14.285714285714286%;
     padding: 0;
-    height: 32px;
+    /*height: 32px;*/
+    height:36px;/*by choon*/
 }
 
 .pika-table th {

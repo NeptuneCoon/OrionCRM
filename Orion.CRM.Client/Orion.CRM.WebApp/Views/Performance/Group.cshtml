@@ -56,7 +56,7 @@
     <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
     <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
     <script src="~/assets/pikaday/pikaday.js"></script>
-    <script>
+    <script type="text/javascript">
         $(function () {
             // 日历控件初始化
             var picker_start_member = new Pikaday({
@@ -213,33 +213,8 @@
                 else {
                     $(group_select).append('<option>没有业务组</option>');
                 }
-
-                //var id = $(e).attr("id");
-                //if (id == "projectMember"){
-                //    renderMemberChart();
-                //}
-                //else {
-                //    renderTrendChart();
-                //}
             });
         }
-        //function trendProjectChange(e) {
-        //    var projectId = $(e).find("option:selected").val();
-        //    $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
-        //        var group_select = $(e).parents(".filter").find("select").last();
-        //        $(group_select).find("option").remove();
-
-        //        if (data && data.length > 0) {
-        //            for (var i = 0; i < data.length; i++) {
-        //                var group = data[i];
-        //                var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
-        //                $(group_select).append(option);
-        //            }
-        //        }
-
-        //        renderTrendChart();                
-        //    });
-        //}
 
         function renderMemberChart() {
             $('#members-chart').html('');
@@ -339,13 +314,13 @@
                 </select>
 
                 <div style="position:relative;width:110px;margin-left:10px">
-                    <input type="text" id="startDate_member" class="date start" value="@Model.StartDateMember" onblur="renderMemberChart()" />
+                    <input type="text" id="startDate_member" class="date start" value="@Model.StartDateMember" onblur="renderMemberChart()" autocomplete="off" />
                     <i class="icon-calendar icon-position"></i>
                 </div>
 
                 <span style="border:1px solid #ccc;padding:0px 6px;display:block">至</span>
                 <div style="position:relative;width:110px">
-                    <input type="text" id="endDate_member" class="date end" value="@Model.EndDateMember" onblur="renderMemberChart()" />
+                    <input type="text" id="endDate_member" class="date end" value="@Model.EndDateMember" onblur="renderMemberChart()" autocomplete="off" />
                     <i class="icon-calendar icon-position"></i>
                 </div>
             </div>
@@ -372,13 +347,13 @@
                     }
                 </select>
                 <div style="position:relative;width:110px;margin-left:10px">
-                    <input type="text" id="startDate_trend" class="date start" value="@Model.StartDateTrend" onblur="renderTrendChart()" />
+                    <input type="text" id="startDate_trend" class="date start" value="@Model.StartDateTrend" onblur="renderTrendChart()" autocomplete="off" />
                     <i class="icon-calendar icon-position"></i>
                 </div>
 
                 <span style="border:1px solid #ccc;padding:0px 6px;display:block">至</span>
                 <div style="position:relative;width:110px">
-                    <input type="text" id="endDate_trend" class="date end" value="@Model.EndDateTrend" onblur="renderTrendChart()" />
+                    <input type="text" id="endDate_trend" class="date end" value="@Model.EndDateTrend" onblur="renderTrendChart()" autocomplete="off" />
                     <i class="icon-calendar icon-position"></i>
                 </div>
             </div>

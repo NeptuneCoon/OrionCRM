@@ -8,7 +8,8 @@
 }
 
 @section styles{
-    <style>
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <style type="text/css">
         input[type="radio"], input[type="checkbox"] {
             margin: 0 0 0;
             line-height: normal;
@@ -56,7 +57,8 @@
                         }
                     }
                 </select>
-                <input type="text" class="search-input" placeholder="开始时间" />到<input type="text" class="search-input" placeholder="结束时间" />
+                <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />到
+                <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
                 <button type="submit" class="btn btn-default">
                     <i class="icon-search"></i> 查询
                 </button>
@@ -68,7 +70,6 @@
                     <th></th>
                     <th>客户姓名</th>
                     <th>联系方式</th>
-                    @*<th>留言时间</th>*@
                     <th>最后时间</th>
                     <th>来源</th>
                     <th>状态</th>
@@ -85,9 +86,13 @@
                     foreach (var resource in Model.Resources) {
                         <tr>
                             <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
-                            <td><a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a></td>
+                            <td>
+                                <a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a>
+                                @if (resource.TalkCount == 0) {
+                                    <img src="~/images/new.gif" />
+                                }
+                            </td>
                             <td>@resource.ContactInfo</td>
-                            @*<td>@(resource.MsgTime != null ? Convert.ToDateTime(resource.MsgTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>*@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td>@resource.StatusText</td>
@@ -186,101 +191,49 @@
 </div>
 
 @section scripts{
+    <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
+    <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
+    <script src="~/assets/pikaday/pikaday.js"></script>
     <script type="text/javascript">
-        function projectChange() {
-            var projectId = $("#pid").find("option:selected").val();
-            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
-                $("#gid option").not(":first").remove();
-                if (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var group = data[i];
-                        var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
-                        $('#gid').append(option);
-                    }
+        // 日历控件初始化
+        var picker_start = new Pikaday({
+            field: document.getElementById('start'),
+            format: 'YYYY-M-D',
+            minDate: new Date(2016, 0, 1),
+            maxDate: new Date(),
+            i18n: {
+                previousMonth: '上一月',
+                nextMonth: '下一月',
+                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+            },
+            showMonthAfterYear: true,
+            theme: 'triangle-theme',
+            yearSuffix: '年',
+            onSelect: function (selectedDate) {
+                var endDate = $('#end').val();
+                if (!endDate) {
+                    picker_end.show();
                 }
-            });
-        }
-
-        // 查询条件中的组(Group)切换事件
-        function groupChange() {
-            var groupId = $('#gid').find("option:selected").val();
-            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
-                $("#uid option").not(":first").remove();
-                if (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
-                        $('#uid').append(option);
-                    }
-                }
-            });
-        }
-
-        // 资源分配模态窗体中的组(Group)切换事件
-        function assignGroupChange() {
-            var groupId = $('#assignSelectGroup').find("option:selected").val();
-            $.get("/AppUser/GetUsersByGroupId", { "groupId": groupId }, function (data) {
-                $("#assignSelectSaler option").not(":first").remove();
-                if (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        var option = '<option value="' + user.id + '">' + user.realName + '</option>';
-                        $('#assignSelectSaler').append(option);
-                    }
-                }
-            });
-        }
-
-        // 弹出资源分配模态窗体
-        function showAssignPanel(resourceId, projectId) {
-            $('#assignResourceId').val(resourceId);
-            $("#assignSelectGroup option").not(":first").remove();
-            $('#assignSelectSaler option').not(":first").remove();
-
-            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
-                if (groups && groups.length > 0) {
-                    for (var i = 0; i < groups.length; i++) {
-                        var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
-                        $('#assignSelectGroup').append(option);
-                    }
-                }
-            });
-            modalShow($('#panelAssign'));
-        }
-
-        // 资源分配
-        function resourceAssign() {
-            var resourceId = $('#assignResourceId').val();
-            var groupId = $('#assignSelectGroup').find("option:selected").val();
-            var userId = $('#assignSelectSaler').find("option:selected").val();
-
-            if (!groupId) {
-                $('#assignTips').html('请先选择业务组');
-                $('#assignTips').show();
             }
-            else if (!userId) {
-                $('#assignTips').html('请选择你要分配的业务人员');
-                $('#assignTips').show();
-            }
-            else {
-                $('#assignTips').hide();
-            }
-
-            if (resourceId && groupId && userId) {
-                $.get("/Resource/ResourceAssign", { "resourceId": resourceId, "groupId": groupId, "userId": userId }, function (result) {
-                    modalClose($('#panelAssign'));
-                    if (result) {
-                        $('#spanResult').attr("class", "panel-alert-info");
-                        $('#spanResult').html('操作已成功！');
-                    }
-                    else {
-                        $('#spanResult').attr("class", "panel-alert-error");
-                        $('#spanResult').html('抱歉，操作失败！请重试。');
-                    }
-                    modalShow($('#panelResult'));
-                });
-            }
-        }
+        });
+        var picker_end = new Pikaday({
+            field: document.getElementById('end'),
+            format: 'YYYY-M-D',
+            minDate: new Date(2016, 0, 1),
+            maxDate: new Date(),
+            i18n: {
+                previousMonth: '上一月',
+                nextMonth: '下一月',
+                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+            },
+            showMonthAfterYear: true,
+            theme: 'triangle-theme',
+            yearSuffix: '年'
+        });
 
         function restoreConfirm(resourceId) {
             var panel = $('#panelConfirm');
