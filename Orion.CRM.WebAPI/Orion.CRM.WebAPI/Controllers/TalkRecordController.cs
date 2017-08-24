@@ -53,5 +53,19 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        [HttpPost]
+        public APIDataResult TalkRecordBatchInsert([FromBody]IEnumerable<Entity.TalkRecordBatchInsert> talkRecords)
+        {
+            try {
+                bool result = service.TalkRecordBatchInsert(talkRecords);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

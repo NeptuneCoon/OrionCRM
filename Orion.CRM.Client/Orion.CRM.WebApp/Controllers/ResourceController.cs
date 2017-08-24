@@ -701,11 +701,12 @@ namespace Orion.CRM.WebApp.Controllers
             if (resourceId == 0 || groupId == 0 || userId == 0) return false;
 
             bool assignResult = true;
-            // 插入ResourceGroup表
+            
             string rgGetAPI = _AppConfig.WebApiHost + "api/Resource/GetResourceGroup?resourceId=" + resourceId;
             string rgUpdateAPI = _AppConfig.WebApiHost + "api/Resource/UpdateResourceGroup";
             string rgInsertAPI = _AppConfig.WebApiHost + "api/Resource/InsertResourceGroup";
 
+            // 插入ResourceGroup表
             Models.Resource.ResourceGroup resourceGroup = APIInvoker.Get<Models.Resource.ResourceGroup>(rgGetAPI);
             if (resourceGroup == null) {
                 // insert
@@ -756,6 +757,17 @@ namespace Orion.CRM.WebApp.Controllers
                 if (!result) assignResult = false;
             }
 
+            // 添加一条洽谈记录
+            string userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
+            Models.AppUser.AppUserViewModel targetUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
+            if (targetUser != null) { 
+                string talkResult = _AppUser.RealName + "将此资源分配给" + targetUser.RealName;
+                AddTalkRecord(resourceId, 5, talkResult, 1);
+            }
+
+            // 更新资源状态为洽谈中
+            SetResourceStatus(resourceId, 4);
+
             return assignResult;
         }
         #endregion
@@ -804,7 +816,7 @@ namespace Orion.CRM.WebApp.Controllers
 
         #region 添加一条洽谈记录
         [HttpPost]
-        public bool AddTalkRecord(int resourceId, int talkWay, string talkResult)
+        public bool AddTalkRecord(int resourceId, int talkWay, string talkResult, int type = 0)
         {
             string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/InsertTalkRecord";
             var record = new
@@ -813,6 +825,7 @@ namespace Orion.CRM.WebApp.Controllers
                 TalkWay = talkWay,
                 TalkResult = talkResult,
                 UserId = _AppUser.Id,
+                Type = type,//0=默认，表示用户添加的，1=资源分配操作
                 CreateTime = DateTime.Now
             };
 

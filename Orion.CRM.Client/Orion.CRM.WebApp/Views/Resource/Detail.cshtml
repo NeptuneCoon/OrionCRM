@@ -147,21 +147,29 @@
                 </thead>
                 <tbody>
                     @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
-                    foreach (var record in Model.TalkRecords) {
+                        foreach (var record in Model.TalkRecords) {
+                            if(record.Type == 0) { 
+                                <tr>
+                                    <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td>@record.RealName</td>
+                                    <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
+                                    <td>@record.TalkResult</td>
+                                    <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id)" >删除</a></td>
+                                </tr>
+                            }
+                            else {
+                                <tr>
+                                    <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td colspan="4">@record.TalkResult</td>
+                                </tr>
+                            }
+                        }
+                    }
+                    else {
                         <tr>
-                            <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                            <td>@record.RealName</td>
-                            <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
-                            <td>@record.TalkResult</td>
-                            <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id)" >删除</a></td>
+                            <td colspan="5">还没有洽谈记录</td>
                         </tr>
                     }
-                }
-                else {
-                    <tr>
-                        <td colspan="4">还没有洽谈记录</td>
-                    </tr>
-                }
                 </tbody>
             </table>
 
@@ -199,6 +207,10 @@
                 <span>签约金额@(Model.Sign.Amount)元。签约人：<b>@Model.Sign.SignMan</b>。</span>
             </div>
         }
+
+    </div>
+    <div style="padding:2px">
+        <a href="javascript:;" onclick="javascript: window.close();" style="font-size:13px;text-decoration:underline">关闭页面</a>
     </div>
     <script src="/vendors/jquery-1.9.1.js"></script>
     <script type="text/javascript">

@@ -8,12 +8,17 @@ namespace Orion.CRM.WebApp.Controllers
 {
     public class HomeController : BaseController
     {
-        public IActionResult Index()
+        public IActionResult About()
         {
             return View();
         }
 
-        public IActionResult Error()
+        public IActionResult Version()
+        {
+            return View();
+        }
+
+        public IActionResult Help()
         {
             return View();
         }

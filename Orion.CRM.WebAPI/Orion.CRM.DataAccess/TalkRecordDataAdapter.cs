@@ -17,6 +17,7 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@TalkWay", record.TalkWay),
                 new SqlParameter("@TalkResult", record.TalkResult),
                 new SqlParameter("@UserId", record.UserId),
+                new SqlParameter("@Type", record.Type),
                 new SqlParameter("@CreateTime", record.CreateTime)
             };
 
@@ -40,6 +41,12 @@ namespace Orion.CRM.DataAccess
             var talkRecords = SqlMapHelper.GetSqlMapResult<Entity.TalkRecord>("TalkRecord", "GetRecordsByResourceId", param);
 
             return talkRecords;
+        }
+
+        public bool TalkRecordBatchInsert(IEnumerable<Entity.TalkRecordBatchInsert> talkRecords)
+        {
+            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.TalkRecordBatchInsert>("TalkRecord", "TalkRecordBatchInsert", talkRecords);
+            return result;
         }
     }
 }

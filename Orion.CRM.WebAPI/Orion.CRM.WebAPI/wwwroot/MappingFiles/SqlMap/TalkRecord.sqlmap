@@ -4,8 +4,8 @@
     <SqlMapDetail>
       <SqlName>InsertTalkRecord</SqlName>
       <OriginalSqlString>
-        insert into TalkRecord(ResourceId,TalkWay,TalkResult,UserId,CreateTime)
-        values(@ResourceId,@TalkWay,@TalkResult,@UserId,@CreateTime);select cast(@@identity as int);
+        insert into TalkRecord(ResourceId,TalkWay,TalkResult,UserId,Type,CreateTime)
+        values(@ResourceId,@TalkWay,@TalkResult,@UserId,@Type,@CreateTime);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -29,6 +29,14 @@
         inner join AppUser B on A.UserId=B.Id
         where A.ResourceId=@ResourceId
       </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId获取洽谈记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail TableName="TalkRecord">
+      <SqlName>TalkRecordBatchInsert</SqlName>
+      <OriginalSqlString/>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
       <Description>根据ResourceId获取洽谈记录</Description>

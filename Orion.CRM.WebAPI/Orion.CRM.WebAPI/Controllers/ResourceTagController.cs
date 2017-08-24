@@ -30,8 +30,8 @@ namespace Orion.CRM.WebAPI.Controllers
         public APIDataResult DeleteResourceTag(int resourceId)
         {
             try {
-                bool res = service.DeleteResourceTag(resourceId);
-                APIDataResult dataResult = new APIDataResult(200, res);
+                bool result = service.DeleteResourceTag(resourceId);
+                APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }
             catch (Exception ex) {
@@ -58,8 +58,8 @@ namespace Orion.CRM.WebAPI.Controllers
         public APIDataResult ResourceTagBatchInsert([FromBody]IEnumerable<Entity.ResourceTagBatchInsert> resourceTags)
         {
             try {
-                bool res = service.ResourceTagBatchInsert(resourceTags);
-                APIDataResult dataResult = new APIDataResult(200, res);
+                bool result = service.ResourceTagBatchInsert(resourceTags);
+                APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }
             catch (Exception ex) {

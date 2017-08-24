@@ -242,17 +242,26 @@
                             <tbody>
                                 @if (Model.TalkRecords != null && Model.TalkRecords.Count > 0) {
                                     foreach (var record in Model.TalkRecords) {
-                                        <tr>
-                                            <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                                            <td>@record.UserId</td>
-                                            <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
-                                            <td>@record.TalkResult</td>
-                                        </tr>
+                                        if (record.Type == 0) {
+                                            <tr>
+                                                <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                                <td>@record.RealName</td>
+                                                <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
+                                                <td>@record.TalkResult</td>
+                                                <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id)">删除</a></td>
+                                            </tr>
+                                        }
+                                        else {
+                                            <tr>
+                                                <td>@record.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                                <td colspan="4">@record.TalkResult</td>
+                                            </tr>
+                                        }
                                     }
                                 }
                                 else {
                                     <tr>
-                                        <td colspan="4">无洽谈记录</td>
+                                        <td colspan="5">还没有洽谈记录</td>
                                     </tr>
                                 }
                             </tbody>
