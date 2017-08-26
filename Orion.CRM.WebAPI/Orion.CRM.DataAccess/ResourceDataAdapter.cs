@@ -447,7 +447,7 @@ namespace Orion.CRM.DataAccess
                 }
                 else if (param.assign == 2) {
                     // 组长未分
-                    sb.Append($" and UserId is null");
+                    sb.Append($" and (GroupId>0 and UserId is null)");
                 }
             }
             if (param.tagids != null && param.tagids.Count > 0) {
@@ -455,10 +455,10 @@ namespace Orion.CRM.DataAccess
                 sb.Append($" and TagId in({strTagIds})");
             }
             if (!string.IsNullOrEmpty(param.start)) {
-                sb.Append($" and CreateTime >='{param.start}'"); ;
+                sb.Append($" and CreateTime >='{param.start}'");
             }
             if (!string.IsNullOrEmpty(param.end)) {
-                sb.Append($" and CreateTime <='{param.end}'"); ;
+                sb.Append($" and CreateTime <='{param.end}'");
             }
 
             string sqlWhere = sb.ToString();

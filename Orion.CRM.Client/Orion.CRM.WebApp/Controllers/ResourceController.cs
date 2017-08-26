@@ -401,7 +401,13 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.StatusList = AppDTO.GetStatusFromJson();
                 viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
                 viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
-  
+
+                // 资源编辑权限
+                var resourceHandlePermissions = GetResourceHandlePermissions(_AppUser.RoleId);
+                var editPermission = resourceHandlePermissions.FirstOrDefault(x => x.PermissionId == 8);
+                if (editPermission != null) {
+                    viewModel.ResourceEdit = true;
+                }
             }
             else {
                 return RedirectToAction("Http404", "Error");
@@ -858,6 +864,7 @@ namespace Orion.CRM.WebApp.Controllers
 
         /// <summary>
         /// 角色的数据权限：获取资源可见范围
+        /// 资源可见范围有4个：本人资源=1，本组资源=2，本项目资源=3，公司资源=4
         /// </summary>
         /// <param name="roleDataPermissions"></param>
         /// <returns></returns>
@@ -870,6 +877,24 @@ namespace Orion.CRM.WebApp.Controllers
                 return query.PermissionId;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// 角色的数据权限：资源操作
+        /// 资源操作权限有4个：资源查询=5、资源分配=6、资源批量分配=7、资源编辑=8
+        /// </summary>
+        /// <param name="roleDataPermissions"></param>
+        /// <returns></returns>
+        private List<Models.Role.RoleDataPermission> GetResourceHandlePermissions(int roleId)
+        {
+            if (roleId > 0) {
+                var dataPermissions = GetRoleDataPermissions(roleId);
+                if(dataPermissions != null) { 
+                    var resourceHandlePermissions = dataPermissions.Where(x => x.PermissionCategoryId == 2).ToList();//资源操作权限
+                    return resourceHandlePermissions;
+                }
+            }
+            return null;
         }
 
         /// <summary>

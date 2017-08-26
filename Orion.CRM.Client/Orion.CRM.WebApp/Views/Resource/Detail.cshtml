@@ -33,34 +33,81 @@
                 <table class="table-customer">
                     <tr>
                         <td style="width:70px">客户姓名</td>
-                        <td style="width:220px"><input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" /></td>
+                        <td style="width:220px">
+                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.CustomerName) || Model.CustomerName == "未知") { 
+                                <input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" />
+                            }
+                            else {
+                                @Model.CustomerName
+                                <input type="hidden" asp-for="@Model.CustomerName" />
+                            }
+                        </td>
                         <td style="width:70px">手机</td>
-                        <td style="width:220px"><input type="text" asp-for="@Model.Mobile" class="input" reg="regMobile" maxlength="11" /></td>
+                        <td style="width:220px">
+                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.Mobile)) { 
+                                <input type="text" asp-for="@Model.Mobile" class="input" reg="regMobile" maxlength="11" />
+                            }
+                            else {
+                                @Model.Mobile
+                                <input type="hidden" asp-for="@Model.Mobile" />
+                            }
+                        </td>
                     </tr>
                     <tr>
                         <td>微信</td>
-                        <td><input type="text" asp-for="@Model.Wechat" class="input" maxlength="20" reg="regWechat" /></td>
+                        <td>
+                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.Wechat)) { 
+                                <input type="text" asp-for="@Model.Wechat" class="input" maxlength="20" reg="regWechat" />
+                            }
+                            else {
+                                @Model.Wechat
+                                <input type="hidden" asp-for="@Model.Wechat" />
+                            }
+                        </td>
                         <td>QQ</td>
-                        <td><input type="text" asp-for="@Model.QQ" class="input" maxlength="12" reg="regNum" /></td>
+                        <td>
+                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.QQ)) { 
+                                <input type="text" asp-for="@Model.QQ" class="input" maxlength="12" reg="regNum" />
+                            }
+                            else {
+                                @Model.QQ
+                                <input type="hidden" asp-for="@Model.QQ" />
+                            }
+                        </td>
                     </tr>
                     <tr>
                         <td>座机</td>
-                        <td><input type="text" asp-for="@Model.Tel" class="input" /></td>
+                        <td>
+                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.Tel)) { 
+                                <input type="text" asp-for="@Model.Tel" class="input" />
+                            }
+                            else {
+                                @Model.Tel
+                                <input type="hidden" asp-for="@Model.Tel" />
+                            }
+                        </td>
                         <td>来源</td>
                         <td>
-                            <select asp-for="@Model.SourceFrom" class="select">
-                                <option value="">请选择</option>
-                                @if (Model.SourceList != null) {
-                                foreach (var source in Model.SourceList) {
-                                    if (source.Id == Model.SourceFrom) {
-                                        <option value="@source.Id" selected="selected">@source.SourceName</option>
+                            @if (Model.ResourceEdit || Model.SourceFrom == null) {
+                                <select asp-for="@Model.SourceFrom" class="select">
+                                    <option value="">请选择</option>
+                                    @if (Model.SourceList != null) {
+                                        foreach (var source in Model.SourceList) {
+                                            if (source.Id == Model.SourceFrom) {
+                                            <option value="@source.Id" selected="selected">@source.SourceName</option>
+                                            }
+                                            else {
+                                            <option value="@source.Id">@source.SourceName</option>
+                                            }
+                                        }
                                     }
-                                    else {
-                                        <option value="@source.Id">@source.SourceName</option>
-                                    }
-                                }
+                                </select>
                             }
-                            </select>
+                            else {
+                                var source = Model.SourceList.FirstOrDefault(x => x.Id == Model.SourceFrom);
+                                if (source != null) { @source.SourceName}
+                                <input type="hidden" asp-for="@Model.SourceFrom" />
+                            }
                         </td>
                     </tr>
                     <tr>

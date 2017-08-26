@@ -20,6 +20,7 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string Address { get; set; }
         public int? Status { get; set; }
         public string Remark { get; set; }
+        public bool ResourceEdit { get; set; }//是否允许编辑资源基本信息
 
         public Models.Sign.CustomerSign Sign { get; set; }
         public List<Models.Resource.ResourceNote> ResourceNotes { get; set; }
