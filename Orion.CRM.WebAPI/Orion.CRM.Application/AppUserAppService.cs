@@ -39,6 +39,12 @@ namespace Orion.CRM.Application
             return adapter.GetUserByUserName(userName);
         }
 
+        public Entity.AppUser GetUserByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email)) return null;
+            return adapter.GetUserByEmail(email);
+        }
+
         public int InsertUser(Entity.AppUser user)
         {
             return adapter.InsertUser(user);

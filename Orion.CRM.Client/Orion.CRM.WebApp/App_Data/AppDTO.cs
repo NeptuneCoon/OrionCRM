@@ -16,16 +16,6 @@ namespace Orion.CRM.WebApp.App_Data
     /// </summary>
     public class AppDTO
     {
-        //public static IConfigurationRoot Configuration { get; set; }
-        //public AppDTO()
-        //{
-        //    var builder = new ConfigurationBuilder()
-        //    .SetBasePath(Directory.GetCurrentDirectory())
-        //    .AddJsonFile("appsettings.json");
-
-        //    Configuration = builder.Build();
-        //}
-
         /// <summary>
         /// 读取配置文件
         /// </summary>
@@ -221,5 +211,17 @@ namespace Orion.CRM.WebApp.App_Data
             else return string.Empty;
         }
 
+
+        /// <summary>
+        /// 根据Email获取用户
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static Models.AppUser.AppUserViewModel GetUserByEmail(string email)
+        {
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/AppUser/GetUserByEmail?email=" + email;
+            Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
+            return appUser;
+        }
     }
 }

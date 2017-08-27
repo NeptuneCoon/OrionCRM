@@ -1244,7 +1244,6 @@
     <ProjectReference Include="..\Orion.CRM.WebTools\Orion.CRM.WebTools.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Account\" />
     <Folder Include="Views\Customer\" />
     <Folder Include="Views\Shared\Components\TopMenu\" />
     <Folder Include="Views\Shared\Components\LeftMenu\" />

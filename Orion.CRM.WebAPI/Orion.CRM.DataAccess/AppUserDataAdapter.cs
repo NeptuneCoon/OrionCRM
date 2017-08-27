@@ -56,6 +56,14 @@ namespace Orion.CRM.DataAccess
             return appUser;
         }
 
+        public Entity.AppUser GetUserByEmail(string email)
+        {
+            SqlParameter param = new SqlParameter("@Email", email);
+            Entity.AppUser appUser = SqlMapHelper.GetSqlMapSingleResult<Entity.AppUser>("AppUserDomain", "GetUserByEmail", param);
+
+            return appUser;
+        }
+
         public int InsertUser(Entity.AppUser user)
         {
             if (user == null) return -1;

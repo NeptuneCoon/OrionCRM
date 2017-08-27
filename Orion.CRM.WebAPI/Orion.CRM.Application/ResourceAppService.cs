@@ -249,21 +249,41 @@ namespace Orion.CRM.Application
         /// 资源批量分配
         /// </summary>
         /// <returns></returns>
-        public bool ResourceBatchAssign(string resourceIds, int groupId, int userId)
+        public bool ResourceBatchAssign(string resourceIds, int groupId, int userId, int operatorId)
         {
+            DateTime now = DateTime.Now;
             // 1.删除和这些资源有关的ResourceGroup:delete from [ResourceGroup] where ResourceId in(@ResourceIds)
             int count1 = adapter.BatchDeleteResourceGroup(resourceIds);
             // 2.删除和这些资源有关的ResourceUser:delete from [ResourceUser] where ResourceId in(@ResourceIds)
             int count2 = adapter.BatchDeleteResourceUser(resourceIds);
-            // 3.重新插入这些资源和Group的关系
-            // 4.重新插入这些资源和User的关系
+            // 3.重新插入这些资源和Group的关系，重新插入这些资源和User的关系
             string[] resourceIdArr = resourceIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (resourceIdArr != null && resourceIdArr.Length > 0) {
                 foreach (var resourceIdStr in resourceIdArr) {
                     int resourceId = Convert.ToInt32(resourceIdStr);
-                    adapter.InsertResourceGroup(new Entity.ResourceGroup() { CreateTime = DateTime.Now, GroupId = groupId, ResourceId = resourceId });
-                    adapter.InsertResourceUser(new Entity.ResourceUser() { CreateTime = DateTime.Now, UserId = userId, ResourceId = resourceId });
+                    adapter.InsertResourceGroup(new Entity.ResourceGroup() { CreateTime = now, GroupId = groupId, ResourceId = resourceId });
+                    adapter.InsertResourceUser(new Entity.ResourceUser() { CreateTime = now, UserId = userId, ResourceId = resourceId });
                 }
+            }
+            // 4.将分配操作写入洽谈记录(Type=1)
+            List<Entity.TalkRecordBatchInsert> talkRecords = new List<Entity.TalkRecordBatchInsert>();
+            if (resourceIdArr != null && resourceIdArr.Length > 0) {
+                Entity.AppUser operatorUser = new AppUserDataAdapter().GetUserById(operatorId);//资源分配的操作人员
+                Entity.AppUser targetUser = new AppUserDataAdapter().GetUserById(userId);//资源分配的目标
+
+                foreach(var resourceId in resourceIdArr) {
+                    Entity.TalkRecordBatchInsert talkRecord = new Entity.TalkRecordBatchInsert();
+                    talkRecord.ResourceId = Convert.ToInt32(resourceId);
+                    talkRecord.TalkWay = 5;//其他=5
+                    talkRecord.TalkResult = operatorUser.RealName + "将此资源分配给" + targetUser.RealName;
+                    talkRecord.UserId = operatorUser.Id;
+                    talkRecord.Type = 1;
+                    talkRecord.CreateTime = now;
+
+                    talkRecords.Add(talkRecord);
+                }
+
+                bool result = new TalkRecordDataAdapter().TalkRecordBatchInsert(talkRecords);
             }
             return true;
         }

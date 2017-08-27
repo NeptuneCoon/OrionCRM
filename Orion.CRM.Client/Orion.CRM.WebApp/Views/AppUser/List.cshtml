@@ -72,7 +72,9 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
-                                        <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
+                                        @if(item.Id != ViewBag.CurrentUser) { 
+                                            <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
+                                        }
                                         <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>
                                         @if(item.ProjectId != null && item.GroupId != null) { 
                                             <li class="divider"></li>

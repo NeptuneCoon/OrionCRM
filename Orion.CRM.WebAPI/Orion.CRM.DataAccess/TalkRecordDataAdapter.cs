@@ -45,8 +45,13 @@ namespace Orion.CRM.DataAccess
 
         public bool TalkRecordBatchInsert(IEnumerable<Entity.TalkRecordBatchInsert> talkRecords)
         {
-            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.TalkRecordBatchInsert>("TalkRecord", "TalkRecordBatchInsert", talkRecords);
-            return result;
+            try { 
+                bool result = SqlMapHelper.ExecuteBatchInsert<Entity.TalkRecordBatchInsert>("TalkRecord", "TalkRecordBatchInsert", talkRecords);
+                return result;
+            }
+            catch(Exception ex) {
+                return false;
+            }
         }
     }
 }

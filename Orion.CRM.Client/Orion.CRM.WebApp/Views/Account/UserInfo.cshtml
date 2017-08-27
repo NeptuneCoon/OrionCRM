@@ -64,6 +64,11 @@
                             <p class="help-block">可用于找回密码，建议填写</p>
                         </div>
                     </div>
+                    <div class="control-group" id="divTips" style="display:none">
+                        <div class="controls">
+                            <label class="tip">抱歉，该邮箱地址已被其他用户占用。<br/>如果您确认此邮箱是您所有，请向管理员申诉。</label>
+                        </div>
+                    </div>
                     <div class="form-actions" style="padding-left:140px">
                         <button type="submit" class="btn btn-primary" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
                         <a href="/Resource/List" class="btn">返回</a>
@@ -85,6 +90,28 @@
                 res = false;
             }
 
+            // 检查email
+            var email = $('#Email').val();
+            var userId = $('#Id').val();
+            if (res && email) {
+                $.ajax({
+                    type: "get",
+                    url: "/AppUser/CheckEmailExist",
+                    cache: false,
+                    async: false,
+                    data: {"email": email, "userId": userId},
+                    success: function (result) {
+                        if (result) {
+                            // 已被其他用户占用
+                            $('#divTips').show();
+                            res = false;
+                        }
+                        else {
+                            $('#divTips').hide();
+                        }
+                    }
+                });
+            }
 
             return res;
         }

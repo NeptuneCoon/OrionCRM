@@ -148,8 +148,8 @@ namespace Orion.CRM.WebApp.Controllers
             if (viewModel != null) { 
                 var userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
                 Models.Account.UserInfoModel appUser = APIInvoker.Get<Models.Account.UserInfoModel>(userGetApi);
-                appUser.Mobile = viewModel.Mobile.Trim();
-                appUser.Email = viewModel.Email.Trim();
+                appUser.Mobile = viewModel.Mobile?.Trim();
+                appUser.Email = viewModel.Email?.Trim();
                 appUser.UpdateTime = DateTime.Now;
 
                 var userUpdateApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUser";
@@ -158,6 +158,99 @@ namespace Orion.CRM.WebApp.Controllers
                 TempData["result"] = result;
             }
             return RedirectToAction("UserInfo");
+        }
+
+        [TypeFilter(typeof(AnonymousFilter))]
+        public IActionResult FindMyPassword()
+        {
+            Models.Account.FindMyPasswordModel viewModel = new Models.Account.FindMyPasswordModel();
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// 发送验证码
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>-1=邮箱不存在，0=发送失败，1=发送成功</returns>
+        [HttpGet]
+        [TypeFilter(typeof(AnonymousFilter))]
+        public int SendVerCode(string email)
+        {
+            // 首先判断Email是否存在
+            var appUser = AppDTO.GetUserByEmail(email);
+            if(appUser == null || appUser.Id <= 0) {
+                return -1;
+            }
+
+            int result = 0;
+
+            string code = new Random().Next(1000, 9999).ToString();
+            string content = "您的验证码是：" + code + "，请在5分钟内使用。";
+            bool res = new MailHelper().SendMail(email, content, "CRM系统验证码", "验证码", "验证码");
+            if (res) {
+                try { 
+                    // 序列化成json，将加密后的json写入cookie
+                    string jsonText = JsonConvert.SerializeObject(new { email = email, code = code });
+                    string encryptedJsonText = DesEncrypt.Encrypt(jsonText, _AppConfig.DesEncryptKey);
+
+                    // cookie有效期5分钟
+                    var cookieOptions = new CookieOptions() {
+                        Expires = DateTime.Now.AddMinutes(5)
+                    };
+                    Response.Cookies.Append("_pwdc", encryptedJsonText, cookieOptions);// cookie找回有关的验证码信息
+
+                    result = 1;
+                }
+                catch(Exception ex) {
+                    result = 0;
+                }
+            }
+            else {
+                result = 0;
+            }
+            return result;
+        }
+
+        // 重置密码
+        [HttpPost]
+        [TypeFilter(typeof(AnonymousFilter))]
+        public int ResetPassword()
+        {
+            string email = Request.Form["email"];
+            string password = Request.Form["password"];
+            string code = Request.Form["code"];
+            
+            // 首先判断验证码是否正确
+            string encryptedCode = Request.Cookies["_pwdc"];
+            string jsonText = DesEncrypt.Decrypt(encryptedCode, _AppConfig.DesEncryptKey);
+
+            var t = new
+            {
+                email = "",
+                code = ""
+            };
+            var json = JsonConvert.DeserializeAnonymousType(jsonText, t);
+            if(json.code == code) {
+                // 验证码正确，修改密码
+                string md5_pasword = Md5Encrypt.Md5Bit32(password);
+                var appUser = AppDTO.GetUserByEmail(email);
+                if (appUser != null) { 
+                    string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdatePassword?userId=" + appUser.Id + "&password=" + md5_pasword;
+                    bool result = APIInvoker.Get<bool>(apiUrl);
+                    if (result) {
+                        return 1;//修改成功
+                    }
+                    else {
+                        return 0;//修改失败
+                    }
+                }
+                else {
+                    return -2;//用户不存在
+                }
+            }
+            else {
+                return -1;//验证码无效
+            }
         }
     }
 }

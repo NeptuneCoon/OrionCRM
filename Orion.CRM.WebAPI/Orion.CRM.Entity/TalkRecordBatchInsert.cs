@@ -10,7 +10,7 @@ namespace Orion.CRM.Entity
         public int TalkWay { get; set; }
         public string TalkResult { get; set; }
         public int UserId { get; set; }
-        public string RealName { get; set; }
+        //public string RealName { get; set; }
         /// <summary>
         /// 0=默认，表示用户添加的，1=资源分配操作
         /// </summary>

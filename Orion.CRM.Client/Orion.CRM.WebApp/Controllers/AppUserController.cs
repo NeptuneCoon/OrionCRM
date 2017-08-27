@@ -43,6 +43,9 @@ namespace Orion.CRM.WebApp.Controllers
             //分页参数
             ViewBag.PagerOption = pageOption;
 
+            //当前登录用户
+            ViewBag.CurrentUser = _AppUser.Id;
+
             //数据
             return View(list);
         } 
@@ -465,6 +468,21 @@ namespace Orion.CRM.WebApp.Controllers
                 TempData["result"] = true;
                 return true;
             }
+            return false;
+        }
+
+        // 判断该Email是否被其他用户使用，True表示已被其他用户使用，False表示没有被其他用户使用
+        public bool CheckEmailExist(string email, int userId)
+        {
+            if (string.IsNullOrEmpty(email) || userId <= 0) return true;
+
+            var appUser = AppDTO.GetUserByEmail(email);
+            if (appUser != null) {
+                if(appUser.Id != userId) {
+                    return true;//已被其他用户使用
+                }
+            }
+            
             return false;
         }
     }

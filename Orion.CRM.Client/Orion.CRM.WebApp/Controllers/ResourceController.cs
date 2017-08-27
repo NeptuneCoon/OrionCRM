@@ -341,6 +341,14 @@ namespace Orion.CRM.WebApp.Controllers
                     foreach(var item in resourceGroups) {
                         InsertResourceGroup(item.ResourceId, item.GroupId);
                     }
+
+                    // 添加洽谈记录(资源操作Type=1)
+                    //string userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
+                    //Models.AppUser.AppUserViewModel targetUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
+                    //if (targetUser != null) {
+                    //    string talkResult = _AppUser.RealName + "将此资源分配给" + targetUser.RealName;
+                    //    AddTalkRecord(resourceId, 5, talkResult, 1);
+                    //}
                 }
                 TempData["result"] = true;
                 return RedirectToAction("Assign");
@@ -763,7 +771,7 @@ namespace Orion.CRM.WebApp.Controllers
                 if (!result) assignResult = false;
             }
 
-            // 添加一条洽谈记录
+            // 添加洽谈记录(资源操作Type=1)
             string userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
             Models.AppUser.AppUserViewModel targetUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
             if (targetUser != null) { 
@@ -949,7 +957,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public bool ResourceBatchAssign(string resourceIds, int groupId, int userId)
         {
-            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/ResourceBatchAssign?resourceIds={resourceIds}&groupId={groupId}&userId={userId}";
+            string apiUrl = _AppConfig.WebApiHost + $"api/Resource/ResourceBatchAssign?resourceIds={resourceIds}&groupId={groupId}&userId={userId}&operatorId={_AppUser.Id}";
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         }

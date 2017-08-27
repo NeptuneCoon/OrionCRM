@@ -157,7 +157,7 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;" onclick="showBatchAssignPanel(@Model.ProjectId)">批量分配</a></li>
+                                <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
@@ -266,7 +266,7 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;" onclick="showBatchAssignPanel(@Model.ProjectId)">批量分配</a></li>
+                                <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
@@ -332,7 +332,7 @@
                             <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
-                            <td>@resource.ProjectName</td>
+                            <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
                             <td>
                                 <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> | 
                                 <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
@@ -361,7 +361,7 @@
                 <input type="hidden" id="assignResourceId" />
                 <table>
                     <tr>
-                        <td style="width:100px">请选择所属组：</td>
+                        <td style="width:110px">请选择所属组：</td>
                         <td>
                             <select class="panel-select" id="assignSelectGroup" onchange="assignGroupChange()">
                                 <option value="">请选择所属组</option>
@@ -396,10 +396,10 @@
         <h2>资源批量分配</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
-                <label class="tip">将选中资源分配至：</label>
+                <label style="font-size:14px;font-weight:bold">将选中资源分配至：</label>
                 <table>
                     <tr>
-                        <td style="width:100px">请选择所属组：</td>
+                        <td style="width:110px">请选择所属组：</td>
                         <td>
                             <select class="panel-select" id="batchAssignSelectGroup" onchange="batchAssignGroupChange()">
                                 <option value="">请选择所属组</option>
@@ -491,7 +491,7 @@
             <div>
                 <span id="spanAlertContent"></span>
                 <div style="margin-top:20px">
-                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
         </div>
@@ -583,10 +583,15 @@
 
             $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
                 if (groups && groups.length > 0) {
+                    $('#assignTips').hide();
                     for (var i = 0; i < groups.length; i++) {
                         var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
                         $('#assignSelectGroup').append(option);
                     }
+                }
+                else {
+                    $('#assignTips').html('该项目没有业务组，请先创建业务组！');
+                    $('#assignTips').show();
                 }
             });
             modalShow($('#panelAssign'));
@@ -643,25 +648,39 @@
         }
 
         // 弹出资源批量分配模态窗体
-        function showBatchAssignPanel(projectId) {
+        function showBatchAssignPanel() {
             var resourceIdArr = [];
             $("input[name='ckResource']:checked").each(function () {
                 resourceIdArr.push($(this).val());
             });
+
+            var projectIds = getCheckedResourceProjects();
+            console.info("getCheckedResourceProjects:");
+            console.info(projectIds);
             if (resourceIdArr.length == 0) {
                 $('#spanAlertContent').html('请至少选择一条资源！');
+                modalShow($('#panelError'));
+            }
+            else if (projectIds.length > 1) {
+                $('#spanAlertContent').html('您所操作的资源必须来自于同一个项目！');
                 modalShow($('#panelError'));
             }
             else{
                 $("#batchAssignSelectGroup option").not(":first").remove();
                 $('#batchAssignSelectSaler option').not(":first").remove();
 
+                var projectId = projectIds[0];
                 $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
                     if (groups && groups.length > 0) {
+                        $('#batchAssignTips').hide();
                         for (var i = 0; i < groups.length; i++) {
                             var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
                             $('#batchAssignSelectGroup').append(option);
                         }
+                    }
+                    else {
+                        $('#batchAssignTips').html('该项目没有业务组，请先创建业务组！');
+                        $('#batchAssignTips').show();
                     }
                 });
                 modalShow($('#panelBatchAssign'));
@@ -780,11 +799,30 @@
                 $(e).find("input[name='tagids']").prop("checked", true);
             }
         }
-
+        // 全部取消/全部选中
         function checkToggle() {
             $('input[name="ckResource"]').each(function () {
                 $(this).prop('checked', $('#ckAll').prop('checked'))
             });
+        }
+        // 批量分配时，要判断所选择的资源是否来自同一个项目
+        function getCheckedResourceProjects() {
+            var resourceProjectArr = [];//资源所属项目
+            $("input[name='ckResource']:checked").each(function () {
+                var projectId = $(this).parent().parent().find("input[id='resourceProject']").val();
+                var isContains = false;
+                for (var i = 0; i < resourceProjectArr[i];i++){
+                    if (resourceProjectArr[i] == projectId) {
+                        isContains = true;
+                        break;
+                    }
+                }
+                if (!isContains) {
+                    resourceProjectArr.push(projectId);
+                }
+            });
+
+            return resourceProjectArr;
         }
 
         function reload() {

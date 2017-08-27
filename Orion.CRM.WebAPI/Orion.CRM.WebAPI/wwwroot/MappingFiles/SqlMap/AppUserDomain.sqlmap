@@ -127,6 +127,16 @@
     </SqlMapDetail>
 
     <SqlMapDetail>
+      <SqlName>GetUserByEmail</SqlName>
+      <OriginalSqlString>
+        select * from [AppUser] A where Email=@Email
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Email获取用户</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
       <SqlName>InsertUser</SqlName>
       <OriginalSqlString>
         insert into AppUser(OrgId,UserName,Password,RealName,CreateTime,UpdateTime,Mobile,Email,Wechat,Enable)

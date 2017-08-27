@@ -562,10 +562,10 @@ namespace Orion.CRM.WebAPI.Controllers
         /// 资源批量分配
         /// </summary>
         /// <returns></returns>
-        public APIDataResult ResourceBatchAssign(string resourceIds, int groupId, int userId)
+        public APIDataResult ResourceBatchAssign(string resourceIds, int groupId, int userId, int operatorId)
         {
             try {
-                bool result = service.ResourceBatchAssign(resourceIds, groupId, userId);
+                bool result = service.ResourceBatchAssign(resourceIds, groupId, userId, operatorId);
                 APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }

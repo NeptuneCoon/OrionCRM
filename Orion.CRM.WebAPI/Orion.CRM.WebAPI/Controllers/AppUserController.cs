@@ -92,6 +92,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult GetUserByEmail(string email)
+        {
+            try {
+                Entity.AppUser user = service.GetUserByEmail(email);
+                APIDataResult dataResult = new APIDataResult(200, user);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         [HttpPost]
         public APIDataResult InsertUser([FromBody]Entity.AppUser user)
         {
