@@ -75,7 +75,7 @@ namespace Orion.CRM.DataAccess
         }
         #endregion
 
-        #region 软删除一条资源
+        #region 删除一条资源
         public bool DeleteResource(int id)
         {
             if (id <= 0) return false;
@@ -604,6 +604,40 @@ namespace Orion.CRM.DataAccess
             };
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateLastTimeTalkCount", parameters);
             return count > 0;
+        }
+
+        /// <summary>
+        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public int UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
+        {
+            if (string.IsNullOrEmpty(resourceIds) || projectId <= 0) return 0;
+
+            SqlParameter param = new SqlParameter("@ProjectId", projectId);
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "UpdateResourceProjectByResourceIds").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+            return count;
+        }
+
+        /// <summary>
+        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public int UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
+        {
+            if (string.IsNullOrEmpty(resourceIds) || groupId <= 0) return 0;
+
+            SqlParameter param = new SqlParameter("@GroupId", groupId);
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "UpdateResourceGroupByResourceIds").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+            return count;
         }
     }
 }

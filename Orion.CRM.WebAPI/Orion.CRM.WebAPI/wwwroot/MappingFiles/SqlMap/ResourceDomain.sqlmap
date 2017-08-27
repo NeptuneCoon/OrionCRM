@@ -516,5 +516,25 @@
       <Description>更新资源的最后联系时间和洽谈次数</Description>
     </SqlMapDetail>
     
+    <SqlMapDetail>
+      <SqlName>UpdateResourceProjectByResourceIds</SqlName>
+      <OriginalSqlString>
+        update [ResourceProject] set ProjectId=@ProjectId where ResourceId in ($ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>UpdateResourceGroupByResourceIds</SqlName>
+      <OriginalSqlString>
+        update [ResourceGroup] set GroupId=@GroupId where ResourceId in ($ResourceIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)</Description>
+    </SqlMapDetail>
+    
 	</SqlMapConfigurations>
 </SqlMap>

@@ -304,5 +304,27 @@ namespace Orion.CRM.Application
 
             return count1 > 0 && count2 > 0;
         }
+
+        /// <summary>
+        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public int UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
+        {
+            return adapter.UpdateResourceProjectByResourceIds(resourceIds, projectId);
+        }
+
+        /// <summary>
+        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public int UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
+        {
+            return adapter.UpdateResourceGroupByResourceIds(resourceIds, groupId);
+        }
     }
 }

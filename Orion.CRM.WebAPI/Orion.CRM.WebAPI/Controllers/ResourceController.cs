@@ -43,7 +43,7 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
 
-        // 软删除一条资源
+        // 删除一条资源
         public APIDataResult DeleteResource(int id)
         {
             try {
@@ -595,6 +595,44 @@ namespace Orion.CRM.WebAPI.Controllers
             try {
                 bool result = service.DivideToMe(resourceId, groupId, userId);
                 APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        /// <summary>
+        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public APIDataResult UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
+        {
+            try {
+                int count = service.UpdateResourceProjectByResourceIds(resourceIds, projectId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        /// <summary>
+        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public APIDataResult UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
+        {
+            try {
+                int count = service.UpdateResourceGroupByResourceIds(resourceIds, groupId);
+                APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
             catch (Exception ex) {
