@@ -326,6 +326,26 @@ namespace Orion.CRM.WebApp.Controllers
                             // ResourceUser关系处理
                             string resourceUserChangeApi = _AppConfig.WebApiHost + "api/Resource/ChangeResourceUserOwner?sourceUserId=" + viewModel.UserId + "&targetUserId=" + targetUserId;
                             int count2 = APIInvoker.Get<int>(resourceUserChangeApi);
+
+                            // 写入洽谈记录
+                            List<int> resourceIds = APIInvoker.Get<List<int>>(_AppConfig.WebApiHost + "api/Resource/GetResourcesByUserId?userId=" + targetUserId);
+                            var sourceUser = GetUserById(viewModel.UserId);//源用户
+                            var targetUser = GetUserById(int.Parse(viewModel.ExportTarget));//目标用户
+                            List<object> talkRecords = new List<object>();
+                            DateTime now = DateTime.Now;
+                            foreach(var resourceId in resourceIds) {
+                                var talkRecord = new
+                                {
+                                    ResourceId = resourceId,
+                                    TalkWay = 5,
+                                    TalkResult = _AppUser.RealName + $"使用\"资源导出\"功能将{sourceUser.RealName}名下的资源导出给{targetUser.RealName}",
+                                    UserId = _AppUser.Id,
+                                    Type = 1,
+                                    CreateTime = now
+                                };
+                                talkRecords.Add(talkRecord);
+                            }
+                            bool result = APIInvoker.Post<bool>(_AppConfig.WebApiHost + "api/TalkRecord/TalkRecordBatchInsert", talkRecords);
                         }
                         else {
                             // --------------------导入到业务组--------------------

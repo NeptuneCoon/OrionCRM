@@ -102,12 +102,12 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
-            viewModel.StatusList = AppDTO.GetStatusFromJson();
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            //viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            //viewModel.StatusList = AppDTO.GetStatusFromJson();
+            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            //viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
-            viewModel.ProjectId = _AppUser.ProjectId;
+            //viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -122,31 +122,31 @@ namespace Orion.CRM.WebApp.Controllers
                 QueryString = Request.QueryString.Value
             };
 
-            #region 处理默认值项目(ProjectId，该值为必选)
-            if (string.IsNullOrEmpty(Request.QueryString.Value)) {
-                if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
-                    if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-                        pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
-                        param.pid = viewModel.ProjectList.FirstOrDefault().Id;
-                    }
-                }
-                else {
-                    pageOption.QueryString = "?pid=" + viewModel.ProjectId;
-                    param.pid = viewModel.ProjectId;
-                }
-            }
-            #endregion
+            //#region 处理默认值项目(ProjectId，该值为必选)
+            //if (string.IsNullOrEmpty(Request.QueryString.Value)) {
+            //    if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
+            //        if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
+            //            pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
+            //            param.pid = viewModel.ProjectList.FirstOrDefault().Id;
+            //        }
+            //    }
+            //    else {
+            //        pageOption.QueryString = "?pid=" + viewModel.ProjectId;
+            //        param.pid = viewModel.ProjectId;
+            //    }
+            //}
+            //#endregion
 
-            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
-            if (param.pid != null && param.pid > 0) {
-                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
-                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
-                if (param.gid != null && param.gid > 0) {
-                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
-                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
-                }
-            }
-            #endregion
+            //#region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
+            //if (param.pid != null && param.pid > 0) {
+            //    string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
+            //    viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
+            //    if (param.gid != null && param.gid > 0) {
+            //        string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
+            //        viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+            //    }
+            //}
+            //#endregion
 
             ViewBag.PagerOption = pageOption;
 
@@ -172,12 +172,12 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
 
-            viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
-            viewModel.StatusList = AppDTO.GetStatusFromJson();
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
-            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            //viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            //viewModel.StatusList = AppDTO.GetStatusFromJson();
+            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            //viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
-            viewModel.ProjectId = _AppUser.ProjectId;
+            //viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -192,31 +192,31 @@ namespace Orion.CRM.WebApp.Controllers
                 QueryString = Request.QueryString.Value
             };
 
-            #region 处理默认值项目(ProjectId，该值为必选)
-            if (string.IsNullOrEmpty(Request.QueryString.Value)) {
-                if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
-                    if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-                        pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
-                        param.pid = viewModel.ProjectList.FirstOrDefault().Id;
-                    }
-                }
-                else {
-                    pageOption.QueryString = "?pid=" + viewModel.ProjectId;
-                    param.pid = viewModel.ProjectId;
-                }
-            }
-            #endregion
+            //#region 处理默认值项目(ProjectId，该值为必选)
+            //if (string.IsNullOrEmpty(Request.QueryString.Value)) {
+            //    if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
+            //        if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
+            //            pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
+            //            param.pid = viewModel.ProjectList.FirstOrDefault().Id;
+            //        }
+            //    }
+            //    else {
+            //        pageOption.QueryString = "?pid=" + viewModel.ProjectId;
+            //        param.pid = viewModel.ProjectId;
+            //    }
+            //}
+            //#endregion
 
-            #region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
-            if (param.pid != null && param.pid > 0) {
-                string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
-                viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
-                if (param.gid != null && param.gid > 0) {
-                    string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
-                    viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
-                }
-            }
-            #endregion
+            //#region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
+            //if (param.pid != null && param.pid > 0) {
+            //    string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
+            //    viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
+            //    if (param.gid != null && param.gid > 0) {
+            //        string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
+            //        viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
+            //    }
+            //}
+            //#endregion
 
             ViewBag.PagerOption = pageOption;
 
@@ -290,7 +290,7 @@ namespace Orion.CRM.WebApp.Controllers
             return View();
         }
 
-        // 批量分配
+        // 客服人员的"批量分配"，该操作分配到某个业务组
         public IActionResult Assign()
         {
             ViewBag.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
@@ -341,14 +341,6 @@ namespace Orion.CRM.WebApp.Controllers
                     foreach(var item in resourceGroups) {
                         InsertResourceGroup(item.ResourceId, item.GroupId);
                     }
-
-                    // 添加洽谈记录(资源操作Type=1)
-                    //string userGetApi = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + userId;
-                    //Models.AppUser.AppUserViewModel targetUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
-                    //if (targetUser != null) {
-                    //    string talkResult = _AppUser.RealName + "将此资源分配给" + targetUser.RealName;
-                    //    AddTalkRecord(resourceId, 5, talkResult, 1);
-                    //}
                 }
                 TempData["result"] = true;
                 return RedirectToAction("Assign");
@@ -431,6 +423,14 @@ namespace Orion.CRM.WebApp.Controllers
                 string resourceApiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceById?id=" + viewModel.ResourceId;
                 Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
                 if (resource != null) {
+                    // 如果修改之前的状态不是1和2，现在是1和2，则说明资源被划入公库或垃圾库，此时向洽谈记录中添加日志
+                    if (resource.Status != 1 && resource.Status != 2 && (viewModel.Status == 1 || viewModel.Status ==2)) {
+                        // 写入洽谈记录
+                        string talkResult = _AppUser.RealName + "将此资源划入" + (viewModel.Status == 1 ? "公共库" : "垃圾库");
+                        AddTalkRecord(viewModel.ResourceId, 5, talkResult, 1);
+                    }
+
+                    // 资源属性
                     resource.CustomerName = viewModel.CustomerName;
                     resource.Mobile = viewModel.Mobile;
                     resource.Wechat = viewModel.Wechat;
@@ -444,13 +444,14 @@ namespace Orion.CRM.WebApp.Controllers
                     resource.Remark = viewModel.Remark;
                     resource.UpdateTime = DateTime.Now;
 
+                    // 更新
                     string resourceUpdateApiUrl = _AppConfig.WebApiHost + "api/Resource/UpdateReource";
                     bool result = APIInvoker.Post<bool>(resourceUpdateApiUrl, resource);
                     TempData["result"] = result;
 
                     // 如果将资源划入公共库、垃圾库、未分配则需要删除Resource和Group、User的绑定关系
                     // 1=公共，2=垃圾，3=未分配，4=洽谈中，5=已签约
-                    if(viewModel.Status !=4 && viewModel.Status != 5) { 
+                    if(viewModel.Status != 4 && viewModel.Status != 5) { 
                         // 删除ResourceGroup
                         string rgDeleteApiUrl = _AppConfig.WebApiHost + "api/Resource/DeleteResourceGroupByResourceIds?resourceIds=" + viewModel.ResourceId;
                         int count1 = APIInvoker.Get<int>(rgDeleteApiUrl);
@@ -954,6 +955,13 @@ namespace Orion.CRM.WebApp.Controllers
             return tags;
         }
 
+        /// <summary>
+        /// 资源列表页的"批量分配",该操作分配到某个业务员
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <param name="groupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         public bool ResourceBatchAssign(string resourceIds, int groupId, int userId)
         {

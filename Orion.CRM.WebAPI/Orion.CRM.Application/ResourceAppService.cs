@@ -256,7 +256,7 @@ namespace Orion.CRM.Application
             int count1 = adapter.BatchDeleteResourceGroup(resourceIds);
             // 2.删除和这些资源有关的ResourceUser:delete from [ResourceUser] where ResourceId in(@ResourceIds)
             int count2 = adapter.BatchDeleteResourceUser(resourceIds);
-            // 3.重新插入这些资源和Group的关系，重新插入这些资源和User的关系
+            // 3.重新插入这些资源和Group,User的关系
             string[] resourceIdArr = resourceIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (resourceIdArr != null && resourceIdArr.Length > 0) {
                 foreach (var resourceIdStr in resourceIdArr) {
@@ -285,6 +285,8 @@ namespace Orion.CRM.Application
 
                 bool result = new TalkRecordDataAdapter().TalkRecordBatchInsert(talkRecords);
             }
+            // 5.由于该操作将资源分配至具体业务人员，所以需要更改这些资源的状态为“洽谈中”
+            BatchSetResourceStatus(resourceIds, 4);
             return true;
         }
 
