@@ -639,5 +639,20 @@ namespace Orion.CRM.DataAccess
             int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
             return count;
         }
+
+        /// <summary>
+        /// 批量删除ResourceProject
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <returns></returns>
+        public int BatchDeleteResourceProject(string resourceIds)
+        {
+            if (string.IsNullOrEmpty(resourceIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "BatchDeleteResourceProject").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+            return count;
+        }
     }
 }

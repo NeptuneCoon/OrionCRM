@@ -326,5 +326,25 @@ namespace Orion.CRM.Application
         {
             return adapter.UpdateResourceGroupByResourceIds(resourceIds, groupId);
         }
+
+        /// <summary>
+        /// 批量删除ResourceProject
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <returns></returns>
+        public int BatchDeleteResourceProject(string resourceIds)
+        {
+            return adapter.BatchDeleteResourceProject(resourceIds);
+        }
+
+        /// <summary>
+        /// 批量删除ResourceGroup
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <returns></returns>
+        public int BatchDeleteResourceGroup(string resourceIds)
+        {
+            return adapter.BatchDeleteResourceGroup(resourceIds);
+        }
     }
 }

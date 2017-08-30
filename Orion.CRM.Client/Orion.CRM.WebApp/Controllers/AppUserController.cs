@@ -144,8 +144,11 @@ namespace Orion.CRM.WebApp.Controllers
             if (viewModel != null) {
                 string url = _AppConfig.WebApiHost + "api/AppUser/GetUserById?id=" + viewModel.Id;
                 Models.AppUser.AppUserViewModel user = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
+                int? old_projectId = 0, old_groupId = 0;
 
                 if (user != null) {
+                    old_projectId = user.ProjectId;
+                    old_groupId = user.GroupId;
                     string apiUrl = _AppConfig.WebApiHost + "api/AppUser/UpdateUser";
                     var updatingUser = new
                     {
@@ -179,25 +182,10 @@ namespace Orion.CRM.WebApp.Controllers
                         else {
                             var query = APIInvoker.Get<Models.AppUser.UserProject>(_AppConfig.WebApiHost + "api/AppUser/GetUserProject?userId=" + user.Id);
                             if (query == null) {
-                                // 插入用户和项目之间的关系
-                                string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserProject";
-                                var userProject = new
-                                {
-                                    UserId = user.Id,
-                                    ProjectId = viewModel.ProjectId,
-                                    CreateTime = DateTime.Now
-                                };
-                                int userProjectId = APIInvoker.Post<int>(userProjectApi, userProject);
+                                InsertUserProject(user.Id, Convert.ToInt32(viewModel.ProjectId));// 插入用户和项目之间的关系
                             }
-                            else { 
-                                // 修改用户和项目之间的关系
-                                string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserProject";
-                                var userProject = new
-                                {
-                                    UserId = user.Id,
-                                    ProjectId = viewModel.ProjectId
-                                };
-                                bool res2 = APIInvoker.Post<bool>(userProjectApi, userProject);
+                            else {
+                                UpdateUserProject(user.Id, Convert.ToInt32(viewModel.ProjectId));// 修改用户和项目之间的关系
                             }
                         }
 
@@ -209,24 +197,36 @@ namespace Orion.CRM.WebApp.Controllers
                             var query = APIInvoker.Get<Models.AppUser.UserGroup>(_AppConfig.WebApiHost + "api/AppUser/GetUserGroup?userId=" + user.Id);
                             if(query == null) {
                                 // 插入用户和业务组之间的关系
-                                string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserGroup";
-                                var userGroup = new
-                                {
-                                    UserId = user.Id,
-                                    GroupId = viewModel.GroupId,
-                                    CreateTime = DateTime.Now
-                                };
-                                var userGroupId = APIInvoker.Post<int>(userGroupApi, userGroup);
+                                InsertUserGroup(user.Id, Convert.ToInt32(viewModel.GroupId));
                             }
                             else { 
                                 // 修改用户和业务组之间的关系
-                                string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserGroup";
-                                var userGroup = new
-                                {
-                                    UserId = user.Id,
-                                    GroupId = viewModel.GroupId
-                                };
-                                bool res3 = APIInvoker.Post<bool>(userGroupApi, userGroup);
+                                UpdateUserGroup(user.Id, Convert.ToInt32(viewModel.GroupId));
+                            }
+                        }
+
+                        // 先获取此用户所有的资源
+                        List<int> resourceIdList = APIInvoker.Get<List<int>>(_AppConfig.WebApiHost + "api/Resource/GetResourcesByUserId?userId=" + viewModel.Id);
+                        if(resourceIdList != null && resourceIdList.Count > 0) {
+                            string resourceIds = string.Join(",", resourceIdList);
+                            // 1.处理用户的资源和Project之间的关系
+                            if(viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
+                                // 删除此用户的所有资源和此Project之间的关系
+                                APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/Resource/BatchDeleteResourceProject?resourceIds=" + resourceIds);
+                            }
+                            else if(viewModel.ProjectId != old_projectId) {
+                                // 修改
+                                APIInvoker.Get<int>(_AppConfig.WebApiHost + $"api/Resource/UpdateResourceProjectByResourceIds?resourceIds={resourceIds}&projectId={viewModel.ProjectId}");
+                            }
+
+                            // 2.处理用户的资源和Group之间的关系
+                            if(viewModel.GroupId == null || viewModel.GroupId <= 0) {
+                                // 删除此用户的所有资源和此Group之间的关系
+                                APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/Resource/BatchDeleteResourceGroup?resourceIds=" + resourceIds);
+                            }
+                            else if(viewModel.GroupId != old_groupId) {
+                                // 修改
+                                APIInvoker.Get<int>(_AppConfig.WebApiHost + $"api/Resource/UpdateResourceGroupByResourceIds?resourceIds={resourceIds}&groupId={viewModel.GroupId}");
                             }
                         }
                     }
@@ -424,6 +424,7 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
+        #region 获取用户洽谈中的资源的总条数(注意洽谈中)
         // 获取用户洽谈中的资源的总条数(注意洽谈中)
         [HttpGet]
         public int GetTalkingResourceCountByUserId(int userId)
@@ -432,7 +433,8 @@ namespace Orion.CRM.WebApp.Controllers
             int count = APIInvoker.Get<int>(apiUrl);
 
             return count;
-        }
+        } 
+        #endregion
 
         #region 验证密码
         /// <summary>
@@ -480,17 +482,20 @@ namespace Orion.CRM.WebApp.Controllers
         }
         #endregion
 
+        #region DeleteUser
         public bool DeleteUser(int id)
         {
             string apiUrl = _AppConfig.WebApiHost + "api/AppUser/DeleteUser?userId=" + id;
             int count = APIInvoker.Get<int>(apiUrl);
-            if(count > 0) {
+            if (count > 0) {
                 TempData["result"] = true;
                 return true;
             }
             return false;
         }
+        #endregion
 
+        #region 判断该Email是否被其他用户使用
         // 判断该Email是否被其他用户使用，True表示已被其他用户使用，False表示没有被其他用户使用
         public bool CheckEmailExist(string email, int userId)
         {
@@ -498,12 +503,71 @@ namespace Orion.CRM.WebApp.Controllers
 
             var appUser = AppDTO.GetUserByEmail(email);
             if (appUser != null) {
-                if(appUser.Id != userId) {
+                if (appUser.Id != userId) {
                     return true;//已被其他用户使用
                 }
             }
-            
+
             return false;
         }
+        #endregion
+
+        #region 修改用户和项目之间的关系
+        private bool UpdateUserProject(int userId, int projectId)
+        {
+            string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserProject";
+            var userProject = new
+            {
+                UserId = userId,
+                ProjectId = projectId
+            };
+            bool res = APIInvoker.Post<bool>(userProjectApi, userProject);
+            return res;
+        }
+        #endregion
+
+        #region 插入用户和项目之间的关系
+        private int InsertUserProject(int userId, int projectId)
+        {
+            string userProjectApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserProject";
+            var userProject = new
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                CreateTime = DateTime.Now
+            };
+            int userProjectId = APIInvoker.Post<int>(userProjectApi, userProject);
+            return userProjectId;
+        }
+        #endregion
+
+        #region 修改用户和业务组之间的关系
+        private bool UpdateUserGroup(int userId, int groupId)
+        {
+            string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/UpdateUserGroup";
+            var userGroup = new
+            {
+                UserId = userId,
+                GroupId = groupId
+            };
+            bool res = APIInvoker.Post<bool>(userGroupApi, userGroup);
+            return res;
+        }
+        #endregion
+
+        #region 插入用户和业务组之间的关系
+        private int InsertUserGroup(int userId, int groupId)
+        {
+            string userGroupApi = _AppConfig.WebApiHost + "api/AppUser/InsertUserGroup";
+            var userGroup = new
+            {
+                UserId = userId,
+                GroupId = groupId,
+                CreateTime = DateTime.Now
+            };
+            var userGroupId = APIInvoker.Post<int>(userGroupApi, userGroup);
+            return userGroupId;
+        } 
+        #endregion
     }
 }

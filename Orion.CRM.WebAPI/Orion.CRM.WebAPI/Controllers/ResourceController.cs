@@ -640,5 +640,41 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        /// <summary>
+        /// 批量删除ResourceProject
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <returns></returns>
+        public APIDataResult BatchDeleteResourceProject(string resourceIds)
+        {
+            try {
+                int count = service.BatchDeleteResourceProject(resourceIds);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        /// <summary>
+        /// 批量删除ResourceGroup
+        /// </summary>
+        /// <param name="resourceIds"></param>
+        /// <returns></returns>
+        public APIDataResult BatchDeleteResourceGroup(string resourceIds)
+        {
+            try {
+                int count = service.BatchDeleteResourceGroup(resourceIds);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }
