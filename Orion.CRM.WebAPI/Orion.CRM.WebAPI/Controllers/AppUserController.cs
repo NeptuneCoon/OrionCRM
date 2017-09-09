@@ -40,6 +40,20 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        [HttpPost]
+        public APIDataResult GetUsersByCondition([FromBody]Entity.AppUserSearchParams param)
+        {
+            try {
+                IEnumerable<Entity.AppUser> users = service.GetUsersByCondition(param);
+                APIDataResult dataResult = new APIDataResult(200, users);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         public APIDataResult GetAllUsersByGroupId(int groupId)
         {
             try {
@@ -164,6 +178,20 @@ namespace Orion.CRM.WebAPI.Controllers
         {
             try {
                 int count = service.GetUserCountByOrgId(orgId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpPost]
+        public APIDataResult GetUserCountByCondition([FromBody]Entity.AppUserSearchParams searchParam)
+        {
+            try {
+                int count = service.GetUserCountByCondition(searchParam);
                 APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }

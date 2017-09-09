@@ -1,11 +1,28 @@
 ﻿@using Orion.CRM.WebApp
-@model List<Orion.CRM.WebApp.Models.AppUser.AppUserViewModel>
+@model Orion.CRM.WebApp.Models.AppUser.AppUserListViewModel
 
 @using Orion.CRM.WebApp.App_Data
 @addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{ 
+    <style type="text/css">
+        .select {
+            padding: 3px 5px;
+            border-radius: 2px !important;
+            width: 160px;
+            color: #555;
+        }
+
+        .input {
+            width: 150px;
+            padding: 4px 4px;
+            color: #555;
+            border-radius: 2px !important;
+        }
+    </style>
 }
 
 <div class="panel panel-default">
@@ -36,13 +53,51 @@
             }
         }
 
+        <form method="get" action="/AppUser/List">
+            <div class="form-group" style="margin-top:20px">
+                <div class="form-inline">
+                    <input type="text" placeholder="用户姓名" class="input" id="key" name="key" maxlength="20" value="@Model.Params.key" />
+                    <label style="margin-left:10px">业务组</label>
+                    <select class="select" id="gid" name="gid">
+                        <option>请选择</option>
+                        @if (Model.Groups != null && Model.Groups.Count > 0) {
+                            foreach (var group in Model.Groups) {
+                                if (group.Id == Model.Params.gid) {
+                                    <option value="@group.Id" selected="selected">@group.GroupName</option>
+                                }
+                                else {
+                                    <option value="@group.Id">@group.GroupName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label style="margin-left:10px">角色</label>
+                    <select class="select" id="roleid" name="roleid" style="width:120px">
+                        <option>请选择</option>
+                        @if (Model.Roles != null && Model.Roles.Count > 0) {
+                            foreach (var role in Model.Roles) {
+                                if (role.Id == Model.Params.roleid) {
+                                    <option value="@role.Id" selected="selected">@role.RoleName</option>
+                                }
+                                else {
+                                    <option value="@role.Id">@role.RoleName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-default" style="margin-left:5px">
+                        <i class="icon-search"></i> 查询
+                    </button>
+                </div>
+            </div>
+        </form>
+
         <table class="table table-bordered" style="margin-top:8px">
             <thead>
                 <tr>
                     <th>序号</th>
                     <th>用户名</th>
                     <th>真实姓名</th>
-                    @*<th>手机</th>*@
                     <th>可用状态</th>
                     <th>角色</th>
                     <th>所属项目</th>
@@ -52,9 +107,9 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null) {
-                    for (int i = 0; i < Model.Count; i++) {
-                        var item = Model[i];
+                @if (Model.Users != null) {
+                    for (int i = 0; i < Model.Users.Count; i++) {
+                        var item = Model.Users[i];
                         <tr>
                             <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                             <td style="width:100px">@item.UserName</td>
@@ -72,7 +127,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
-                                        @if(item.Id != ViewBag.CurrentUser) { 
+                                        @if(item.Id != Model.LoginUserId) { 
                                             <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
                                         }
                                         <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>

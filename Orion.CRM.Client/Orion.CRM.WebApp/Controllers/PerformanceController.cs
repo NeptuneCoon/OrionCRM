@@ -81,7 +81,7 @@ namespace Orion.CRM.WebApp.Controllers
             int firstGroupId = 0;
             viewModel.ProjectList = App_Data.AppDTO.GetProjectsFromDb(_AppUser.OrgId);
             if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-                viewModel.GroupList = App_Data.AppDTO.GetGroupsFromDb(viewModel.ProjectList[0].Id);
+                viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(viewModel.ProjectList[0].Id);
                 if(viewModel.GroupList != null && viewModel.GroupList.Count > 0) {
                     firstGroupId = viewModel.GroupList.First().Id;
                 }

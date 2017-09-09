@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orion.CRM.WebTools;
 using Orion.CRM.WebApp.App_Data;
 using Microsoft.Extensions.Caching.Memory;
+using Orion.CRM.WebApp.Models.AppUser;
 
 namespace Orion.CRM.WebApp.Controllers
 {
@@ -26,28 +27,37 @@ namespace Orion.CRM.WebApp.Controllers
         /// </summary>
         /// <param name="pi">此处的pi是页索引PageIndex</param>
         /// <returns></returns>
-        public IActionResult List(int pi = 1)
+        public IActionResult List(AppUserSearchParams param)
         {
-            string url = _AppConfig.WebApiHost + "api/AppUser/GetUsersByOrgId?pageIndex=" + pi + "&pageSize=" + _AppConfig.PageSize + "&orgId=" + _AppUser.OrgId;
-            List<Models.AppUser.AppUserViewModel> list = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(url);
+            AppUserListViewModel viewModel = new AppUserListViewModel();
+            if (param.pi <= 0) param.pi = 1;
+            param.oid = _AppUser.OrgId;
+            param.ps = _AppConfig.PageSize;
 
-            int totalCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "api/AppUser/GetUserCountByOrgId?orgId=" + _AppUser.OrgId);
+            viewModel.Params = param;//将查询参数回传至视图模型，以便完成查询参数的状态保持
+            // 查询数据
+            var list = APIInvoker.Post<List<Models.AppUser.AppUserViewModel>>(_AppConfig.WebApiHost + "api/AppUser/GetUsersByCondition", param);
+            viewModel.Users = list;
+            int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "api/AppUser/GetUserCountByCondition", param);
 
+            //分页参数
             var pageOption = new PagerOption {
-                PageIndex = pi,
-                PageSize = _AppConfig.PageSize,
+                PageIndex = param.pi,
+                PageSize = param.ps,
                 TotalCount = totalCount,
                 RouteUrl = "/AppUser/List"
             };
-
-            //分页参数
             ViewBag.PagerOption = pageOption;
 
             //当前登录用户
-            ViewBag.CurrentUser = _AppUser.Id;
+            viewModel.LoginUserId = _AppUser.Id;
+
+            //当前用户所属组织机构下的所有业务组
+            viewModel.Groups = AppDTO.GetGroupsByOrgId(_AppUser.OrgId);
+            viewModel.Roles = AppDTO.GetRoleListFromDb(_AppUser.OrgId);
 
             //数据
-            return View(list);
+            return View(viewModel);
         } 
         #endregion
 
@@ -287,7 +297,7 @@ namespace Orion.CRM.WebApp.Controllers
 
             var appUser = GetUserById(id);
             if (appUser != null) {
-                viewModel.GroupList = AppDTO.GetGroupsFromDb(Convert.ToInt32(appUser.ProjectId));
+                viewModel.GroupList = AppDTO.GetGroupsByProjectId(Convert.ToInt32(appUser.ProjectId));
                 viewModel.UserName = appUser.UserName;
                 viewModel.RealName = appUser.RealName;
                 viewModel.ResourceCount = GetTalkingResourceCountByUserId(id);
@@ -567,7 +577,7 @@ namespace Orion.CRM.WebApp.Controllers
             };
             var userGroupId = APIInvoker.Post<int>(userGroupApi, userGroup);
             return userGroupId;
-        } 
+        }
         #endregion
     }
 }

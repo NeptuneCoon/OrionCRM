@@ -100,16 +100,28 @@ namespace Orion.CRM.WebApp.App_Data
         }
 
         /// <summary>
-        /// 从数据库中获取项目下的业务组
+        /// 根据项目Id,从数据库中获取项目下的业务组
         /// </summary>
         /// <param name="apiHost">API基地址</param>
         /// <param name="projectId">项目Id</param>
         /// <returns></returns>
-        public static List<Models.Group.Group> GetGroupsFromDb(int projectId)
+        public static List<Models.Group.Group> GetGroupsByProjectId(int projectId)
         {
             string apiUrl = GetConfigurationSettings("WebApiHost") + "api/Group/GetGroupsByProjectId?projectId=" + projectId;
             var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
 
+            return groups;
+        }
+
+        /// <summary>
+        /// 根据组织机构Id,从数据库中获取所有业务组
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public static List<Models.Group.Group> GetGroupsByOrgId(int orgId)
+        {
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/Group/GetGroupsByOrgId?orgId=" + orgId;
+            var groups = APIInvoker.Get<List<Models.Group.Group>>(apiUrl);
             return groups;
         }
 

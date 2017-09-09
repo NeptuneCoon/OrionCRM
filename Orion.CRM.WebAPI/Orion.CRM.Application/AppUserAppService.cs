@@ -19,6 +19,11 @@ namespace Orion.CRM.Application
             return adapter.GetUsersByOrgId(pageIndex, pageSize, orgId);
         }
 
+        public IEnumerable<Entity.AppUser> GetUsersByCondition(Entity.AppUserSearchParams param)
+        {
+            return adapter.GetUsersByCondition(param);
+        }
+
         public IEnumerable<Entity.AppUser> GetAllUsersByGroupId(int groupId)
         {
             return adapter.GetAllUsersByGroupId(groupId);
@@ -68,6 +73,11 @@ namespace Orion.CRM.Application
         public int GetUserCountByOrgId(int orgId)
         {
             return adapter.GetUserCountByOrgId(orgId);
+        }
+
+        public int GetUserCountByCondition(Entity.AppUserSearchParams searchParam)
+        {
+            return adapter.GetUserCountByCondition(searchParam);
         }
 
         public int InsertUserRole(Entity.UserRole userRole)

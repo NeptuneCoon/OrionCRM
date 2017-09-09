@@ -27,6 +27,28 @@ namespace Orion.CRM.DataAccess
             return users;
         }
 
+        public IEnumerable<Entity.AppUser> GetUsersByCondition(Entity.AppUserSearchParams searchParam)
+        {
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("AppUserDomain", "GetUsersByCondition").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$PageIndex", searchParam.pi.ToString()).Replace("$PageSize", searchParam.ps.ToString());
+
+            string sqlWhere = "";
+            if (!string.IsNullOrEmpty(searchParam.key)) {
+                sqlWhere += $" and RealName like '%{searchParam.key}%'";
+            }
+            if (searchParam.gid != null && searchParam.gid > 0) {
+                sqlWhere += $" and GroupId={searchParam.gid}";
+            }
+            if (searchParam.roleid != null && searchParam.roleid > 0) {
+                sqlWhere += $" and RoleId={searchParam.roleid}";
+            }
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
+
+            SqlParameter param = new SqlParameter("@OrgId", searchParam.oid);
+            IEnumerable<Entity.AppUser> users = SqlMapHelper.GetSqlMapResult<Entity.AppUser>(mapDetail, param);
+            return users;
+        }
+
         public IEnumerable<Entity.AppUser> GetAllUsersByGroupId(int groupId)
         {
             SqlParameter param = new SqlParameter("@GroupId", groupId);
@@ -127,6 +149,28 @@ namespace Orion.CRM.DataAccess
         {
             SqlParameter param = new SqlParameter("@OrgId", orgId);
             int count = SqlMapHelper.ExecuteSqlMapScalar<int>("AppUserDomain", "GetUserCountByOrgId", param);
+            return count;
+        }
+
+        public int GetUserCountByCondition(Entity.AppUserSearchParams searchParam)
+        {
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("AppUserDomain", "GetUserCountByCondition").Clone();
+
+            string sqlWhere = "";
+            if (!string.IsNullOrEmpty(searchParam.key)) {
+                sqlWhere += $" and RealName like '%{searchParam.key}%'";
+            }
+            if (searchParam.gid != null && searchParam.gid > 0) {
+                sqlWhere += $" and GroupId={searchParam.gid}";
+            }
+            if (searchParam.roleid != null && searchParam.roleid > 0) {
+                sqlWhere += $" and RoleId={searchParam.roleid}";
+            }
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
+
+            SqlParameter param = new SqlParameter("@OrgId", searchParam.oid);
+
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>(mapDetail, param);
             return count;
         }
 

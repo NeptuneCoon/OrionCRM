@@ -85,7 +85,7 @@ namespace Orion.CRM.WebApp.Controllers
         [HttpGet]
         public List<Models.Group.Group> GetGroupsByProjectId(int projectId)
         {
-            return AppDTO.GetGroupsFromDb(projectId);
+            return AppDTO.GetGroupsByProjectId(projectId);
         }
 
         [HttpPost]

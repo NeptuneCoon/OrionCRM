@@ -296,7 +296,7 @@ namespace Orion.CRM.WebApp.Controllers
             ViewBag.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
             ViewBag.ProjectId = _AppUser.ProjectId;
             if (_AppUser.ProjectId != null && _AppUser.ProjectId > 0) {
-                ViewBag.GroupList = AppDTO.GetGroupsFromDb((int)_AppUser.ProjectId);
+                ViewBag.GroupList = AppDTO.GetGroupsByProjectId((int)_AppUser.ProjectId);
             }
             return View();
         }
