@@ -54,6 +54,19 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        public APIDataResult TalkRecordStat(int orgId, int projectId, int? groupId, string beginTime, string endTime)
+        {
+            try {
+                var queryResult = service.TalkRecordStat(orgId, projectId, groupId, beginTime, endTime);
+                APIDataResult dataResult = new APIDataResult(200, queryResult);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
         [HttpPost]
         public APIDataResult TalkRecordBatchInsert([FromBody]IEnumerable<Entity.TalkRecordBatchInsert> talkRecords)
         {

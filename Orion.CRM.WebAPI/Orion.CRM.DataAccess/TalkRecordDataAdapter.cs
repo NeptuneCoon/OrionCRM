@@ -43,6 +43,32 @@ namespace Orion.CRM.DataAccess
             return talkRecords;
         }
 
+        public IEnumerable<Entity.TalkcountRank> TalkRecordStat(int orgId, int projectId, int? groupId, string beginTime, string endTime)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@OrgId", orgId),
+                new SqlParameter("@ProjectId", projectId),
+                new SqlParameter("@BeginTime", beginTime),
+                new SqlParameter("@EndTime", endTime)
+            };
+
+
+            string sqlWhere = "";
+            if (groupId != null && groupId > 0) {
+                sqlWhere = "and C.GroupId=" + groupId;
+            }
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("TalkRecord", "TalkRecordStat").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
+            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@OrgId", orgId.ToString());
+            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ProjectId", projectId.ToString());
+            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@BeginTime", "'" + beginTime + "'");
+            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@EndTime", "'" + endTime + "'");
+
+            var queryResult = SqlMapHelper.GetSqlMapResult<Entity.TalkcountRank>(mapDetail, parameters);
+            return queryResult;
+        }
+
         public bool TalkRecordBatchInsert(IEnumerable<Entity.TalkRecordBatchInsert> talkRecords)
         {
             try { 

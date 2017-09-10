@@ -107,6 +107,59 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
+        public IActionResult Talkcount(int projectId, int groupId, string startDate, string endDate)
+        {
+            Models.Performance.TalkRecordStatViewModel viewModel = new Models.Performance.TalkRecordStatViewModel();
+
+            if (!string.IsNullOrEmpty(startDate)) {
+                viewModel.StartDate = startDate;
+            }
+            else {
+                viewModel.StartDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-1";//默认日期为本月1号至当天
+            }
+
+            if (!string.IsNullOrEmpty(endDate)) {
+                viewModel.EndDate = endDate;
+            }
+            else { 
+                viewModel.EndDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;//默认为当天
+            }
+
+            viewModel.ProjectList = App_Data.AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
+                if (projectId == 0) { 
+                    viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(viewModel.ProjectList[0].Id);
+                }
+                else {
+                    viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(projectId);
+                }
+                if (projectId == 0) {//第一次加载
+                    projectId = viewModel.ProjectList[0].Id;//默认为第一个项目
+                }
+            }
+
+            string urlParams = $"?orgId={_AppUser.OrgId}&projectId={projectId}&groupId={groupId}&beginTime={viewModel.StartDate + " 00:00:00"}&endTime={viewModel.EndDate + " 23:59:59"}";
+            string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/TalkRecordStat" + urlParams;
+            var talkcountRanks = APIInvoker.Get<List<Models.Performance.TalkcountRank>>(apiUrl);
+            viewModel.TalkcountRanks = talkcountRanks;
+            if (viewModel.TalkcountRanks != null) {
+               viewModel.TalkcountRanks = viewModel.TalkcountRanks.OrderByDescending(x => x.Count).ToList();
+            }
+
+            return View(viewModel);
+        }
+
+        //public List<Models.Performance.TalkcountRank> GetTalkcountRanks(int groupId, string beginTime, string endTime)
+        //{
+        //    string urlParams = $"?orgId={_AppUser.OrgId}&groupId={groupId}&beginTime={beginTime + " 00:00:00"}&endTime={endTime + " 23:59:59"}";
+        //    string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/TalkRecordStat" + urlParams;
+        //    var talkcountRanks = APIInvoker.Get<List<Models.Performance.TalkcountRank>>(apiUrl);
+        //    if (talkcountRanks != null) {
+        //        talkcountRanks = talkcountRanks.OrderByDescending(x => x.Count).ToList();
+        //    }
+        //    return talkcountRanks;
+        //}
+
         #region 获取组下每个成员在某时间区间内的签约记录
         // 获取组下每个成员在某时间区间内的签约记录
         public List<Models.Performance.SignRank> GetGroupMemberSignRecords(int groupId, string startDate, string endDate)

@@ -58,9 +58,7 @@
     <SqlMapDetail>
       <SqlName>GetGroupMemberSigns</SqlName>
       <OriginalSqlString>
-        select * from [Group] A
-        left join [CustomerSign] B on A.Id=B.GroupId
-        where A.Id=@GroupId and (B.SignTime between @BeginTime and @EndTime or B.SignTime is null)
+        select * from [CustomerSign] where GroupId=@GroupId and (SignTime between @BeginTime and @EndTime or SignTime is null)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -70,9 +68,7 @@
     <SqlMapDetail>
       <SqlName>GetProjectGroupSigns</SqlName>
       <OriginalSqlString>
-        select * from [Project] A
-        left join [CustomerSign] B on A.Id=B.ProjectId
-        where A.Id=@ProjectId and (B.SignTime between @BeginTime and @EndTime or B.SignTime is null)
+        select * from [CustomerSign] where ProjectId=@ProjectId and (SignTime between @BeginTime and @EndTime or SignTime is null)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
