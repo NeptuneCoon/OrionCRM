@@ -3,7 +3,7 @@
 @using Orion.CRM.WebApp.App_Data
 @addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "Signed";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -35,29 +35,15 @@
 
 <div class="panel panel-default span9">
     <div class="panel-heading">
-        <h3 class="panel-title">公共资源</h3>
+        <h3 class="panel-title">已签约</h3>
     </div>
 
     <div class="panel-body">
-        <form action="/Resource/Public" method="get">
-            <input type="hidden" id="hidGroupId" value="@ViewBag.UserGroupId" />
+        <form action="/Resource/Signed" method="get">
             <div class="form-inline">
                 <!--电话/微信/QQ-->
                 <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
                 <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="姓名" />
-                <select name="talk" id="talk" class="search-select">
-                    <option value="">洽谈次数</option>
-                    @if (Model.TalkCountList != null) {
-                        foreach (var talk in Model.TalkCountList) {
-                            if (talk.value == Model.Params.talk) {
-                                <option value="@talk.value" selected="selected">@talk.displayText</option>
-                            }
-                            else {
-                                <option value="@talk.value">@talk.displayText</option>
-                            }
-                        }
-                    }
-                </select>
                 <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />到
                 <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
                 <button type="submit" class="btn btn-default">
@@ -79,7 +65,6 @@
                     <th>业务员</th>
                     <th>添加人</th>
                     <th>项目</th>
-                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,28 +74,22 @@
                             <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
                             <td>
                                 <a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a>
-                                @if (resource.TalkCount == 0) {
-                                    <img src="~/images/new.gif" />
-                                }
                             </td>
                             <td>@resource.ContactInfo</td>
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
-                            <td>@resource.StatusText</td>
+                            <td><label style="color:green">@resource.StatusText</label></td>
                             <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName</td>
-                            <td>
-                                <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
-                            </td>
                         </tr>
                     }
                 }
                 else {
                     <tr>
-                        <td colspan="12" style="text-align:center">没有数据</td>
+                        <td colspan="11" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
@@ -119,9 +98,64 @@
     </div>
 </div>
 
+<!--资源分配-->
+<div class="modal modal-webpi" id="panelAssign" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>资源分配</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <input type="hidden" id="assignResourceId" />
+                <table>
+                    <tr>
+                        <td style="width:100px">请选择所属组：</td>
+                        <td>
+                            <select class="panel-select" id="assignSelectGroup" onchange="assignGroupChange()">
+                                <option value="">请选择所属组</option>
+                                <option>业务一组</option>
+                                <option>业务二组</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>请选择业务：</td>
+                        <td>
+                            <select class="panel-select" id="assignSelectSaler">
+                                <option value="">请选择业务</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceAssign()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--操作确认-->
+<div class="modal modal-webpi" id="panelConfirm" style="width:500px;display:none" param-id="" param-type="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>操作确认</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanTipContent"></span>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="_invoker()">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--操作结果-->
 <div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
-    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this,reload)">✖</a>
     <div class="modal-contents">
         <h2>结果</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
@@ -180,29 +214,58 @@
             yearSuffix: '年'
         });
 
-        function divideToMe(resourceId) {
-            var groupId = $('#hidGroupId').val();
-            if (groupId != null && groupId > 0) {
-                $.get("/Resource/DivideToMe", { "resourceId": resourceId }, function (result) {
+        function restoreConfirm(resourceId) {
+            var panel = $('#panelConfirm');
+            panel.attr("param-id", resourceId);
+            panel.attr("param-type", "restore");
+
+            $('#spanTipContent').html('确定要还原该资源至公共库吗？');
+            modalShow(panel);
+        }
+
+
+        function deleteConfirm(resourceId) {
+            var panel = $('#panelConfirm');
+            panel.attr("param-id", resourceId);
+            panel.attr("param-type", "delete");
+
+            $('#spanTipContent').html('确定要删除该资源吗？');
+            modalShow(panel);
+        }
+
+        function _invoker() {
+            var panel = $('#panelConfirm');
+            var resourceId = panel.attr("param-id");
+            var oper_type = panel.attr("param-type");
+            if (oper_type == "restore") {
+                // 还原
+                $.get("/Resource/RestoreResource", { "id": resourceId }, function (result) {
+                    modalClose($('#panelConfirm'));
                     if (result) {
-                        $('#spanResult').attr("class", "panel-alert-info");
-                        $('#spanResult').html('操作已成功！');
+                        $('#spanResult').html('还原成功！');
+                        modalShow($('#panelResult'));
                     }
                     else {
-                        $('#spanResult').attr("class", "panel-alert-error");
-                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                        $('#spanResult').html('抱歉，还原失败！');
+                        modalShow($('#panelResult'));
                     }
-                    modalShow($('#panelResult'));
-                    setTimeout(reload, 1000);
                 });
             }
             else {
-                $('#spanResult').attr("class", "panel-alert-error");
-                $('#spanResult').html('抱歉，您不是业务人员，无法划分给自己！');
-                modalShow($('#panelResult'));
+                // 删除
+                $.get("/Resource/DeleteResource", { "id": resourceId }, function (result) {
+                    modalClose($('#panelConfirm'));
+                    if (result) {
+                        $('#spanResult').html('删除成功！');
+                        modalShow($('#panelResult'));
+                    }
+                    else {
+                        $('#spanResult').html('抱歉，删除失败！');
+                        modalShow($('#panelResult'));
+                    }
+                });
             }
         }
-
         function reload() {
             window.location.reload();
         }

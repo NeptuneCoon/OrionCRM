@@ -17,15 +17,15 @@
         .search-input {
             border: 1px solid gray;
             border-radius: 2px !important;
-            padding: 2px 3px;
-            height: 16px !important;
+            padding: 3px 3px;
+            height: 18px !important;
             width: 91px;
             font-size: 12px !important;
         }
 
         .search-select {
             width: 105px;
-            height: 27px;
+            height: 28px !important;
             border-radius: 2px !important;
             padding: 0px 3px
         }
@@ -327,14 +327,16 @@
                             <td>@resource.ContactInfo</td>
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
-                            <td>@resource.StatusText</td>
+                            <td><label @(resource.Status == 5 ?" style=color:green":"")>@resource.StatusText</label></td>
                             <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
                             <td>
-                                <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> | 
+                                @if (resource.Status != 5) { 
+                                    <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> @:|
+                                }
                                 <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
                             </td>
                         </tr>

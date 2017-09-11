@@ -101,6 +101,9 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             if (param.pi <= 0) param.pi = 1;
@@ -139,11 +142,51 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
             param.status = 2;
+
+            // 分页参数
+            var pageOption = new PagerOption {
+                PageIndex = param.pi,
+                PageSize = param.ps,
+                TotalCount = 0,
+                RouteUrl = "/Resource/List",
+                QueryString = Request.QueryString.Value
+            };
+
+            ViewBag.PagerOption = pageOption;
+
+            // 查询到的数据
+            int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "api/Resource/GetResourceCountByCondition", param);
+            pageOption.TotalCount = totalCount;
+
+            string searchUrl = _AppConfig.WebApiHost + "api/Resource/GetResourcesByCondition";
+            List<Models.Resource.Resource> resources = APIInvoker.Post<List<Models.Resource.Resource>>(searchUrl, param);
+            ResourceDataFormat(resources, viewModel.StatusList, viewModel.SourceList, viewModel.InclinationList);
+            viewModel.Resources = resources;
+
+            return View(viewModel);
+        }
+
+        public IActionResult Signed(ResourceSearchParams param, int id = 1)
+        {
+            Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
+
+            viewModel.Params = param;
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
+
+            if (param.pi <= 0) param.pi = 1;
+            param.ps = _AppConfig.PageSize;
+            param.status = 5;
 
             // 分页参数
             var pageOption = new PagerOption {

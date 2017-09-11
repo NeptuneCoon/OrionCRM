@@ -4,7 +4,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section styles{ 
+    <style type="text/css">
+        .time-line>li{
+            margin:20px 0px;
+        }
+        .content-list>li{
+            margin:6px 0px;
+        }
+    </style>
+}
 <h3>版本</h3>
 
-当前版本:v1.0.0正式版。
+当前版本：<span style="font-weight:bold;font-size:16px">v1.1.0</span>正式版。
+<br />
 
+<ul class="time-line">
+    <li>
+        <span><b>2017-9-12</b> 发布了v1.1.0，更新内容：</span>
+        <ol class="content-list">
+            <li>增加了"电话量统计"功能；</li>
+            <li>增加了"已签约"功能，现在可以方便地查看签约记录；</li>
+            <li>为用户列表添加了查询功能，现在可以根据用户姓名，所属组，角色进行查询；</li>
+            <li>优化了查询文本框的样式，优化了组业绩分析的图表呈现；</li>
+            <li>修复了一些非紧要bug。</li>
+        </ol>
+    </li>
+    <li>
+        <div><b>2017-8-28</b> v1.0.0版本正式上线。</div>
+    </li>
+</ul>
