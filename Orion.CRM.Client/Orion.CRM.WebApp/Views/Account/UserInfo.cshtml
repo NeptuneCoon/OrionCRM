@@ -54,7 +54,7 @@
                     <div class="control-group">
                         <label class="control-label">角色</label>
                         <div class="controls">
-                            <label class="control-label" style="text-align:left">@Model.RoleName</label>
+                            <label class="control-label" style="text-align:left">@(Model.RoleName == "业务员" ? "普通用户" : Model.RoleName)</label>
                         </div>
                     </div>
                     <div class="control-group">
