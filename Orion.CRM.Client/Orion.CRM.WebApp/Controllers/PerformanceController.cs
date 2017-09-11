@@ -149,17 +149,6 @@ namespace Orion.CRM.WebApp.Controllers
             return View(viewModel);
         }
 
-        //public List<Models.Performance.TalkcountRank> GetTalkcountRanks(int groupId, string beginTime, string endTime)
-        //{
-        //    string urlParams = $"?orgId={_AppUser.OrgId}&groupId={groupId}&beginTime={beginTime + " 00:00:00"}&endTime={endTime + " 23:59:59"}";
-        //    string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/TalkRecordStat" + urlParams;
-        //    var talkcountRanks = APIInvoker.Get<List<Models.Performance.TalkcountRank>>(apiUrl);
-        //    if (talkcountRanks != null) {
-        //        talkcountRanks = talkcountRanks.OrderByDescending(x => x.Count).ToList();
-        //    }
-        //    return talkcountRanks;
-        //}
-
         #region 获取组下每个成员在某时间区间内的签约记录
         // 获取组下每个成员在某时间区间内的签约记录
         public List<Models.Performance.SignRank> GetGroupMemberSignRecords(int groupId, string startDate, string endDate)

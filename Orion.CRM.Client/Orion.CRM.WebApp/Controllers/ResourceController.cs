@@ -101,13 +101,7 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
-
-            //viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
-            //viewModel.StatusList = AppDTO.GetStatusFromJson();
-            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
-            //viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
-            //viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -121,32 +115,6 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Resource/List",
                 QueryString = Request.QueryString.Value
             };
-
-            //#region 处理默认值项目(ProjectId，该值为必选)
-            //if (string.IsNullOrEmpty(Request.QueryString.Value)) {
-            //    if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
-            //        if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-            //            pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
-            //            param.pid = viewModel.ProjectList.FirstOrDefault().Id;
-            //        }
-            //    }
-            //    else {
-            //        pageOption.QueryString = "?pid=" + viewModel.ProjectId;
-            //        param.pid = viewModel.ProjectId;
-            //    }
-            //}
-            //#endregion
-
-            //#region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
-            //if (param.pid != null && param.pid > 0) {
-            //    string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
-            //    viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
-            //    if (param.gid != null && param.gid > 0) {
-            //        string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
-            //        viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
-            //    }
-            //}
-            //#endregion
 
             ViewBag.PagerOption = pageOption;
 
@@ -171,13 +139,7 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
-
-            //viewModel.ProjectList = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
-            //viewModel.StatusList = AppDTO.GetStatusFromJson();
-            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
-            //viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
-            //viewModel.ProjectId = _AppUser.ProjectId;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -191,32 +153,6 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Resource/List",
                 QueryString = Request.QueryString.Value
             };
-
-            //#region 处理默认值项目(ProjectId，该值为必选)
-            //if (string.IsNullOrEmpty(Request.QueryString.Value)) {
-            //    if (viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
-            //        if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-            //            pageOption.QueryString = "?pid=" + viewModel.ProjectList.FirstOrDefault().Id;
-            //            param.pid = viewModel.ProjectList.FirstOrDefault().Id;
-            //        }
-            //    }
-            //    else {
-            //        pageOption.QueryString = "?pid=" + viewModel.ProjectId;
-            //        param.pid = viewModel.ProjectId;
-            //    }
-            //}
-            //#endregion
-
-            //#region 如果查询参数中已有groupId和salerId，则为其加载下拉列表数据
-            //if (param.pid != null && param.pid > 0) {
-            //    string apiGroup = _AppConfig.WebApiHost + "api/Group/GetGroupsByProjectId?projectId=" + param.pid;
-            //    viewModel.GroupList = APIInvoker.Get<List<Models.Group.Group>>(apiGroup);
-            //    if (param.gid != null && param.gid > 0) {
-            //        string apiUser = _AppConfig.WebApiHost + "api/AppUser/GetAllUsersByGroupId?groupId=" + param.gid;
-            //        viewModel.SalerList = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUser);
-            //    }
-            //}
-            //#endregion
 
             ViewBag.PagerOption = pageOption;
 

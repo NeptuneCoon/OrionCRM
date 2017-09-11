@@ -60,10 +60,6 @@ namespace Orion.CRM.DataAccess
 
             SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("TalkRecord", "TalkRecordStat").Clone();
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
-            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@OrgId", orgId.ToString());
-            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@ProjectId", projectId.ToString());
-            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@BeginTime", "'" + beginTime + "'");
-            //mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("@EndTime", "'" + endTime + "'");
 
             var queryResult = SqlMapHelper.GetSqlMapResult<Entity.TalkcountRank>(mapDetail, parameters);
             return queryResult;
