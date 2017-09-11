@@ -10,6 +10,8 @@ namespace Orion.CRM.WebApp.Models.Account
         public int Id { get; set; }
         public string UserName { get; set; }
         public string RealName { get; set; }
+        public int RoleId { get; set; }
+        public string RoleName { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string Wechat { get; set; }
