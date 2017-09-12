@@ -49,6 +49,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// 资源操作权限
         /// </summary>
         public List<Models.Role.RoleDataPermission> RoleResourceHandle { get; set; }
+        /// <summary>
+        /// 其他权限
+        /// </summary>
+        public List<Models.Role.RoleDataPermission> RoleOtherPermissions { get; set; }
 
         #endregion
         

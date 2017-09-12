@@ -31,11 +31,11 @@
                                         <tr>
                                             <td>@mainMenu.MenuName</td>
                                         </tr>
-                                        @{ var childMenus = Model.MenuList.Where(x => x.Parent == mainMenu.Id);}
+                                        @{ var childMenus = Model.MenuList.Where(x => x.Parent == mainMenu.Id).OrderBy(x => x.SortNo);}
                                         @if (childMenus != null) {
                                             <tr>
                                                 <td>
-                                                    <ul class="ul-menulist">
+                                                    <ul class="ul-menulist cck">
                                                         @foreach (var child in childMenus) {
                                                             <li>
                                                                 <label>
@@ -95,7 +95,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <ul class="ul-menulist">
+                                    <ul class="ul-menulist cck">
                                         <li>
                                             <label>
                                                 <input type="checkbox" name="ResourceHandle" value="5" /> 资源查询
@@ -114,6 +114,20 @@
                                         <li>
                                             <label>
                                                 <input type="checkbox" name="ResourceHandle" value="8" /> 资源编辑
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>其他</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="ul-menulist cck">
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" name="Other" value="9" /> 客户电话
                                             </label>
                                         </li>
                                     </ul>
@@ -139,6 +153,12 @@
         .ul-menulist > li {
             float: left;
             padding: 3px 10px;
+        }
+        .cck > li > label{
+            display:flex;
+        }
+        .cck > li > label > input {
+            margin-right:5px;
         }
     </style>
 }

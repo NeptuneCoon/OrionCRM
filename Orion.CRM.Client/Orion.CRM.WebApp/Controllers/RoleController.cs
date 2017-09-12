@@ -119,21 +119,36 @@ namespace Orion.CRM.WebApp.Controllers
                     // 2.2.1获取资源可见范围
                     rolePermissions.Add(new
                     {
-                        RoleId = viewModel.Id,
+                        RoleId = primaryId,
                         PermissionCategoryId = 1,
                         PermissionId = Convert.ToInt32(Request.Form["ResourceVisible"]),
                         CreateTime = DateTime.Now
                     });
                     // 2.2.2获取资源操作权限
-                    string permissionIds = Request.Form["ResourceHandle"];
-                    if (!string.IsNullOrEmpty(permissionIds)) {
-                        string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    string handlePermissionIds = Request.Form["ResourceHandle"];//资源操作权限
+                    if (!string.IsNullOrEmpty(handlePermissionIds)) {
+                        string[] permissionIdArr = handlePermissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (permissionIdArr.Length > 0) {
                             foreach (var permissionId in permissionIdArr) {
                                 rolePermissions.Add(new
                                 {
-                                    RoleId = viewModel.Id,
+                                    RoleId = primaryId,
                                     PermissionCategoryId = 2,
+                                    PermissionId = permissionId,
+                                    CreateTime = DateTime.Now
+                                });
+                            }
+                        }
+                    }
+                    string otherPermissionIds = Request.Form["Other"];//其他权限
+                    if (!string.IsNullOrEmpty(otherPermissionIds)) {
+                        string[] permissionIdArr = otherPermissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (permissionIdArr.Length > 0) {
+                            foreach (var permissionId in permissionIdArr) {
+                                rolePermissions.Add(new
+                                {
+                                    RoleId = primaryId,
+                                    PermissionCategoryId = 3,
                                     PermissionId = permissionId,
                                     CreateTime = DateTime.Now
                                 });
@@ -259,9 +274,9 @@ namespace Orion.CRM.WebApp.Controllers
                         CreateTime = DateTime.Now
                     });
                     // 2.2.2获取资源操作权限
-                    string permissionIds = Request.Form["ResourceHandle"];
-                    if (!string.IsNullOrEmpty(permissionIds)) {
-                        string[] permissionIdArr = permissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    string handlePermissionIds = Request.Form["ResourceHandle"];//资源操作权限
+                    if (!string.IsNullOrEmpty(handlePermissionIds)) {
+                        string[] permissionIdArr = handlePermissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (permissionIdArr.Length > 0) {
                             foreach (var permissionId in permissionIdArr) {
                                 rolePermissions.Add(new
@@ -274,9 +289,24 @@ namespace Orion.CRM.WebApp.Controllers
                             }
                         }
                     }
+                    string otherPermissionIds = Request.Form["Other"];//其他权限
+                    if (!string.IsNullOrEmpty(otherPermissionIds)) {
+                        string[] permissionIdArr = otherPermissionIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (permissionIdArr.Length > 0) {
+                            foreach (var permissionId in permissionIdArr) {
+                                rolePermissions.Add(new
+                                {
+                                    RoleId = viewModel.Id,
+                                    PermissionCategoryId = 3,
+                                    PermissionId = permissionId,
+                                    CreateTime = DateTime.Now
+                                });
+                            }
+                        }
+                    }
 
                     // 2.3插入数据库
-                    if(rolePermissions != null && rolePermissions.Count > 0) {
+                    if (rolePermissions != null && rolePermissions.Count > 0) {
                         string rolePermissionInsertApiUrl = _AppConfig.WebApiHost + "api/DataPermission/RoleDataPermissionBatchInsert";
                         bool rpInsertResult = APIInvoker.Post<bool>(rolePermissionInsertApiUrl, rolePermissions);
                     }
