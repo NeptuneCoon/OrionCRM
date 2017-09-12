@@ -34,13 +34,7 @@
                     <tr>
                         <td style="width:70px">客户姓名</td>
                         <td style="width:220px">
-                            @if (Model.ResourceEdit || string.IsNullOrEmpty(Model.CustomerName) || Model.CustomerName == "未知") { 
-                                <input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" />
-                            }
-                            else {
-                                @Model.CustomerName
-                                <input type="hidden" asp-for="@Model.CustomerName" />
-                            }
+                            <input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" />
                         </td>
                         <td style="width:70px">手机</td>
                         <td style="width:220px">
