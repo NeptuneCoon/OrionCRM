@@ -235,5 +235,54 @@ namespace Orion.CRM.WebApp.App_Data
             Models.AppUser.AppUserViewModel appUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(apiUrl);
             return appUser;
         }
+
+        /// <summary>
+        /// 加密联系信息
+        /// </summary>
+        /// <param name="contactInfo">[手:{resource.Mobile}],[微信:{resource.Wechat}]</param>
+        /// <returns></returns>
+        public static string EncryptContactInfo(string contactInfo)
+        {
+            if (string.IsNullOrEmpty(contactInfo)) return contactInfo;
+
+            int p1 = contactInfo.IndexOf(":");
+            if (p1 > 0) {
+                string half2 = contactInfo.Substring(p1 + 1);
+
+                if (half2.Length > 3) {
+                    string beginText = half2.Substring(0, 3);
+                    
+                    string encryptedText = contactInfo.Substring(0, p1 + 1) + beginText + new string('*', contactInfo.Length - p1 - beginText.Length -1 - 1) + "]";
+                    return encryptedText;
+                }
+                else {
+                    string encryptedText = contactInfo.Substring(0, p1 + 1) + new string('*', contactInfo.Length - p1 - 1 - 1) + "]";
+                    return encryptedText;
+                }
+            }
+            return contactInfo;
+        }
+
+        /// <summary>
+        /// 加密手机号码或座机号码
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        public static string EncryptPhone(string phone)
+        {
+            if (string.IsNullOrEmpty(phone)) return phone;
+
+            if(phone.Length == 11) {
+                return phone.Substring(0, 3) + "********";
+            }
+            else {
+                if (phone.Length > 3) {
+                    return phone.Substring(0, 3) + new string('*', phone.Length - 3);
+                }
+                else {
+                    return new string('*', phone.Length);
+                }
+            }
+        }
     }
 }

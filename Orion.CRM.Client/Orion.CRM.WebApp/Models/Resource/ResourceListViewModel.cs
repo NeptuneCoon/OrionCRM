@@ -41,18 +41,18 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<App_Data.SelectItem> TalkCountList { get; set; }
 
         /// <summary>
-        /// 资源可见范围(4=公司资源，3=本项目资源，2=本组资源，1=本人资源)
+        /// 资源可见范围<>(4=公司资源，3=本项目资源，2=本组资源，1=本人资源)
         /// </summary> 
         public int RoleResourceVisible { get; set; }
+        /// <summary>
+        /// 客户电话是否可见(True=可见，Flase=隐藏)
+        /// </summary>
+        public bool RoleResourcePhoneVisible { get; set; }
 
         /// <summary>
         /// 资源操作权限
         /// </summary>
         public List<Models.Role.RoleDataPermission> RoleResourceHandle { get; set; }
-        /// <summary>
-        /// 其他权限
-        /// </summary>
-        public List<Models.Role.RoleDataPermission> RoleOtherPermissions { get; set; }
 
         #endregion
         
