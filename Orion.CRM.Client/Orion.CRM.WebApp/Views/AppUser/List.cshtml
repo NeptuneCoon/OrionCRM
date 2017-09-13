@@ -59,7 +59,7 @@
                     <input type="text" placeholder="用户姓名" class="input" id="key" name="key" maxlength="20" value="@Model.Params.key" />
                     <label style="margin-left:10px">业务组</label>
                     <select class="select" id="gid" name="gid">
-                        <option>请选择</option>
+                        <option value="">请选择</option>
                         @if (Model.Groups != null && Model.Groups.Count > 0) {
                             foreach (var group in Model.Groups) {
                                 if (group.Id == Model.Params.gid) {
@@ -73,7 +73,7 @@
                     </select>
                     <label style="margin-left:10px">角色</label>
                     <select class="select" id="roleid" name="roleid" style="width:120px">
-                        <option>请选择</option>
+                        <option value="">请选择</option>
                         @if (Model.Roles != null && Model.Roles.Count > 0) {
                             foreach (var role in Model.Roles) {
                                 if (role.Id == Model.Params.roleid) {
