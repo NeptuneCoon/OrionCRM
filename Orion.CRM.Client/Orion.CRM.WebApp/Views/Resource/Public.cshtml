@@ -33,7 +33,7 @@
     </style>
 }
 
-<div class="panel panel-default span9">
+<div class="panel panel-default span12">
     <div class="panel-heading">
         <h3 class="panel-title">公共资源</h3>
     </div>
@@ -79,6 +79,7 @@
                     <th>业务员</th>
                     <th>添加人</th>
                     <th>项目</th>
+                    <th>初次录入</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -102,6 +103,7 @@
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName</td>
+                            <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
                                 <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
                             </td>
@@ -110,7 +112,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="12" style="text-align:center">没有数据</td>
+                        <td colspan="13" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>

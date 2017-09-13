@@ -34,7 +34,7 @@
                     <tr>
                         <td style="width:70px">客户姓名</td>
                         <td style="width:220px">
-                            <input type="text" asp-for="@Model.CustomerName" class="input" maxlength="15" />
+                            <input type="text" asp-for="@Model.CustomerName" class="input" maxlength="20" />
                         </td>
                         <td style="width:70px">手机</td>
                         <td style="width:220px">
@@ -163,11 +163,11 @@
                     <tr>
                         <td>其他说明</td>
                         <td colspan="3">
-                            <textarea asp-for="@Model.Remark" style="width:300px;height:50px" class="textarea"></textarea>
+                            <textarea asp-for="@Model.Remark" style="width:396px;height:80px" class="textarea"></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4" style="text-align:center;padding-top:15px">
+                        <td colspan="4" style="text-align:center;padding-top:0px">
                             <input type="button" value="保存信息" onclick="customerSave()" class="input" style="cursor:pointer" />
                         </td>
                     </tr>

@@ -310,6 +310,7 @@
                     <th>业务员</th>
                     <th>添加人</th>
                     <th>项目</th>
+                    <th>初次录入</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -333,6 +334,7 @@
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
+                            <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
                                 @if (resource.Status != 5) { 
                                     <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> @:|
@@ -344,7 +346,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="12" style="text-align:center">没有数据</td>
+                        <td colspan="13" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
