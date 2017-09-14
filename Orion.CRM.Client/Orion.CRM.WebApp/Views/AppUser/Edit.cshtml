@@ -156,7 +156,7 @@
             
         });
 
-        function projectChange(callback) {
+        function projectChange() {
             var projectId = $("#ProjectId").find("option:selected").val();
             $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
                 $("#GroupId option").not(":first").remove();
@@ -166,7 +166,6 @@
                         var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
                         $('#GroupId').append(option);
                     }
-                    callback();
                 }
             });
         }
