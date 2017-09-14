@@ -431,8 +431,8 @@
     </div>
 </div>
 
-<!--打标签-->
-<div class="modal modal-webpi" id="panelTag" style="width:500px;display:none" param-id="">
+<!--资源打标签-->
+<div class="modal modal-webpi" id="panelTag" style="width:550px;display:none" param-id="">
     <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
     <div class="modal-contents">
         <h2>资源打标签</h2>
@@ -444,7 +444,7 @@
                 <div style="clear:both"></div>
                 <div id="tagTips" style="padding:3px;color:red;display:none">请先选择一个标签。</div>
                 <div style="margin-top:30px">
-                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceTag()" />
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceTag()" id="btnAttachTag" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
@@ -752,7 +752,14 @@
                             item += '</li>';
 
                             $('#ul-tags').append(item);
+                            $('#btnAttachTag').removeAttr("disabled");
                         }
+                    }
+                    else {
+                        li = '<li>标签可以帮助你对资源进行快速分类、整理，从而提高工作效率。<br/>你还没有标签，<a href="/Tag/List" style="text-decoration:underline">快去创建</a>吧~</li>';
+                        $('#ul-tags').append(li);
+
+                        $('#btnAttachTag').attr("disabled", "disabled");
                     }
                 });
                 modalShow($('#panelTag'));
