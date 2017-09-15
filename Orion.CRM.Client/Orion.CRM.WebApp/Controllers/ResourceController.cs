@@ -26,20 +26,6 @@ namespace Orion.CRM.WebApp.Controllers
         // 资源列表
         public IActionResult List(ResourceSearchParams param)
         {
-            string text1 = AppDTO.EncryptContactInfo("[手:15827494687]");
-            string text2 = AppDTO.EncryptContactInfo("[固定:010-351235123]");
-            string text3 = AppDTO.EncryptContactInfo("[Email:469225467@qq.com]");
-            string text4 = AppDTO.EncryptContactInfo("[微信:a]");
-            string text10 = AppDTO.EncryptContactInfo("[微信:ab]");
-            string text11 = AppDTO.EncryptContactInfo("[微信:abc]");
-            string text12 = AppDTO.EncryptContactInfo("[微信:abcd]");
-
-            string text5 = AppDTO.EncryptPhone("18612597112");
-            string text6 = AppDTO.EncryptPhone("010-123123123");
-            string text7 = AppDTO.EncryptPhone("1");
-            string text8 = AppDTO.EncryptPhone("12");
-            string text9 = AppDTO.EncryptPhone("123");
-
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
             viewModel.Params = param;
 
@@ -50,7 +36,10 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
             viewModel.RoleResourceVisible = GetRoleResourceVisible(roleDataPermissions);
-            viewModel.RoleResourceHandle = GetRoleResourceHandle(roleDataPermissions);
+            //viewModel.RoleResourceHandle = GetRoleResourceHandle(roleDataPermissions);
+            viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
+            viewModel.CanAssign = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 6) != null;
+            viewModel.CanBatchAssign = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 7) != null;
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
 
@@ -124,6 +113,7 @@ namespace Orion.CRM.WebApp.Controllers
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
+            viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -134,7 +124,7 @@ namespace Orion.CRM.WebApp.Controllers
                 PageIndex = param.pi,
                 PageSize = param.ps,
                 TotalCount = 0,
-                RouteUrl = "/Resource/List",
+                RouteUrl = "/Resource/Public",
                 QueryString = Request.QueryString.Value
             };
 
@@ -169,6 +159,7 @@ namespace Orion.CRM.WebApp.Controllers
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
+            viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -179,7 +170,7 @@ namespace Orion.CRM.WebApp.Controllers
                 PageIndex = param.pi,
                 PageSize = param.ps,
                 TotalCount = 0,
-                RouteUrl = "/Resource/List",
+                RouteUrl = "/Resource/Unvalued",
                 QueryString = Request.QueryString.Value
             };
 
@@ -203,13 +194,14 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
             viewModel.StatusList = AppDTO.GetStatusFromJson();
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
             viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
+            viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
@@ -220,7 +212,7 @@ namespace Orion.CRM.WebApp.Controllers
                 PageIndex = param.pi,
                 PageSize = param.ps,
                 TotalCount = 0,
-                RouteUrl = "/Resource/List",
+                RouteUrl = "/Resource/Signed",
                 QueryString = Request.QueryString.Value
             };
 
@@ -304,6 +296,10 @@ namespace Orion.CRM.WebApp.Controllers
             if (_AppUser.ProjectId != null && _AppUser.ProjectId > 0) {
                 ViewBag.GroupList = AppDTO.GetGroupsByProjectId((int)_AppUser.ProjectId);
             }
+            // 资源查询权限
+            var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
+            ViewBag.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
+
             return View();
         }
 
@@ -484,8 +480,13 @@ namespace Orion.CRM.WebApp.Controllers
         // 客户查询工具
         public IActionResult Search(CustomerSearchViewModel viewModel)
         {
+            // 资源查询权限
+            var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
+            ViewBag.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
+
             if (string.IsNullOrEmpty(viewModel.key)) return View(viewModel);
 
+            // 执行查询
             string resourceApiUrl = _AppConfig.WebApiHost + "api/Resource/GetResourceByNameMobileWechatQQ?key=" + viewModel.key + "&orgId=" + _AppUser.OrgId;
             Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
 
@@ -518,7 +519,6 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
 
                 // 客户电话权限
-                var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
                 bool phoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
                 if (!phoneVisible) {
                     viewModel.Mobile = AppDTO.EncryptPhone(viewModel.Mobile);

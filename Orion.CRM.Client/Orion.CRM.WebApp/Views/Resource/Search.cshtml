@@ -160,7 +160,7 @@
         <form action="/Resource/Search" method="get">
             <div class="form-inline">
                 <input type="text" style="width:300px" asp-for="@Model.key" placeholder="姓名/电话/微信/QQ" />
-                <button type="submit" class="btn btn-default">
+                <button type="submit" class="btn btn-default" @(ViewBag.CanSearch ? "" : "disabled=disabled")>
                     <i class="icon-search"></i> 查询
                 </button>
             </div>

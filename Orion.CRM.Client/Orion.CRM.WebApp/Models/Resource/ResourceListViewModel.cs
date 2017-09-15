@@ -54,6 +54,19 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// </summary>
         public List<Models.Role.RoleDataPermission> RoleResourceHandle { get; set; }
 
+        /// <summary>
+        /// 资源查询权限
+        /// </summary>
+        public bool CanSearch { get; set; }
+        /// <summary>
+        /// 资源分配权限
+        /// </summary>
+        public bool CanAssign { get; set; }
+        /// <summary>
+        /// 资源批量分配权限
+        /// </summary>
+        public bool CanBatchAssign { get; set; }
+
         #endregion
         
 

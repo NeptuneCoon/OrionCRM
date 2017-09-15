@@ -147,7 +147,7 @@
                     </td>
                 </tr>
             </table>
-            <button type="submit" class="btn btn-primary" style="margin-top:12px" id="btnAssign" onclick="return checkForm()">开始分配</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:12px" id="btnAssign" onclick="return checkForm()" @(ViewBag.CanSearch ? "" : "disabled=disabled")>开始分配</button>
         </div>
         <!--资源分配情况-->
         <input type="hidden" id="hidAssignInfo" name="hidAssignInfo" />

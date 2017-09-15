@@ -147,17 +147,19 @@
                     </select>
 
                     <div style="float:right">
-                        <button type="submit" class="btn btn-default btn-small" >
+                        <button type="submit" class="btn btn-default btn-small" @(Model.CanSearch ? "" : "disabled=disabled") >
                             <i class="icon-search"></i> 查询
                         </button>
-                        @*<button type="button" class="btn btn-default">批量分配</button>*@
+                        
                         <div class="btn-group">
                             <a class="btn btn-small dropdown-toggle"  data-toggle="dropdown" href="#">
-                                操作
+                                更多操作
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
+                                @if(Model.CanBatchAssign) {
+                                    <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
+                                }
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
@@ -166,7 +168,7 @@
                 <div class="form-inline" style="margin-top:12px">
                     <select name="source" id="source" class="search-select">
                         <option value="">来源</option>
-                        @if (Model.SourceList != null) {
+                        @if(Model.SourceList != null) {
                             foreach (var source in Model.SourceList) {
                                 if (source.Id == Model.Params.source) {
                                     <option value="@source.Id" selected="selected">@source.SourceName</option>
@@ -180,7 +182,7 @@
                     @if (Model.RoleResourceVisible == 4 || Model.RoleResourceVisible == 3 || Model.RoleResourceVisible == 2) {
                         <select name="assign" id="assign" class="search-select">
                             <option value="">分配状态</option>
-                            @if (Model.Params.assign == 1) {
+                            @if(Model.Params.assign == 1) {
                                 <option value="1" selected="selected">客服未分</option>
                             }
                             else {
@@ -256,17 +258,19 @@
                     </select>
 
                     <div style="float:right">
-                        <button type="submit" class="btn btn-default btn-small">
+                        <button type="submit" class="btn btn-default btn-small" @(Model.CanSearch ? "" : "disabled=disabled")>
                             <i class="icon-search"></i> 查询
                         </button>
-                        @*<button type="button" class="btn btn-default">批量分配</button>*@
+                        
                         <div class="btn-group">
                             <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
-                                操作
+                                更多操作
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
+                                @if (Model.CanBatchAssign) {
+                                    <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
+                                }
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
                             </ul>
                         </div>
@@ -336,7 +340,7 @@
                             <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
                             <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                @if (resource.Status != 5) { 
+                                @if (resource.Status != 5 && Model.CanSearch) { 
                                     <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> @:|
                                 }
                                 <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>

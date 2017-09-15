@@ -46,7 +46,7 @@
                 <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="姓名" />
                 <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />到
                 <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
-                <button type="submit" class="btn btn-default">
+                <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled")>
                     <i class="icon-search"></i> 查询
                 </button>
             </div>
@@ -60,7 +60,6 @@
                     <th>最后时间</th>
                     <th>来源</th>
                     <th>状态</th>
-                    <th>意向</th>
                     <th>洽谈数</th>
                     <th>业务员</th>
                     <th>添加人</th>
@@ -79,7 +78,6 @@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td><label style="color:green">@resource.StatusText</label></td>
-                            <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
@@ -89,7 +87,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="11" style="text-align:center">没有数据</td>
+                        <td colspan="10" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>

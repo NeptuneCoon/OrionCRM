@@ -58,6 +58,8 @@ namespace Orion.CRM.WebApp.App_Data
             }
             sb.Append("</ul>");
 
+            //sb.Append($"<div>{pageIndex}/{pageMax}</div>");
+
             output.Content.SetHtmlContent(sb.ToString());
         }
 
