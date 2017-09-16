@@ -41,7 +41,7 @@
 		      left join AppUser B on A.UserId=B.Id
 		      left join UserGroup C on A.UserId=C.UserId
           left join UserProject D on A.UserId=D.UserId
-		      where B.OrgId=@OrgId and (D.ProjectId=@ProjectId or D.ProjectId is null) and A.CreateTime between @BeginTime and @EndTime $SqlWhere
+		      where B.OrgId=@OrgId and A.Type=0 and (D.ProjectId=@ProjectId or D.ProjectId is null) and A.CreateTime between @BeginTime and @EndTime $SqlWhere
 		      group by A.UserId,B.RealName
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
