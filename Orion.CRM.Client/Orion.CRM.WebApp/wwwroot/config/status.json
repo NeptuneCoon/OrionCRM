@@ -16,6 +16,10 @@
     "value": 4
   },
   {
+    "displayText": "已来访",
+    "value": 6
+  },
+  {
     "displayText": "已签约",
     "value": 5
   }
