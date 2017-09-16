@@ -375,18 +375,18 @@ namespace Orion.CRM.WebApp.Controllers
             if (resource != null) { 
                 // 客户(资源)信息
                 viewModel.ResourceId = id;
-                viewModel.CustomerName = resource.CustomerName;
-                viewModel.Mobile = resource.Mobile;
-                viewModel.QQ = resource.QQ;
-                viewModel.Wechat = resource.Wechat;
-                viewModel.Tel = resource.Tel;
+                viewModel.CustomerName = resource.CustomerName?.Trim();
+                viewModel.Mobile = resource.Mobile?.Trim();
+                viewModel.QQ = resource.QQ?.Trim();
+                viewModel.Wechat = resource.Wechat?.Trim();
+                viewModel.Tel = resource.Tel?.Trim();
                 viewModel.Email = resource.Email;
                 viewModel.SourceFrom = resource.SourceFrom;
                 viewModel.Status = resource.Status;
                 viewModel.Inclination = resource.Inclination;
                 viewModel.Sex = resource.Sex;
                 viewModel.Address = resource.Address;
-                viewModel.Remark = resource.Remark;
+                viewModel.Remark = resource.Remark?.Trim();
                 // 便签
                 string apiNote = _AppConfig.WebApiHost + "api/ResourceNote/GetNotesByResourceId?resourceId=" + id;
                 viewModel.ResourceNotes = APIInvoker.Get<List<Models.Resource.ResourceNote>>(apiNote);
@@ -441,17 +441,21 @@ namespace Orion.CRM.WebApp.Controllers
                     }
 
                     // 资源属性
-                    resource.CustomerName = viewModel.CustomerName;
-                    resource.Mobile = viewModel.Mobile;
-                    resource.Wechat = viewModel.Wechat;
-                    resource.QQ = viewModel.QQ;
-                    resource.Tel = viewModel.Tel;
+                    resource.CustomerName = viewModel.CustomerName?.Trim();
+                    if (viewModel.Mobile == null || !viewModel.Mobile.Contains("*")) {
+                        resource.Mobile = viewModel.Mobile?.Trim();
+                    }
+                    resource.Wechat = viewModel.Wechat?.Trim();
+                    resource.QQ = viewModel.QQ?.Trim();
+                    if(viewModel.Tel == null || !viewModel.Tel.Contains("*")) { 
+                        resource.Tel = viewModel.Tel?.Trim();
+                    }
                     resource.SourceFrom = viewModel.SourceFrom;
                     resource.Sex = viewModel.Sex;
                     resource.Inclination = viewModel.Inclination;
                     resource.Address = viewModel.Address;
                     resource.Status = viewModel.Status;
-                    resource.Remark = viewModel.Remark;
+                    resource.Remark = viewModel.Remark?.Trim();
                     resource.UpdateTime = DateTime.Now;
 
                     // 更新
@@ -573,12 +577,12 @@ namespace Orion.CRM.WebApp.Controllers
         {
             var resource = new
             {
-                CustomerName = viewModel.CustomerName,
-                Message = viewModel.Message,
-                Mobile = viewModel.Mobile,
-                Tel = viewModel.Tel,
-                Wechat = viewModel.Wechat,
-                QQ = viewModel.QQ,
+                CustomerName = viewModel.CustomerName?.Trim(),
+                Message = viewModel.Message?.Trim(),
+                Mobile = viewModel.Mobile?.Trim(),
+                Tel = viewModel.Tel?.Trim(),
+                Wechat = viewModel.Wechat?.Trim(),
+                QQ = viewModel.QQ?.Trim(),
                 Email = viewModel.Email,
                 Address = viewModel.Address,
                 Inclination = viewModel.Inclination,
@@ -586,7 +590,7 @@ namespace Orion.CRM.WebApp.Controllers
                 SourceFrom = viewModel.SourceFrom,
                 Status = 3,
                 AppendUserId = _AppUser.Id,
-                Remark = viewModel.Remark,
+                Remark = viewModel.Remark?.Trim(),
                 CreateTime = DateTime.Now,
                 UpdateTime = DateTime.Now,
                 DeleteFlag = 0
