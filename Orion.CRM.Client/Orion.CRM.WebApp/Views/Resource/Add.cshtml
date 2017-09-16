@@ -170,7 +170,7 @@
                         </div>
                     </div>
                     <div class="form-actions" style="padding-left:140px">
-                        <button type="submit" class="btn btn-primary" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmit" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
                         <a href="/Resource/List" class="btn">返回</a>
                     </div>
                 </form>
@@ -211,7 +211,9 @@
             });
         });
 
+        var submiting = false;
         function checkForm() {
+            if (submiting) return false;
             var result = true;
             var firstEmpty;
 
@@ -263,6 +265,7 @@
                 }
             }
 
+            if (result) submiting = true;
             return result;
         }
     </script>
