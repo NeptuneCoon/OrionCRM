@@ -518,6 +518,7 @@
                         var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
                         $('#gid').append(option);
                     }
+                    submit();
                 }
             });
         }
@@ -533,6 +534,7 @@
                         var option = '<option value="' + user.id + '">' + user.realName + '</option>';
                         $('#uid').append(option);
                     }
+                    submit();
                 }
             });
         }

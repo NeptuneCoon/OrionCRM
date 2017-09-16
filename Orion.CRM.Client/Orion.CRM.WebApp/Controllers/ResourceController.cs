@@ -43,6 +43,10 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
 
+            if(param.pid!=null && param.pid > 0) {
+                viewModel.GroupList = AppDTO.GetGroupsByProjectId((int)param.pid);
+            }
+
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;
 
