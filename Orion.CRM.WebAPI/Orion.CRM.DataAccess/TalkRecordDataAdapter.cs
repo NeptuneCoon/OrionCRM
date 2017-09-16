@@ -25,12 +25,15 @@ namespace Orion.CRM.DataAccess
             return identityId;
         }
 
-        public bool DeleteTalkRecord(int id)
+        public bool DeleteTalkRecord(int id, int resourceId)
         {
             if (id <= 0) return false;
 
-            SqlParameter param = new SqlParameter("@Id", id);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery("TalkRecord", "DeleteTalkRecord", param);
+            SqlParameter[] parameters = {
+                new SqlParameter("@Id", id),
+                new SqlParameter("@ResourceId", resourceId)
+            };
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("TalkRecord", "DeleteTalkRecord", parameters);
 
             return count > 0;
         }

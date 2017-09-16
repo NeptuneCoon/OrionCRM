@@ -195,7 +195,7 @@
                                     <td>@record.RealName</td>
                                     <td>@AppDTO.TalkWayCollection[record.TalkWay]</td>
                                     <td>@record.TalkResult</td>
-                                    <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id)" >删除</a></td>
+                                    <td style="text-align:center"><a href="javascript:;" onclick="delTalkRecord(@record.Id, this)" >删除</a></td>
                                 </tr>
                             }
                             else {
@@ -327,13 +327,17 @@
         /*
         * 删除洽谈记录
         */
-        function delTalkRecord(id) {
-            $.get("/Resource/DelTalkRecord", { "id": id }, function (result) {
+        function delTalkRecord(id, e) {
+            if ($(e).attr("disabled") == "disabled") return;
+            $(e).attr("disabled", "disabled");
+            var resourceId = $('#ResourceId').val();
+            $.get("/Resource/DelTalkRecord", { "id": id, "resourceId": resourceId }, function (result) {
                 if (result) {
                     window.location.reload();
                 }
                 else {
                     alert('抱歉，删除失败！');
+                    $(e).removeAttr("disabled");
                 }
             });
         }

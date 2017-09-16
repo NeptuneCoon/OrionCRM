@@ -881,10 +881,10 @@ namespace Orion.CRM.WebApp.Controllers
         #endregion
 
         #region 删除一条洽谈记录
-        public bool DelTalkRecord(int id)
+        public bool DelTalkRecord(int id, int resourceId)
         {
             if (id <= 0) return false;
-            string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/DeleteTalkRecord?id=" + id;
+            string apiUrl = _AppConfig.WebApiHost + "api/TalkRecord/DeleteTalkRecord?id=" + id + "&resourceId=" + resourceId;
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         } 

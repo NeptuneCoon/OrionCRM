@@ -15,7 +15,8 @@
     <SqlMapDetail>
       <SqlName>DeleteTalkRecord</SqlName>
       <OriginalSqlString>
-        delete from TalkRecord where Id=@Id
+        delete from TalkRecord where Id=@Id;
+        update Resource set TalkCount=TalkCount-1 where Id=@ResourceId;
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

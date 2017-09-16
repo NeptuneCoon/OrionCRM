@@ -21,9 +21,10 @@ namespace Orion.CRM.Application
             return identityId;
         }
 
-        public bool DeleteTalkRecord(int id)
+        public bool DeleteTalkRecord(int id, int resourceId)
         {
-            return adapter.DeleteTalkRecord(id);
+            bool result = adapter.DeleteTalkRecord(id, resourceId);
+            return result;
         }
 
         public IEnumerable<Entity.TalkRecord> GetRecordsByResourceId(int resourceId)

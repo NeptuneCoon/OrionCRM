@@ -28,10 +28,10 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
-        public APIDataResult DeleteTalkRecord(int id)
+        public APIDataResult DeleteTalkRecord(int id, int resourceId)
         {
             try {
-                bool res = service.DeleteTalkRecord(id);
+                bool res = service.DeleteTalkRecord(id, resourceId);
                 APIDataResult dataResult = new APIDataResult(200, res);
                 return dataResult;
             }
