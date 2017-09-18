@@ -60,7 +60,6 @@
                     <th>最后时间</th>
                     <th>来源</th>
                     <th>状态</th>
-                    <th>洽谈数</th>
                     <th>业务员</th>
                     <th>添加人</th>
                     <th>项目</th>
@@ -78,7 +77,6 @@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td><label style="color:green">@resource.StatusText</label></td>
-                            <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName</td>
@@ -87,7 +85,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="10" style="text-align:center">没有数据</td>
+                        <td colspan="9" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>

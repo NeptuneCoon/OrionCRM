@@ -126,6 +126,18 @@ namespace Orion.CRM.WebApp.App_Data
         }
 
         /// <summary>
+        /// 根据业务组Id获取组成员
+        /// </summary>
+        /// <param name="groupId">业务组Id</param>
+        /// <returns></returns>
+        public static List<Models.AppUser.AppUserViewModel> GetUsersByGroupId(int groupId)
+        {
+            string apiUrl = GetConfigurationSettings("WebApiHost") + "api/AppUser/GetAllUsersByGroupId?groupId=" + groupId;
+            List<Models.AppUser.AppUserViewModel> users = APIInvoker.Get<List<Models.AppUser.AppUserViewModel>>(apiUrl);
+            return users;
+        }
+
+        /// <summary>
         /// 从数据库中获取资源来源
         /// </summary>
         /// <param name="apiHost">API基地址</param>

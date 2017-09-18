@@ -45,7 +45,7 @@
                 <!--电话/微信/QQ-->
                 <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="电话/微信/QQ" style="width:140px" />
                 <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" />
-                <select name="talk" id="talk" class="search-select">
+                @*<select name="talk" id="talk" class="search-select">
                     <option value="">洽谈次数</option>
                     @if (Model.TalkCountList != null) {
                         foreach (var talk in Model.TalkCountList) {
@@ -57,7 +57,7 @@
                             }
                         }
                     }
-                </select>
+                </select>*@
                 <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />到
                 <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
                 
@@ -76,9 +76,7 @@
                     <th>最后时间</th>
                     <th>来源</th>
                     <th>状态</th>
-                    <th>意向</th>
                     <th>洽谈数</th>
-                    <th>业务员</th>
                     <th>添加人</th>
                     <th>项目</th>
                     <th>初次录入</th>
@@ -100,9 +98,7 @@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td>@resource.StatusText</td>
-                            <td>@resource.InclinationText</td>
                             <td>@resource.TalkCount</td>
-                            <td>@Html.Raw(resource.SaleMan == null ? "<span style='color:red'>未分配</span>" : resource.SaleMan)</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName</td>
                             <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
@@ -114,7 +110,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="13" style="text-align:center">没有数据</td>
+                        <td colspan="11" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>

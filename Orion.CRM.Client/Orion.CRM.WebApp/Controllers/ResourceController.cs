@@ -43,8 +43,11 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
 
-            if(param.pid!=null && param.pid > 0) {
+            if(param.pid != null && param.pid > 0) {
                 viewModel.GroupList = AppDTO.GetGroupsByProjectId((int)param.pid);
+            }
+            if(param.gid != null && param.gid > 0) {
+                viewModel.SalerList = AppDTO.GetUsersByGroupId((int)param.gid);
             }
 
             if (param.pi <= 0) param.pi = 1;
@@ -110,9 +113,9 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
             viewModel.StatusList = AppDTO.GetStatusFromJson();
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
+            //viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
@@ -156,9 +159,9 @@ namespace Orion.CRM.WebApp.Controllers
 
             viewModel.Params = param;
             viewModel.StatusList = AppDTO.GetStatusFromJson();
-            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
+            //viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
@@ -200,7 +203,7 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.StatusList = AppDTO.GetStatusFromJson();
             //viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
-            viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
+            //viewModel.TalkCountList = AppDTO.GetTalkCountFromJson();
 
             // 客户电话是否可见
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
@@ -468,8 +471,8 @@ namespace Orion.CRM.WebApp.Controllers
                     TempData["result"] = result;
 
                     // 如果将资源划入公共库、垃圾库、未分配则需要删除Resource和Group、User的绑定关系
-                    // 1=公共，2=垃圾，3=未分配，4=洽谈中，5=已签约
-                    if(viewModel.Status != 4 && viewModel.Status != 5) { 
+                    // 1=公共，2=垃圾，3=未分配，4=洽谈中，5=已签约，6=已来访
+                    if (viewModel.Status != 4 && viewModel.Status != 5 && viewModel.Status != 6) { 
                         // 删除ResourceGroup
                         string rgDeleteApiUrl = _AppConfig.WebApiHost + "api/Resource/DeleteResourceGroupByResourceIds?resourceIds=" + viewModel.ResourceId;
                         int count1 = APIInvoker.Get<int>(rgDeleteApiUrl);
