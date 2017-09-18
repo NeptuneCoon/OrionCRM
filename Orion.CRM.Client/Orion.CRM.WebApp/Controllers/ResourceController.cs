@@ -334,8 +334,14 @@ namespace Orion.CRM.WebApp.Controllers
                     int i = 0;
                     foreach (var item in assignInfoList) {
                         if (item.assignCount > 0) {
+                            /*
                             int spliceCount = Math.Min(i + item.assignCount, resources.Count);
                             var blocks =  resources.GetRange(i, spliceCount);//切出的数据块
+                            i += spliceCount;
+                            */
+                            //每次分配的数量都不能超过剩余数量(assignCount表示当前申请分配的数量，resources.Count-i表示剩余数量)
+                            int spliceCount = Math.Min(item.assignCount, resources.Count - i);//当次实际分配数量
+                            var blocks = resources.GetRange(i, spliceCount);//切出的数据块
                             i += spliceCount;
                             // 生成分配关系ResourceGroup
                             if(blocks != null && blocks.Count > 0) {
