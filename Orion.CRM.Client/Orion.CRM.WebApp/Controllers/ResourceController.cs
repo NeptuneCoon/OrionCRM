@@ -997,12 +997,12 @@ namespace Orion.CRM.WebApp.Controllers
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public int GetUserUnAssignedResourceCount()
-        {
-            string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetUserUnAssignedResourceCount?orgId=" + _AppUser.OrgId;
-            int count = APIInvoker.Get<int>(apiUrl);
-            return count;
-        }
+        //public int GetUserUnAssignedResourceCount()
+        //{
+        //    string apiUrl = _AppConfig.WebApiHost + "api/Resource/GetUserUnAssignedResourceCount?orgId=" + _AppUser.OrgId;
+        //    int count = APIInvoker.Get<int>(apiUrl);
+        //    return count;
+        //}
 
         /// <summary>
         /// 获取用户自定义的标签

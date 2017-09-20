@@ -342,7 +342,8 @@
         select A.ResourceId,A.OrgId,C.ProjectId from [ResourceOrganization] A
         left join [ResourceGroup] B on A.ResourceId=B.ResourceId
         left join [ResourceProject] C on A.ResourceId=C.ResourceId
-        where B.GroupId is null and C.ProjectId=@ProjectId
+        left join [Resource] D on A.ResourceId=D.Id
+        where B.GroupId is null and C.ProjectId=@ProjectId and D.Status=3
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -365,7 +366,8 @@
         select count(1) from [ResourceOrganization] A
         left join [ResourceGroup] B on A.ResourceId=B.ResourceId
         left join [ResourceProject] C on A.ResourceId=C.ResourceId
-        where B.GroupId is null and C.ProjectId=@ProjectId
+        left join [Resource] D on A.ResourceId=D.Id
+        where B.GroupId is null and C.ProjectId=@ProjectId and D.Status=3
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
@@ -377,7 +379,8 @@
       <OriginalSqlString>
         select * from [ResourceOrganization] A
         left join [ResourceUser] B on A.ResourceId=B.ResourceId
-        where B.UserId is null and A.OrgId=@OrgId
+        left join [Resource] C on A.ResourceId=C.Id
+        where B.UserId is null and A.OrgId=@OrgId and C.Status=3
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
