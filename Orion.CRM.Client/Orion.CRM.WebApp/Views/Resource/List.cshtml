@@ -349,17 +349,22 @@
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
                             <td @(resource.Status == 5 ?" style=color:green":"")>@resource.StatusText</td>
-                            <td>@resource.InclinationText</td>
+                            <td>@(string.IsNullOrEmpty(resource.InclinationText) ? "-" : resource.InclinationText)</td>
                             <td>@resource.TalkCount</td>
                             <td>@Html.Raw(resource.GroupId==0? "<span style='color:red'>客服未分</span>" : (resource.SaleMan == null ? "<span style='color:red'>组长未分</span>" : resource.SaleMan))</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
                             <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                @if (resource.Status != 5 && Model.CanSearch) { 
-                                    <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a> @:|
+                                @if (resource.Status != 5 && Model.CanAssign) { 
+                                    <a href="javascript:;" onclick="showAssignPanel(@resource.Id, '@resource.ProjectId')">分配</a>
                                 }
-                                <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
+                                @if (Model.CanDelete) { 
+                                    @:| <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
+                                }
+                                @if(!(resource.Status != 5 && Model.CanAssign) && !Model.CanDelete){
+                                    @:-
+                                }
                             </td>
                         </tr>
                     }

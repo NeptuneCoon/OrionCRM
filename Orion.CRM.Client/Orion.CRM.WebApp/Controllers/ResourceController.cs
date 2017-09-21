@@ -40,6 +40,7 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
             viewModel.CanAssign = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 6) != null;
             viewModel.CanBatchAssign = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 7) != null;
+            viewModel.CanDelete = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 10) != null;
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
             viewModel.ProjectId = _AppUser.ProjectId;
 
@@ -167,6 +168,7 @@ namespace Orion.CRM.WebApp.Controllers
             var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
             viewModel.RoleResourcePhoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
             viewModel.CanSearch = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 5) != null;
+            viewModel.CanDelete = roleDataPermissions?.FirstOrDefault(x => x.PermissionId == 10) != null;
 
             if (param.pi <= 0) param.pi = 1;
             param.ps = _AppConfig.PageSize;

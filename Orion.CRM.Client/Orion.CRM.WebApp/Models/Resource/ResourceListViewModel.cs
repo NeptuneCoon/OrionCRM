@@ -66,6 +66,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// 资源批量分配权限
         /// </summary>
         public bool CanBatchAssign { get; set; }
+        /// <summary>
+        /// 资源删除权限
+        /// </summary>
+        public bool CanDelete { get; set; }
 
         #endregion
         

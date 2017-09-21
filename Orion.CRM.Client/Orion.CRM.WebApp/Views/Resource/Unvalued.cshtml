@@ -100,8 +100,11 @@
                             <td>@resource.ProjectName</td>
                             <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                <a href="javascript:;" onclick="restoreConfirm(@resource.Id)">还原</a> |
-                                <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
+                                <a href="javascript:;" onclick="restoreConfirm(@resource.Id)">还原</a>
+                                
+                                @if (Model.CanDelete) { 
+                                    @:| <a href="javascript:;" onclick="deleteConfirm(@resource.Id)">删除</a>
+                                }
                             </td>
                         </tr>
                     }

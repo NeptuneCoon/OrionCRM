@@ -171,6 +171,17 @@
                                                 }
                                             </label>
                                         </li>
+                                        <li>
+                                            <label>
+                                                @{ var query10 = Model.RolePermissions?.FirstOrDefault(x => x.PermissionId == 10);}
+                                                @if (query10 == null) {
+                                                    @:<input type="checkbox" name="ResourceHandle" value="10" /> 资源删除
+                                                }
+                                                else {
+                                                    @:<input type="checkbox" name="ResourceHandle" value="10" checked="checked" /> 资源删除
+                                                }
+                                            </label>
+                                        </li>
                                     </ul>
                                 </td>
                             </tr>
