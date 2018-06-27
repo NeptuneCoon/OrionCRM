@@ -1,0 +1,132 @@
+﻿.container {
+    background-color: #F5F5F5;
+    color: #333;
+    line-height: 20px;
+    font-size: 14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.input{
+    border:1px solid #ccc;
+    border-radius:2px;
+    padding:4px 4px;
+    color:#555;
+}
+.select{
+    padding:3px 5px;
+    border-radius:2px;
+    min-width:100px;
+    color:#555;
+}
+.textarea {
+    border-radius: 2px;
+    width: 200px;
+    height: 40px;
+    color:#555;
+}
+.button {
+    cursor: pointer;
+    border: 1px solid #23B2E4;
+    border-radius: 2px;
+    padding: 3px 4px;
+    color: #fff;
+    background-color: #62C8EC;
+    background-repeat: repeat-x;
+}
+.button:hover {
+    border: 1px solid #00A5E0;
+    background-color: #2AB4E5;
+}
+a {
+    color: #1997c6;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+    color: #106382;
+    text-decoration: underline;
+}
+.title {
+    border-radius: 3px;
+    color: #fff;
+    cursor: default;
+    background-color: #00A5E0;
+    padding: 5px 8px;
+    width: 800px;
+}
+
+.content {
+    width:800px;
+    background-color:#fff;
+    /*margin: 10px 0px 15px 0px;*/
+    padding:5px 8px;
+    margin-bottom:15px;
+}
+
+.gradient {
+    background: -moz-linear-gradient(left, #00A5E0 0%, #ffffff 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00A5E0), color-stop(100%,#ffffff));
+    background: -webkit-linear-gradient(left, #00A5E0 0%,#ffffff 100%);
+    background: -o-linear-gradient(left, #00A5E0 0%,#ffffff 100%);
+    background: -ms-linear-gradient(left, #00A5E0 0%,#ffffff 100%);
+    background: linear-gradient(to right, #00A5E0 0%,#ffffff 100%);
+}
+
+/* 客户信息 */
+.table-customer {
+    border-collapse:collapse;
+}
+.table-customer>thead>tr>td{
+    padding:5px 3px;
+}
+.table-customer>thead>tr>th {
+    padding: 5px 3px;
+}
+.table-customer>tbody>tr>td {
+    padding: 5px 3px;
+}
+
+/* 洽谈记录 */
+.table-talk {
+    border-collapse:collapse;
+}
+.table-talk>thead>tr>td{
+    padding:5px 3px;
+}
+.table-talk>thead>tr>th {
+    padding: 5px 3px;
+}
+.table-talk>tbody>tr>td {
+    padding: 8px 3px;
+    border-bottom: 1px solid #ccc;
+}
+/*.table-talk>tbody>tr:last-child>td{
+    border-bottom:0px;
+}*/
+
+.close_page {
+    margin-left:2px;
+    color: #106382;
+    text-decoration: underline;
+}
+
+/* 警示框 */
+.self-alert {
+    /*background-color: #faebcc;*/
+    width: 800px;
+    padding: 5px 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    color: #468847;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.close-page {
+    width: 700px;
+    padding: 2px;
+    display: flex;
+    justify-content: flex-end;
+}
+.close-page a {
+    font-size: 13px;
+    text-decoration: underline;
+}

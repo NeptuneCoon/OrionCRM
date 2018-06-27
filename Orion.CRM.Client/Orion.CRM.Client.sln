@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.CRM.WebTools", "Orion.CRM.WebTools\Orion.CRM.WebTools.csproj", "{BEDA2D7F-DE6A-4DB3-9BB1-687C787509E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.CRM.WebApp", "Orion.CRM.WebApp\Orion.CRM.WebApp.csproj", "{79C8BA6D-9DAA-445E-AEBA-4574F94434EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.CRM.ConsoleApp", "Orion.CRM.ConsoleApp\Orion.CRM.ConsoleApp.csproj", "{E7B0D6C6-732D-4D07-BE75-234789804746}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BEDA2D7F-DE6A-4DB3-9BB1-687C787509E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEDA2D7F-DE6A-4DB3-9BB1-687C787509E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEDA2D7F-DE6A-4DB3-9BB1-687C787509E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEDA2D7F-DE6A-4DB3-9BB1-687C787509E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C8BA6D-9DAA-445E-AEBA-4574F94434EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C8BA6D-9DAA-445E-AEBA-4574F94434EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C8BA6D-9DAA-445E-AEBA-4574F94434EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C8BA6D-9DAA-445E-AEBA-4574F94434EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7B0D6C6-732D-4D07-BE75-234789804746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B0D6C6-732D-4D07-BE75-234789804746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B0D6C6-732D-4D07-BE75-234789804746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B0D6C6-732D-4D07-BE75-234789804746}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {05B25D01-F7D8-46BD-8A0B-5472FCF37A63}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,254 @@
+﻿@model Orion.CRM.WebApp.Models.Performance.TalkRecordStatViewModel
+@{
+    ViewData["Title"] = "Talkcount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/morris.chart/0.5.1/morris.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <link href="~/css/chart-extension-rank.css" rel="stylesheet" />
+    <style type="text/css">
+        .filter {
+            height: 30px;
+            line-height: 30px;
+            display: flex;
+            padding-left: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .select {
+            padding: 3px 5px;
+            border-radius: 2px;
+            min-width: 100px;
+            color: #555;
+        }
+
+        .date {
+            position: absolute;
+            left: 0px;
+            width: 100px;
+            padding: 4px 4px;
+            color: #555;
+        }
+
+        .start {
+            border: 1px solid #ccc;
+            border-top-left-radius: 2px !important;
+            border-bottom-left-radius: 2px !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .end {
+            border-top-right-radius: 2px !important;
+            border-bottom-right-radius: 2px !important;
+            border-top-left-radius: 0px !important;
+            border-bottom-left-radius: 0px !important;
+            border-left: 0px solid #ccc !important;
+        }
+
+        .icon-position {
+            position: absolute;
+            right: 0px;
+            top: 6px;
+            cursor: pointer
+        }
+    </style>
+}
+@section scripts{
+    <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
+    <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
+    <script src="~/assets/pikaday/pikaday.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 日历控件初始化
+            var picker_start_member = new Pikaday({
+                field: document.getElementById('startDate'),
+                format: 'YYYY-M-D',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年',
+                onSelect: function (selectedDate) {
+                    var endDate = $('#endDate').val();
+                    if (!endDate) {
+                        picker_end_member.show();
+                    }
+                }
+            });
+            var picker_end_member = new Pikaday({
+                field: document.getElementById('endDate'),
+                format: 'YYYY-M-D',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年'
+            });
+
+        });
+        function projectChange(e) {
+            var projectId = $(e).find("option:selected").val();
+            $.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (data) {
+                var group_select = $(e).parents(".filter").find("select").last();
+                $(group_select).find("option").not(":first").remove();
+
+                if (data && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var group = data[i];
+                        var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
+                        $(group_select).append(option);
+                    }
+                }
+                else {
+                    $(group_select).append('<option>没有业务组</option>');
+                }
+
+                submit_form();
+            });
+        }
+
+        var lastStartDate = "";
+        var lastEndDate = "";
+        function startDateBlur(e) {
+            var startDate = $(e).val();
+            if (startDate != lastStartDate) {
+                submit_form();
+            }
+
+            if ($('#startDate').val() && $('#endDate').val()) {
+                $('#spanTips').hide();
+            }
+        }
+        function endDateBlur(e) {
+            var endDate = $(e).val();
+            if (endDate != lastEndDate) {
+                submit_form();
+            }
+
+            if ($('#startDate').val() && $('#endDate').val()) {
+                $('#spanTips').hide();
+            }
+        }
+
+        function submit_form() {
+            var result = true;
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            if (!startDate) {
+                $('#spanTips').show();
+                result = false;
+                $('#startDate').focus();
+            }
+            else if (!endDate) {
+                $('#spanTips').show();
+                result = false;
+                $('#endDate').focus();
+            }
+
+            if (result) {
+                $('#spanTips').hide();
+                window.document.forms[0].submit();
+            }
+        }
+
+        window.onload = function () {
+            lastStartDate = $('#startDate').val();
+            lastEndDate = $('#endDate').val();
+        }
+    </script>
+}
+
+<h3>电话量统计</h3>
+
+
+<!--电话量排行-->
+<div class="row">
+    <div style="width:700px">
+        <div class="graph-container">
+            <span class="graph-mark">电话量排行</span>
+            <form method="get" action="/Performance/Talkcount">
+                <div class="filter">
+                    <select class="select" style="width:120px" id="projectId" name="projectId" onchange="projectChange(this)">
+                        @if (Model.ProjectList != null) {
+                            foreach (var project in Model.ProjectList) {
+                                @if(Context.Request.Query["projectId"] == project.Id.ToString()) { 
+                                    <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                }
+                                else {
+                                    <option value="@project.Id">@project.ProjectName</option>
+                                }
+                            }
+                        }
+                        else {
+                            <option value="">没有项目</option>
+                        }
+                    </select>
+
+                    <select class="select" style="width:120px;margin-left:10px" id="groupId" name="groupId" onchange="submit_form()">
+                        <option value="">全部</option>
+                        @if (Model.GroupList != null && Model.GroupList.Count > 0) {
+                            foreach (var group in Model.GroupList) {
+                                @if (Context.Request.Query["groupId"] == group.Id.ToString()) {
+                                    <option value="@group.Id" selected="selected">@group.GroupName</option>
+                                }
+                                else {
+                                    <option value="@group.Id">@group.GroupName</option>
+                                }
+                            }
+                        }
+                        else {
+                            <option value="">没有业务组</option>
+                        }
+                    </select>
+
+                    <div style="position:relative;width:110px;margin-left:10px">
+                        <input type="text" id="startDate" name="startDate" class="date start" value="@Model.StartDate" onblur="startDateBlur(this)" autocomplete="off" />
+                        <i class="icon-calendar icon-position"></i>
+                    </div>
+
+                    <span style="border:1px solid #ccc;padding:0px 6px;display:block">至</span>
+                    <div style="position:relative;width:110px">
+                        <input type="text" id="endDate" name="endDate" class="date end" value="@Model.EndDate" onblur="endDateBlur(this)" autocomplete="off" />
+                        <i class="icon-calendar icon-position"></i>
+                    </div>
+                </div>
+                <div style="padding-left:20px;color:red;display:none" id="spanTips">您必须指定日期。</div>
+            </form>
+            <div id="saler" style="padding:20px;width:540px">
+                <div class="by afz">
+                    @if (Model.TalkcountRanks != null && Model.TalkcountRanks.Count > 0) {
+                        foreach (var item in Model.TalkcountRanks) {
+                            <a class="rp tr yg" href="#">
+                                <span class="azj" style="width: @(item.Percent)%;"></span>
+                                <span>@item.Saleman</span>
+                                <span class="axn">@(item.Count)</span>
+                            </a>
+                        }
+                    }
+                    else {
+                        <span style="text-align:center">暂无数据</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

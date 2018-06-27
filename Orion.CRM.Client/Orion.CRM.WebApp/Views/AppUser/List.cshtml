@@ -1,0 +1,220 @@
+﻿@using Orion.CRM.WebApp
+@model Orion.CRM.WebApp.Models.AppUser.AppUserListViewModel
+
+@using Orion.CRM.WebApp.App_Data
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{ 
+    <style type="text/css">
+        .select {
+            padding: 3px 5px;
+            border-radius: 2px !important;
+            width: 160px;
+            color: #555;
+        }
+
+        .input {
+            width: 150px;
+            padding: 4px 4px;
+            color: #555;
+            border-radius: 2px !important;
+        }
+    </style>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">用户管理</h3>
+    </div>
+    <div class="panel-body" style="padding-right:20px">
+        <div class="form-group">
+            <a href="/AppUser/Create" class="btn btn-default">
+                Add New <i class="icon-plus"></i>
+            </a>
+        </div>
+
+        @if (TempData["result"] != null) {
+            if ((bool)TempData["result"]) {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>操作成功！</strong>
+                </div>
+            }
+            else {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>抱歉，操作失败，请重新尝试！</strong>
+                </div>
+            }
+        }
+
+        <!--查询框-->
+        <form method="get" action="/AppUser/List">
+            <div class="form-group" style="margin-top:20px">
+                <div class="form-inline">
+                    <input type="text" placeholder="用户姓名" class="input" id="key" name="key" maxlength="20" value="@Model.Params.key" />
+                    <label style="margin-left:10px">业务组</label>
+                    <select class="select" id="gid" name="gid">
+                        <option value="">全部</option>
+                        @if (Model.Groups != null && Model.Groups.Count > 0) {
+                            foreach (var group in Model.Groups) {
+                                if (group.Id == Model.Params.gid) {
+                                    <option value="@group.Id" selected="selected">@group.GroupName</option>
+                                }
+                                else {
+                                    <option value="@group.Id">@group.GroupName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label style="margin-left:10px">角色</label>
+                    <select class="select" id="roleid" name="roleid" style="width:120px">
+                        <option value="">全部</option>
+                        @if (Model.Roles != null && Model.Roles.Count > 0) {
+                            foreach (var role in Model.Roles) {
+                                if (role.Id == Model.Params.roleid) {
+                                    <option value="@role.Id" selected="selected">@role.RoleName</option>
+                                }
+                                else {
+                                    <option value="@role.Id">@role.RoleName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-default" style="margin-left:5px">
+                        <i class="icon-search"></i> 查询
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!--数据列表-->
+        <table class="table table-bordered" style="margin-top:8px">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>用户名</th>
+                    <th>真实姓名</th>
+                    <th>可用状态</th>
+                    <th>角色</th>
+                    <th>所属项目</th>
+                    <th>所属业务组</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Users != null) {
+                    for (int i = 0; i < Model.Users.Count; i++) {
+                        var item = Model.Users[i];
+                        <tr>
+                            <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
+                            <td style="width:100px">@item.UserName</td>
+                            <td style="width:80px">@item.RealName</td>
+                            <td>@Html.Raw((item.Enable == 1 ? "可用" : "<span class='tip'>禁用</span>"))</td>
+                            <td style="width:70px">@item.RoleName</td>
+                            <td style="width:90px">@(string.IsNullOrEmpty(item.ProjectName) ? "-" : item.ProjectName)</td>
+                            <td>@(string.IsNullOrEmpty(item.GroupName) ? "-" : item.GroupName)</td>
+                            <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td style="width:100px">
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" style="font-size:13px" data-toggle="dropdown" href="#">
+                                        操作
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
+                                        @if(item.Id != Model.LoginUserId) { 
+                                            <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
+                                        }
+                                        <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>
+                                        @if(item.ProjectId != null && item.GroupId != null) { 
+                                            <li class="divider"></li>
+                                            <li><a href="/AppUser/ResourceExport/@item.Id">资源导出</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="10" style="text-align:center">没有数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
+    </div>
+</div>
+
+<!--delete confirm-->
+<div class="modal modal-webpi" id="panelAlert" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <h4 id="tip-content">确定要删除吗？</h4>
+                <label style="color:red;display:none" id="tip-desc"></label>
+                <div style="margin-top:20px" id="div-action1">
+                    <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+                <div style="margin-top:20px;display:none;text-align:right" id="div-action2">
+                    <a href="javascript:;" onclick="exportResource(this)" class="btn btn-inverse" >即刻导出</a>
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        function deleteConfirm(id, realName) {
+            var panel = $('#panelAlert');
+            panel.attr("param-id", id);
+
+            $.get("/AppUser/GetTalkingResourceCountByUserId", { "userId": id }, function (count) {
+                if (count > 0) {
+                    $('#tip-content').html('"' + realName + '"下有' + count + '条洽谈中的资源，请先导出后再删除。');
+                    $('#tip-desc').html('抱歉，你需要先将这' + count + '条资源导出后才能删除"' + realName + '"！');
+                    $('#tip-desc').show();
+
+                    $('#div-action1').hide();
+                    $('#div-action2').show();
+                }
+                else {
+                    $('#tip-content').html('确定要删除"' + realName + '"吗？');
+                    $('#tip-desc').hide();
+
+                    $('#div-action1').show();
+                    $('#div-action2').hide();
+                }
+                modalShow(panel);
+            });
+        }
+
+        function deleteInvoker(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            $.get("/AppUser/DeleteUser", { "id": id }, function (data) {
+                window.location = "/AppUser/List";
+            });
+        }
+
+        function exportResource(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            window.location = "/AppUser/ResourceExport/" + id;
+
+        }
+    </script>
+}
+

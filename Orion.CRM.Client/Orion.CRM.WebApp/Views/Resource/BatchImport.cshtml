@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewData["Title"] = "BatchImport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{ 
+    <style type="text/css">
+        .upload {
+            padding: 4px 10px;
+            height: 20px;
+            line-height: 20px;
+            position: relative;
+            border: 1px solid #999;
+            text-decoration: none;
+            color: #666;
+            cursor:pointer;
+        }
+
+        .change {
+            position: absolute;
+            overflow: hidden;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            cursor:pointer;
+        }       
+    </style>
+}
+
+<h3>资源批量导入</h3>
+
+<form method="post" action="/Upload/uploadFile" enctype="multipart/form-data" id="ajaxForm">
+    <h5>Excel模板示例：</h5>
+    <div>
+        <a href="~/download/template/资源批量导入模板.xlsx"><img src="~/images/excel-tpl.png" title="点击下载模板" /></a>
+    </div>
+    <h5>请上传Excel文件：</h5>
+    <div style="margin:0px 0px 20px 0px">
+        <a href="javascript:;" class="upload">
+            请选择Excel文件...
+            <input class="change" type="file" name="files" multiple="multiple" onchange="fileChange(this)" />
+        </a>
+        <span id="spanFileName" style="margin-left:10px"></span>
+    </div>
+    <div id="result">
+
+    </div>
+    <input type="button" id="upload" value="开始导入" class="btn btn-default" style="margin-top:10px" disabled="disabled" />
+</form>
+
+@section scripts{
+    <!--ajax提交表单需要引入jquery.form.js-->
+    <script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script>
+    <script type="text/javascript">
+        function fileChange(e) {
+            var path = e.value;
+            if (path) {
+                var filename = getFileName(path);
+                $('#spanFileName').html(filename);
+
+                var extension = getFileExtension(path);
+                if (extension != 'xlsx') {
+                    $('#upload').attr("disabled", "disabled");
+                    $('#result').html('<span style="color:red">文件名后缀必须是xlsx。</span>');
+                }
+                else {
+                    $('#upload').removeAttr("disabled");
+                    $('#result').html('');
+                }
+            }
+        }
+
+        function getFileName(path) {
+            var arr = path.split('\\');
+            if (arr != null && arr.length > 0) {
+                var filename = arr[arr.length - 1];
+                return filename;
+            }
+            return "";
+        }
+        function getFileExtension(path) {
+
+            var arr = path.split('.');
+            if (arr != null && arr.length > 0) {
+                var extension = arr[arr.length - 1];
+                return extension;
+            }
+            return "";
+        }
+
+        $(function () {
+            //给id为ajaxSubmit的按钮提交表单
+            $("#upload").on("click", function () {
+                $("#ajaxForm").ajaxSubmit({
+                    beforeSubmit: function () {
+                        $('#result').html('<img src="/images/loading.gif" />&nbsp;正在导入...');
+                    },
+                    success: function (filename) {
+                        $('#upload').attr("disabled", "disabled");
+                        $.get("/Upload/ImportData", { "filename": filename }, function (data) {
+                            console.info(data);
+                            $('#upload').removeAttr("disabled");
+                            if (data.successCount > 0) {
+                                // 判断是否全部成功
+                                if (data.failCount <= 0) {
+                                    // 全部插入成功(除了重复的)
+                                    $('#result').html('<span style="color:green;font-size:16px;font-weight:bold;">恭喜您，导入成功！</span><br/>共计' + data.successCount + '条数据成功入库。');
+                                    if (data.repeatCount > 0) { 
+                                        $('#result').append('<span>重复的' + data.repeatCount + '条数据已自动屏蔽。</span>');
+                                    }
+                                }
+                                else {
+                                    // 部分成功
+                                    var html = '部分导入成功，<span style="color:red;">部分导入失败</span>！<br/>请仔细检查数据格式，然后重新导入，谢谢！';
+                                    html += '<br/>共计' + data.totalCount + '条数据，成功' + data.successCount + "条，失败" + data.failCount + "条，重复" + data.repeatCount + "条。";
+                                    html += '<br/>具体错误信息：';
+                                    // 具体的错误信息
+                                    for (var i = 0; i < data.errorMsgs.length; i++) {
+                                        var error = data.errorMsgs[i];
+                                        html += '<p>' + error + '</p>';
+                                    }
+                                    $('#result').html(html);
+                                }
+                            }
+                            else {
+                                // 没有一条数据成功导入
+                                var html = '<span style="color:red">抱歉，导入失败！</span>';
+                                for (var i = 0; i < data.errorMsgs.length; i++) {
+                                    var error = data.errorMsgs[i];
+                                    html += '<p>' + error + '</p>';
+                                }
+                                if (data.repeatCount > 0) {
+                                    html += '<br/><span>总计' + data.totalCount + '条数据，重复' + data.repeatCount + '条数据，成功导入' + data.successCount + '条。</span>';
+
+                                }
+                                $('#result').html(html);
+                            }
+                        });
+                        
+                    }
+                });
+            });
+        });
+    </script>
+}

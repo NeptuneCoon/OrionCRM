@@ -1,0 +1,39 @@
+﻿[
+  {
+    "displayText": "未知",
+    "value": 1
+  },
+  {
+    "displayText": "未接通",
+    "value": 2
+  },
+  {
+    "displayText": "未留言",
+    "value": 3
+  },
+  {
+    "displayText": "非本人",
+    "value": 4
+  },
+  {
+    "displayText": "号码错误",
+    "value": 5
+  },
+  {
+    "displayText": "无意向",
+    "value": 6
+  },
+  {
+    "displayText": "意向一般",
+    "value": 7
+  },
+  {
+    "displayText": "意向中等",
+    "value": 8
+  },
+  {
+    "displayText": "意向强烈",
+    "value": 9
+  }
+]
+

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertTalkRecord</SqlName>
+      <OriginalSqlString>
+        insert into TalkRecord(ResourceId,TalkWay,TalkResult,UserId,Type,CreateTime)
+        values(@ResourceId,@TalkWay,@TalkResult,@UserId,@Type,@CreateTime);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增洽谈记录</Description>
+    </SqlMapDetail>
+  
+    <SqlMapDetail>
+      <SqlName>DeleteTalkRecord</SqlName>
+      <OriginalSqlString>
+        delete from TalkRecord where Id=@Id;
+        update Resource set TalkCount=TalkCount-1 where Id=@ResourceId;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除洽谈记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRecordsByResourceId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.RealName from TalkRecord A
+        inner join AppUser B on A.UserId=B.Id
+        where A.ResourceId=@ResourceId
+        order by id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId获取洽谈记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>TalkRecordStat</SqlName>
+      <OriginalSqlString>
+        	select A.UserId,B.RealName as Saleman,count(*) as [Count] from [dbo].[TalkRecord] A
+		      left join AppUser B on A.UserId=B.Id
+		      left join UserGroup C on A.UserId=C.UserId
+          left join UserProject D on A.UserId=D.UserId
+		      where B.OrgId=@OrgId and A.Type=0 and (D.ProjectId=@ProjectId or D.ProjectId is null) and A.CreateTime between @BeginTime and @EndTime $SqlWhere
+		      group by A.UserId,B.RealName
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>洽谈记录统计</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail TableName="TalkRecord">
+      <SqlName>TalkRecordBatchInsert</SqlName>
+      <OriginalSqlString/>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId获取洽谈记录</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

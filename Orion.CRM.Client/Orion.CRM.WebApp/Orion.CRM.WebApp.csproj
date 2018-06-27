@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>2</WarningLevel>
+    <DocumentationFile>bin\Debug\netcoreapp2.0\Orion.CRM.WebApp.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Account\FindMyPassword.cshtml" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\UpdatePassword.cshtml" />
+    <None Include="Views\Account\UserInfo.cshtml" />
+    <None Include="Views\AppUser\Create.cshtml" />
+    <None Include="Views\AppUser\Edit.cshtml" />
+    <None Include="Views\AppUser\List.cshtml" />
+    <None Include="Views\AppUser\ResetPassword.cshtml" />
+    <None Include="Views\AppUser\ResourceExport.cshtml" />
+    <None Include="Views\Customer\Search.cshtml" />
+    <None Include="Views\Error\Http404.cshtml" />
+    <None Include="Views\Error\Index.cshtml" />
+    <None Include="Views\Group\List.cshtml" />
+    <None Include="Views\Home\About.cshtml" />
+    <None Include="Views\Home\Help.cshtml" />
+    <None Include="Views\Home\Version.cshtml" />
+    <None Include="Views\Performance\Group.cshtml" />
+    <None Include="Views\Performance\Overview.cshtml" />
+    <None Include="Views\Performance\Sign.cshtml" />
+    <None Include="Views\Performance\Talkcount.cshtml" />
+    <None Include="Views\Project\List.cshtml" />
+    <None Include="Views\Resource\Add.cshtml" />
+    <None Include="Views\Resource\Assign.cshtml" />
+    <None Include="Views\Resource\BatchImport.cshtml" />
+    <None Include="Views\Resource\Detail.cshtml" />
+    <None Include="Views\Resource\List.cshtml" />
+    <None Include="Views\Resource\Public.cshtml" />
+    <None Include="Views\Resource\Search.cshtml" />
+    <None Include="Views\Resource\Signed.cshtml" />
+    <None Include="Views\Resource\SourceStat.cshtml" />
+    <None Include="Views\Resource\Unvalued.cshtml" />
+    <None Include="Views\Role\Create.cshtml" />
+    <None Include="Views\Role\Edit.cshtml" />
+    <None Include="Views\Role\List.cshtml" />
+    <None Include="Views\Source\List.cshtml" />
+    <None Include="Views\Tag\List.cshtml" />
+    <None Include="wwwroot\vendors\bootstrap-wysihtml5\.settings\.gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Orion.CRM.WebTools\Orion.CRM.WebTools.csproj" />
+  </ItemGroup>
+
+</Project>

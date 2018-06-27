@@ -1,0 +1,278 @@
+﻿@model Orion.CRM.WebApp.Models.Resource.ResourceListViewModel
+
+@using Orion.CRM.WebApp.App_Data
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <style type="text/css">
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0 0 0;
+            line-height: normal;
+        }
+
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 1px !important;
+            padding: 3px 3px;
+            height: 18px !important;
+            width: 91px;
+            font-size: 12px !important;
+        }
+
+        .search-select {
+            width: 105px;
+            height: 28px !important;
+            border-radius: 1px !important;
+            padding: 0px 3px
+        }
+    </style>
+}
+
+<div class="panel panel-default span12">
+    <div class="panel-heading">
+        <h3 class="panel-title">公共资源</h3>
+    </div>
+
+    <div class="panel-body">
+        <form action="/Resource/Public" method="get">
+            <input type="hidden" id="hidGroupId" value="@ViewBag.UserGroupId" />
+            <div class="form-inline">
+                <!--手机/微信/QQ-->
+                <input type="text" class="search-input" name="key" id="key" value="@Model.Params.key" placeholder="手机/微信/QQ" style="width:140px" />
+                <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" />
+                <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />至
+                <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
+
+                <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled")>
+                    <i class="icon-search"></i> 查询
+                </button>
+                <button type="button" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled") onclick="batchDivideToMe()">
+                    <i class="icon-hand-right"></i> 划分给自己
+                </button>
+            </div>
+        </form>
+        <table class="table table-bordered" style="margin-top:15px;font-size: 13px !important;">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="ckAll" onclick="checkToggle()" /></th>
+                    <th>客户姓名</th>
+                    <th>联系方式</th>
+                    <th>最后时间</th>
+                    <th>来源</th>
+                    <th>状态</th>
+                    <th>洽谈数</th>
+                    <th>添加人</th>
+                    <th>项目</th>
+                    <th>初次录入</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Resources != null && Model.Resources.Count > 0) {
+                    foreach (var resource in Model.Resources) {
+                        <tr>
+                            <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
+                            <td style="max-width:220px">
+                                <a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a>
+                                @if (resource.TalkCount == 0) {
+                                    <img src="~/images/new.gif" />
+                                }
+                            </td>
+                            <td>@resource.ContactInfo</td>
+                            <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
+                            <td>@resource.SourceFromText</td>
+                            <td>@resource.StatusText</td>
+                            <td>@resource.TalkCount</td>
+                            <td>@resource.AppendMan</td>
+                            <td>@resource.ProjectName</td>
+                            <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a href="javascript:;" onclick="divideToMe(@resource.Id)">划分给自己</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="11" style="text-align:center">没有数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
+    </div>
+</div>
+
+
+<!--批量划分给自己确认框-->
+<div class="modal modal-webpi" id="panelBatchDivideConfirm" style="display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <h4>确定要将这<span id="checkedCount">{checkedCount}</span>条资源划分给自己吗？</h4>
+
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-danger" onclick="batchDivideToMeInvoker(this)" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--操作结果-->
+<div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>结果</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanResult">操作已成功！</span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
+    <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
+    <script src="~/assets/pikaday/pikaday.js"></script>
+    <script type="text/javascript">
+        // 日历控件初始化
+        var picker_start = new Pikaday({
+            field: document.getElementById('start'),
+            format: 'YYYY-M-D',
+            minDate: new Date(2016, 0, 1),
+            maxDate: new Date(),
+            i18n: {
+                previousMonth: '上一月',
+                nextMonth: '下一月',
+                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+            },
+            showMonthAfterYear: true,
+            theme: 'triangle-theme',
+            yearSuffix: '年',
+            onSelect: function (selectedDate) {
+                var endDate = $('#end').val();
+                if (!endDate) {
+                    picker_end.show();
+                }
+            }
+        });
+        var picker_end = new Pikaday({
+            field: document.getElementById('end'),
+            format: 'YYYY-M-D',
+            minDate: new Date(2016, 0, 1),
+            maxDate: new Date(),
+            i18n: {
+                previousMonth: '上一月',
+                nextMonth: '下一月',
+                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+            },
+            showMonthAfterYear: true,
+            theme: 'triangle-theme',
+            yearSuffix: '年'
+        });
+
+        // 划分给自己
+        function divideToMe(resourceId) {
+            var groupId = $('#hidGroupId').val();
+            if (groupId != null && groupId > 0) {
+                $.get("/Resource/DivideToMe", { "resourceId": resourceId }, function (result) {
+                    if (result == "1") {
+                        $('#spanResult').attr("class", "panel-alert-info");
+                        $('#spanResult').html('操作已成功！');
+                    }
+                    else if (result == "-1") {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉！该资源已被分配，请刷新页面重新尝试！');
+                    }
+                    else {
+                        $('#spanResult').attr("class", "panel-alert-error");
+                        $('#spanResult').html('抱歉，操作失败！请重试。');
+                    }
+                    modalShow($('#panelResult'));
+                    setTimeout(reload, 3000);
+                });
+            }
+            else {
+                $('#spanResult').attr("class", "panel-alert-error");
+                $('#spanResult').html('抱歉，您不是业务人员，无法划分给自己！');
+                modalShow($('#panelResult'));
+            }
+        }
+
+        // 展示"批量划分给自己"面板
+        function batchDivideToMe() {
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push(parseInt($(this).val(), 10));
+            });
+            console.info(resourceIdArr);
+            if (resourceIdArr.length > 0) {
+                var groupId = $('#hidGroupId').val();
+                if (groupId != null && groupId > 0) {
+                    $('#checkedCount').html(resourceIdArr.length);
+                    modalShow($('#panelBatchDivideConfirm'));
+                }
+                else {
+                    $('#spanResult').attr("class", "panel-alert-error");
+                    $('#spanResult').html('抱歉，您不是业务人员，无法划分给自己！');
+                    modalShow($('#panelResult'));
+                }
+            }
+            else {
+                $('#spanResult').attr("class", "panel-alert-error");
+                $('#spanResult').html('您没有选择任何资源，请先选择至少一条资源！');
+                modalShow($('#panelResult'));
+            }
+        }
+
+        // 执行批量分配
+        function batchDivideToMeInvoker() {     
+            var resourceIdArr = [];
+            $("input[name='ckResource']:checked").each(function () {
+                resourceIdArr.push(parseInt($(this).val(), 10));
+            });
+            var resourceIds = resourceIdArr.join(",");
+            $.post("/Resource/BatchDivideToMe", { "resourceIds": resourceIds }, function (data) {
+                var successCount = parseInt(data, 10);
+                var failCount = resourceIdArr.length - successCount;
+
+                $('#spanResult').attr("class", "panel-alert-info");
+                $('#spanResult').html('操作成功！本次成功分配' + successCount + "条，无效" + failCount + "条。");
+
+                
+                modalClose($('#panelBatchDivideConfirm'));
+                modalShow($('#panelResult'));
+                setTimeout(reload, 3000);
+            });
+        }
+
+        // 全部取消/全部选中
+        function checkToggle() {
+            $('input[name="ckResource"]').each(function () {
+                $(this).prop('checked', $('#ckAll').prop('checked'))
+            });
+        }
+
+        function reload() {
+            window.location.reload();
+        }
+    </script>
+}

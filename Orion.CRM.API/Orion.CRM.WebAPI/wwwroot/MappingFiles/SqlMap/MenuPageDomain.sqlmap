@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+
+    <SqlMapDetail>
+      <SqlName>GetMenu</SqlName>
+      <OriginalSqlString>
+        select * from SystemMenu where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据Id获取单个菜单</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetParentMenus</SqlName>
+      <OriginalSqlString>
+        select * from SystemMenu where Parent is null or Parent=0 order by SortNo
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有一级菜单(Parent为null的菜单)</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetAllMenus</SqlName>
+      <OriginalSqlString>
+        select * from SystemMenu order by Id,SortNo
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有菜单</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>GetChildMenus</SqlName>
+      <OriginalSqlString>
+        select * from SystemMenu where Parent=@Parent order by SortNo
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取指定一级菜单的子菜单</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllLevel2Menus</SqlName>
+      <OriginalSqlString>
+        <![CDATA[select * from SystemMenu where Parent is not null and Parent <> 0]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有二级菜单</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>InsertMenu</SqlName>
+      <OriginalSqlString>
+        insert into SystemMenu(MenuName,Icon,URL,[Description],CreateTime,UpdateTime,SortNo,Parent)
+        values(@MenuName,@Icon,@URL,@Description,@CreateTime,@UpdateTime,@SortNo,@Parent);select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增菜单</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateMenu</SqlName>
+      <OriginalSqlString>
+        update SystemMenu set MenuName=@MenuName,[Description]=@Description,Icon=@Icon,URL=@URL,SortNo=@SortNo,UpdateTime=@UpdateTime,Parent=@Parent
+        where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改菜单</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteMenu</SqlName>
+      <OriginalSqlString>
+        delete from SystemMenu where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除菜单</Description>
+    </SqlMapDetail>   
+    
+	</SqlMapConfigurations>
+</SqlMap>

@@ -1,0 +1,30 @@
+﻿[
+  {
+    "displayText": "0次",
+    "value": 0
+  },
+  {
+    "displayText": "1次",
+    "value": 1
+  },
+  {
+    "displayText": "2次",
+    "value": 2
+  },
+  {
+    "displayText": "3次",
+    "value": 3
+  },
+  {
+    "displayText": "4次",
+    "value": 4
+  },
+  {
+    "displayText": ">5次",
+    "value": 5
+  },
+  {
+    "displayText": ">10次",
+    "value": 10
+  }
+]

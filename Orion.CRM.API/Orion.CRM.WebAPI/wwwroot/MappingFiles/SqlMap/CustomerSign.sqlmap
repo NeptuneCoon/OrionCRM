@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertSign</SqlName>
+      <OriginalSqlString>
+        insert into [CustomerSign](Amount,CustomerName,CustomerPhone,ResourceId,SignTime,SignUserId,SignMan,GroupId,GroupName,ProjectId,OrgId,CreateTime,AppendUserId,AppendMan)
+        values(@Amount,@CustomerName,@CustomerPhone,@ResourceId,@SignTime,@SignUserId,@SignMan,@GroupId,@GroupName,@ProjectId,@OrgId,@CreateTime,@AppendUserId,@AppendMan);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>Delete</SqlName>
+      <OriginalSqlString>
+        delete from [CustomerSign] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据主键删除签约记录</Description>
+    </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteSign</SqlName>
+      <OriginalSqlString>
+        delete from [CustomerSign] where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ResourceId删除签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteSignByProjectId</SqlName>
+      <OriginalSqlString>
+        delete from [CustomerSign] where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除某项目下所有签约记录(用于删除Project时)</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignByResourceId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.CustomerName from [CustomerSign] A
+        join [Resource] B on A.ResourceId=B.Id
+        where ResourceId=@ResourceId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据资源Id获取签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignsByTime</SqlName>
+      <OriginalSqlString>
+        select  D.Amount,A.RealName as SignMan,B.GroupId,C.GroupName,A.Id as SignUserId,D.AppendUserId,D.AppendMan from [AppUser] A
+        inner join [UserGroup] B on A.Id=B.UserId
+        inner join [Group] C on B.GroupId=C.Id
+        left join (select * from [CustomerSign] where (SignTime between @BeginTime and @EndTime or SignTime is null) and OrgId=@OrgId) D on A.Id=D.SignUserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据时间范围和OrgId获取签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetGroupMemberSigns</SqlName>
+      <OriginalSqlString>
+        select  C.Amount,A.RealName as SignMan from [AppUser] A
+        inner join [UserGroup] B on A.Id=B.UserId
+        left join (select * from [CustomerSign] where (SignTime between @BeginTime and @EndTime or SignTime is null)) C on A.Id=C.SignUserId
+        where B.GroupId=@GroupId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据GroupId和时间范围获取该业务组每个成员的签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetProjectGroupSigns</SqlName>
+      <OriginalSqlString>
+        select * from [CustomerSign] where ProjectId=@ProjectId and (SignTime between @BeginTime and @EndTime or SignTime is null)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据ProjectId和时间范围获取该项目下每个组的签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignsByCondition</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+        select top $PageSize * from(
+            select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
+		        (
+			        select A.*,B.OrgName from [CustomerSign] A 
+              inner join Organization B on A.OrgId=B.Id
+		        )as temp
+          )as A 
+        where RowNumber > $PageSize*($PageIndex-1) and OrgId=@OrgId $SqlWhere
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取签约记录</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetSignCountByCondition</SqlName>
+      <OriginalSqlString>
+        select count(1) from [CustomerSign] A
+        inner join Organization B on A.OrgId=B.Id
+        where A.OrgId=1 $SqlWhere
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取查询条件下的签约记录数</Description>
+    </SqlMapDetail>
+    
+      <SqlMapDetail>
+      <SqlName>GetGroupSaleRanking</SqlName>
+      <OriginalSqlString>
+        select A.Id as GroupId,A.GroupName,C.ProjectName, sum(Amount) as TotalAmount from [Group] A
+        left join (select * from [CustomerSign]  where (CreateTime between @BeginTime and @EndTime or CreateTime is null)) as B on A.Id=B.GroupId
+        left join [Project] C on A.ProjectId=C.Id
+        where A.OrgId=@OrgId and A.ProjectId=@ProjectId
+        group by A.Id,A.GroupName,C.ProjectName
+        order by TotalAmount desc
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取某段时间内各组业绩</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

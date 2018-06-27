@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewData["Title"] = "SourceStat";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/morris.chart/0.5.1/morris.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
+    <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
+
+<script type="text/javascript">
+    /*
+    图表的初始化
+    */
+    $(function () {
+        var jsonString = $('#hidSourceStat').val();
+        var data = [];
+        if (jsonString) {
+            var jsonArr = JSON.parse(jsonString);
+            for (var i = 0; i < jsonArr.length; i++) {
+                var item = jsonArr[i];
+                data.push({ label: item.SourceName, value: item.ResourceCount });
+            }
+            console.info(data);
+        }
+        // 环形图
+        Morris.Donut({
+            element: 'hero-donut',
+            data: data,
+            formatter: function (y) { return y + "条" }
+        });
+
+        // 柱状图
+        Morris.Bar({
+            element: 'hero-bar',
+            data: data,
+            xkey: 'label',
+            ykeys: ['value'],
+            labels: ['总数'],
+            barRatio: 0.4,
+            xLabelAngle: 35,
+            hideHover: 'auto'
+        });
+    });
+</script>
+}
+<h3>资源来源统计</h3>
+<input type="hidden" id="hidSourceStat" value="@ViewBag.SourceStat" />
+
+<!--环形图-->
+<div class="row">
+    <div class="span7">
+        <div class="graph-container">
+            <span class="graph-mark">环形图</span>
+            <div class="caption">资源来源统计</div>
+            <div id="hero-donut" class="graph" style="position:relative;"></div>
+        </div>
+    </div>
+</div>
+
+
+<!--柱状图-->
+<div class="row">
+    <div class="span7">
+        <div class="graph-container">
+            <span class="graph-mark">柱状图</span>
+            <div class="caption">资源来源统计</div>
+            <div id="hero-bar" class="graph" style="position:relative;"></div>
+        </div>
+    </div>
+</div>

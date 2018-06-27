@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertTag</SqlName>
+      <OriginalSqlString>
+        insert into Tag(TagName,UserId,CreateTime,UpdateTime) values(@TagName,@UserId,@CreateTime,@UpdateTime);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增标签</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateTag</SqlName>
+      <OriginalSqlString>
+        update [Tag] set TagName=@TagName,UpdateTime=@UpdateTime where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改标签</Description>
+    </SqlMapDetail>
+  
+    <SqlMapDetail>
+      <SqlName>DeleteTag</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceTag] where TagId=@Id;
+        delete from [Tag] where Id=@Id;
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除标签</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetTagsByUserId</SqlName>
+      <OriginalSqlString>
+        select * from [Tag] where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据UserId获取用户创建的资源标签</Description>
+    </SqlMapDetail>
+    
+	</SqlMapConfigurations>
+</SqlMap>

@@ -1,0 +1,390 @@
+﻿@using Orion.CRM.WebApp
+@model Orion.CRM.WebApp.Models.Sign.SignListViewModel
+
+@using Orion.CRM.WebApp.App_Data
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
+
+@{
+    ViewData["Title"] = "Sign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/vendors/chosen.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/theme.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/triangle.css" rel="stylesheet" />
+    <style type="text/css">
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 2px !important;
+            padding: 3px 4px;
+            height: 18px !important;
+            width: 120px;
+            font-size: 12px !important;
+            margin-bottom: 0px !important;
+        }
+    </style>
+}
+@section scripts{
+    <script src="~/assets/pikaday/pikaday.js"></script>
+    <script src="~/vendors/chosen.jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // jquery-chosen下拉控件初始化
+            $(".chzn-select").chosen({
+                width: '190px', no_results_text: "没有业务员"
+            });
+
+            // 日历控件初始化
+            var picker = new Pikaday({
+                field: document.getElementById('signTime'),
+                format: 'YYYY-MM-DD',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年'
+            });
+
+            // 设置添加业绩面板中的默认项目
+            var projectId = $('#defaultProject').val();
+            $('#signProject').val(projectId);
+        });
+
+        // 弹出添加业绩模态窗体
+        function showAddPanel() {
+            // 初始化
+            $('#signAmount,#signTime').val('');
+            $('#signUserPanel').val('');
+            //$('#signUserPanel').trigger('chosen:updated');
+            $('#signUserPanel_chzn>a>span').html('请选择业务');
+
+            // 显示模型窗体
+            modalShow($('#panelAdd'));
+        }
+        function addSign() {
+            var res = checkParam();
+            if (res.result) {
+                $('#addTips').hide();
+                //var resourceId = $('#hidResourceId').val();
+                var amount = $.trim($('#signAmount').val());
+                var signTime = $.trim($('#signTime').val());
+                var signUserId = $('#signUserPanel').find("option:selected").val();
+                var signProjectId = $('#signProject').find("option:selected").val();
+                var customerName = $('#signName').val();
+                var customerPhone = $('#signPhone').val();
+
+                var data = {
+                    "Amount": amount, "ResourceId": null, "SignTime": signTime, "SignUserId": signUserId,
+                    "ProjectId": signProjectId, "CustomerName": customerName, "CustomerPhone": customerPhone
+                };
+                $.post("/Resource/InsertCustomerSign", data, function (result) {
+                    if (result) {
+                        window.location.reload();
+                    }
+                    else {
+                        $('#addTips').html('抱歉，发生未知错误！');
+                        $('#addTips').show();
+                    }
+                });
+            }
+            else {
+                $('#addTips').html(res.errorMsg);
+                $('#addTips').show();
+                if (res.errorElement) {
+                    $(res.errorElement).focus();
+                }
+            }
+        }
+
+        function checkParam() {
+            var res = { result: true };
+
+            // 签约金额的校验
+            var amount = $.trim($('#signAmount').val());
+            var reg1 = eval($('#signAmount').attr("reg"));
+            if (amount == "") {
+                res.result = false;
+                res.errorMsg = '签约金额不能为空！';
+                res.errorElement = ('#signAmount');
+            }
+            else if (amount <= 0 || !reg1.test(amount)) {
+                res.result = false;
+                res.errorMsg = '签约金额格式有误！';
+                res.errorElement = ('#signAmount');
+            }
+
+            if (res.result) {
+                // 签约日期的校验
+                var signTime = $.trim($('#signTime').val());
+                var reg2 = eval($('#signTime').attr("reg"));
+                if (signTime == "") {
+                    res.result = false;
+                    res.errorMsg = '签约日期不能为空！';
+                    res.errorElement = $('#signTime');
+                }
+                else if (!reg2.test(signTime)) {
+                    res.result = false;
+                    res.errorMsg = '签约日期格式有误！';
+                    res.errorElement = $('#signTime');
+                }
+                else {
+                    // 验证日期是否是一个未来的日期
+                    var a = moment(moment().format('YYYY-MM-DD'));
+                    var b = moment(signTime);
+                    if (a.diff(b) < 0) {
+                        res.result = false;
+                        res.errorMsg = '签约日期必须在今天或今天之前！';
+                        res.errorElement = $('#signTime');
+                    }
+                }
+            }
+            if (res.result) {
+                // 签约用户的校验
+                var signUserId = $('#signUserPanel').find("option:selected").val();
+                if (!signUserId) {
+                    res.result = false;
+                    res.errorMsg = '请选择完成签约的业务员！';
+                    res.errorElement = $('#signUserPanel');
+                }
+            }
+
+            if (res.result) {
+                // 签约项目的校验
+                var signProjectId = $('#signProject').find("option:selected").val();
+                if (!signProjectId) {
+                    res.result = false;
+                    res.errorMsg = '请选择签约项目！';
+                    res.errorElement = $('#signUserPanel');
+                    $('#signProject').focus();
+                }
+            }
+            console.info(res);
+            return res;
+        }
+
+        function deleteConfirm(id) {
+            $('#panelDelConfirm').attr("param-id", id);
+            modalShow($('#panelDelConfirm'));
+        }
+        function deleteInvoker(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            if (id) {
+                $.get("/Performance/DeleteSign", { "id": id }, function (data) {
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">业绩管理</h3>
+    </div>
+    <div class="panel-body">
+        
+        @if (TempData["result"] != null) {
+            if ((bool)TempData["result"]) {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>操作成功！</strong>
+                </div>
+            }
+            else {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="margin:10px 0px;">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <strong>抱歉，操作失败，请重新尝试！</strong>
+                </div>
+            }
+        }
+
+        <!--查询框-->
+        <form method="get" action="/Performance/Sign">
+            <div class="form-group" style="margin-top:20px">
+                <div class="form-inline">
+                    <input type="text" placeholder="客户姓名" class="search-input" id="name" name="name" maxlength="20" value="@Model.Params.name" />
+                    <input type="text" placeholder="客户电话" class="search-input" id="con" name="con" maxlength="100" value="@Model.Params.con" />
+                    <label style="margin-left:10px">签约人</label>
+                    <select id="signUser" class="chzn-select span4" name="uid">
+                        <option value="">请选择业务</option>
+                        @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                            foreach (var user in Model.OrgUsers) {
+                                if (user.Id == Model.Params.uid) {
+                                    <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                }
+                                else {
+                                    <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label style="margin-left:10px">所属项目</label>
+                    <select name="pid" id="pid" class="search-select" onchange="projectChange()" style="width:120px">
+                        <option value="">项目</option>
+                        @if (Model.ProjectList != null) {
+                            foreach (var project in Model.ProjectList) {
+                                if (project.Id == Model.Params.pid) {
+                                    <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                }
+                                else {
+                                    <option value="@project.Id">@project.ProjectName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-default btn-small"><i class="icon-search"></i> 查询</button>
+                    <button type="button" class="btn btn-default btn-small" onclick="showAddPanel()" style="margin-left:10px"><i class="icon-plus"></i>添加业绩</button>
+                </div>
+            </div>
+        </form>
+
+        <!--数据列表-->
+        <table class="table table-bordered" style="margin-top:8px">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>签约金额</th>
+                    <th>签约时间</th>
+                    <th>客户姓名/手机</th>
+                    <th>所属业务</th>
+                    <th>添加人</th>
+                    <th>添加时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Signs != null) {
+                    for (int i = 0; i < Model.Signs.Count; i++) {
+                        var item = Model.Signs[i];
+                        <tr>
+                            <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
+                            <td>@(item.Amount)元</td>
+                            <td>@item.SignTime.ToString("yyyy-MM-dd")</td>
+                            <td>@item.CustomerName/@item.CustomerPhone</td>
+                            <td>@item.SignMan</td>
+                            <td>@item.AppendMan</td>
+                            <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr>
+                        <td colspan="8" style="text-align:center">没有数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
+        <input type="hidden" id="defaultProject" value="@ViewBag.DefaultProjectId" />
+    </div>
+</div>
+
+
+<!--添加业绩-->
+<div class="modal modal-webpi" id="panelAdd" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>添加业绩</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <input type="hidden" id="assignResourceId" />
+                <table>
+                    <tr>
+                        <td style="width:100px;text-align:right"><span class="tip">*</span>合同金额：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" class="search-input" style="width:160px" reg="regNum" id="signAmount"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><span class="tip">*</span>签约时间：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" class="search-input" style="width:160px" reg="regDate" id="signTime" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right">客户姓名：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" class="search-input" style="width:160px" id="signName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right">客户电话：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" class="search-input" style="width:160px" id="signPhone" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><span class="tip">*</span>业务：</td>
+                        <td style="padding-left:10px">
+                            @*<select class="panel-select" id="assignSelectSaler">
+                                <option value="">请选择业务</option>
+                            </select>*@
+                            <select id="signUserPanel" class="chzn-select span4">
+                                <option value="">请选择业务</option>
+                                @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                                    foreach (var user in Model.OrgUsers) {
+                                        if (user.Id == Model.Params.uid) {
+                                            <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                        }
+                                        else {
+                                            <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><span class="tip">*</span>所属项目：</td>
+                        <td style="padding-left:10px">
+                            <select id="signProject" class="search-select" onchange="projectChange()" style="width:120px">
+                                <option value="">请选择</option>
+                                @if (Model.ProjectList != null) {
+                                    foreach (var project in Model.ProjectList) {
+                                        <option value="@project.Id">@project.ProjectName</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="addTips" style="padding:3px;color:red;display:none"></div>
+                <div style="margin-top:20px">
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="addSign()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--删除确认-->
+<div class="modal modal-webpi" id="panelDelConfirm" style="width:300px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <h4>确定要删除吗？</h4>
+
+                <div style="margin-top:20px">
+                    <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

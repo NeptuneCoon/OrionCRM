@@ -1,0 +1,263 @@
+﻿
+@{
+    ViewData["Title"] = "Overview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/morris.chart/0.5.1/morris.css" rel="stylesheet" />
+    <link href="~/css/chart-extension-rank.css" rel="stylesheet" />
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <style type="text/css">
+        .filter {
+            height: 30px;
+            line-height: 30px;
+            display: flex;
+            padding-left: 20px;
+            margin-top: 20px;
+            /*margin-bottom: 20px;*/
+        }
+        .select {
+            padding: 3px 5px;
+            border-radius: 2px;
+            min-width: 100px;
+            color: #555;
+        }
+
+        .date {
+            position: absolute;
+            left: 0px;
+            width: 100px;
+            padding: 4px 4px;
+            color: #555;
+        }
+
+        .start {
+            border: 1px solid #ccc;
+            border-top-left-radius: 2px !important;
+            border-bottom-left-radius: 2px !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .end {
+            border-top-right-radius: 2px !important;
+            border-bottom-right-radius: 2px !important;
+            border-top-left-radius: 0px !important;
+            border-bottom-left-radius: 0px !important;
+            border-left: 0px solid #ccc !important;
+        }
+
+        .icon-position {
+            position: absolute;
+            right: 0px;
+            top: 6px;
+            cursor: pointer
+        }
+    </style>
+}
+@section scripts{
+    <script src="~/assets/morris.chart/0.5.1/raphael-min.js"></script>
+    <script src="~/assets/morris.chart/0.5.1/morris.min.js"></script>
+    <script src="~/assets/pikaday/pikaday.js"></script>
+    <script type="text/javascript">
+        /*
+        图表的初始化
+        */
+        $(function () {
+            // 日历控件初始化
+            var picker_startDate_group = new Pikaday({
+                field: document.getElementById('startDate_rank'),
+                format: 'YYYY-M-D',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年',
+                onSelect: function (selectedDate) {
+                    var endDate = $('#endDate_rank').val();
+                    if (!endDate) {
+                        picker_end_member.show();
+                    }
+                }
+            });
+            var picker_end_member = new Pikaday({
+                field: document.getElementById('endDate_rank'),
+                format: 'YYYY-M-D',
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(),
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年'
+            });
+
+            /* 数据格式化 */
+            var dataFormat = function (jsonArr) {
+                var arr = [];
+                if(jsonArr){
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        var item = jsonArr[i];
+                        arr.push({ label: item.GroupName, value: item.GroupSaleAmount });
+                    }
+                }
+                return arr;
+            };
+
+            // 月业绩数据准备
+            var monthJsonString = $('#hidMonthSigns').val();
+            var month_data = [];
+            if (monthJsonString) {
+                var jsonArr = JSON.parse(monthJsonString);
+                month_data = dataFormat(jsonArr);
+            }
+            // 年业绩数据准备
+            var yearJsonString = $('#hidYearSigns').val();
+            var year_data = [];
+            if (yearJsonString) {
+                var jsonArr = JSON.parse(yearJsonString);
+                year_data = dataFormat(jsonArr);
+            }
+
+            // 环形图
+            if (month_data.length > 0){
+                Morris.Donut({
+                    element: 'month',
+                    data: month_data,
+                    formatter: function (y) { return y + "元" }
+                });
+            }
+
+            // 柱状图
+            if (year_data.length > 0) {
+                Morris.Bar({
+                    element: 'year',
+                    data: year_data,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['业绩'],
+                    barRatio: 0.4,
+                    xLabelAngle: 35,
+                    hideHover: 'auto'
+                });
+            }
+        });
+        function renderRanking() {
+            var startDate = $('#startDate_rank').val();
+            var endDate = $('#endDate_rank').val();
+            $.get("/Performance/GetMemberRanking", { "startDate": startDate, "endDate": endDate }, function (data) {
+                $('#ranking').html('');
+                if (data && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var aHtml = '';
+                        aHtml += '<a class="rp tr yg" href="#">';
+                        aHtml += '<span class="azj" style="width: ' + item.percent + '%;"></span>';
+                        aHtml += '<span>' + item.signMan + '</span>';
+                        aHtml += '<span class="axn">' + item.amount + '元</span>';
+                        aHtml += '</a>';
+
+                        $('#ranking').append(aHtml);
+                    }
+                }
+                else {
+                    $('#ranking').append('<span style="text-align:center">暂无数据</span>');
+                }
+            });
+        }
+
+    </script>
+}
+<h3>业绩概览</h3>
+<input type="hidden" id="hidMonthSigns" value="@Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.MonthSigns)" />
+<input type="hidden" id="hidYearSigns" value="@Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.YearSigns)" />
+
+<!--当月业绩，环形图-->
+<div class="row">
+    <div style="width:700px">
+        <div class="graph-container">
+            <span class="graph-mark">月度</span>
+            <div class="caption">本月业绩</div>
+            @if (ViewBag.MonthSigns != null && ViewBag.MonthSigns.Count > 0) {
+                <div id="month" class="graph" style="position:relative;">
+                </div>
+            }
+            else {
+                <div class="by afz" style="padding:20px;">
+                    <span style="text-align:center">暂无数据</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<!--本年业绩，柱状图-->
+<div class="row">
+    <div style="width:700px">
+        <div class="graph-container">
+            <span class="graph-mark">年度</span>
+            <div class="caption">本年业绩(2017-1-1至今)</div>
+            @if (ViewBag.YearSigns != null && ViewBag.YearSigns.Count > 0) {
+                <div id="year" class="graph" style="position:relative;"></div>
+            }
+            else {
+                <div class="by afz" style="padding:20px;">
+                    <span style="text-align:center">暂无数据</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--最佳业务排行-->
+<div class="row">
+    <div style="width:700px">
+        <div class="graph-container">
+            <span class="graph-mark">业务排行</span>
+            <div class="caption">最具潜力业务排行(Top20)</div>
+
+            <div class="filter">
+                <div style="position:relative;width:110px">
+                    <input type="text" id="startDate_rank" class="date start" value="@(DateTime.Now.Year + "-" + DateTime.Now.Month + "-1")" onblur="renderRanking()" autocomplete="off" />
+                    <i class="icon-calendar icon-position"></i>
+                </div>
+
+                <span style="border:1px solid #ccc;padding:0px 6px;display:block">至</span>
+                <div style="position:relative;width:110px">
+                    <input type="text" id="endDate_rank" class="date end" value="@DateTime.Now.ToString("yyyy-M-d")" onblur="renderRanking()" autocomplete="off" />
+                    <i class="icon-calendar icon-position"></i>
+                </div>
+            </div>
+
+            <div id="saler" style="padding:20px;width:540px">
+                <div class="by afz" id="ranking">
+                    @if (ViewBag.RankRecords != null && ViewBag.RankRecords.Count > 0) {
+                        foreach (var record in ViewBag.RankRecords) {
+                            <a class="rp tr yg" href="#">
+                                <span class="azj" style="width: @(record.Percent)%;"></span>
+                                <span>@record.SignMan</span>
+                                <span class="axn">@(record.Amount)元</span>
+                            </a>
+                        }
+                    }
+                    else {
+                        <span style="text-align:center">暂无数据</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
