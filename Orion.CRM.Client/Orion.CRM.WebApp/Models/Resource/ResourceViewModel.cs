@@ -15,7 +15,9 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string Wechat { get; set; }
         public string QQ { get; set; }
         public string Email { get; set; }
-        public string Address { get; set; }
+        public string Province { get; set; } // 省或直辖市
+        public string City { get; set; } // 城市
+        public string Address { get; set; } // 街道地址
         public int? Status { get; set; }
         public int? SourceFrom { get; set; }
         public int? Inclination { get; set; }

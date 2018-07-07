@@ -101,7 +101,9 @@
                     <div class="control-group">
                         <label class="control-label">地址</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.Address" placeholder="客户联系地址" reg="regString" maxlength="50" />
+                            <select asp-for="@Model.Province" style="width:90px"></select>
+                            <select asp-for="@Model.City" style="width:100px"></select>
+                            <input type="text" class="span4" asp-for="@Model.Address" placeholder="详细地址" reg="regString" maxlength="50" />
                         </div>
                     </div>
                     <div class="control-group">
@@ -200,6 +202,7 @@
 </div>
 
 @section scripts{
+    <script src="~/assets/province.js"></script>
     <script type="text/javascript">
         $(function () {
             var rootNode = $('form');
@@ -209,6 +212,8 @@
                     inputCheck($(this));
                 }
             });
+
+            addressInit('Province', 'City', null);
         });
 
         var submiting = false;

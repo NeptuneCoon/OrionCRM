@@ -109,8 +109,8 @@ namespace Orion.CRM.WebApp.Controllers
 
                 return result;
             }
-            catch {
-                result.ErrorMsgs.Add("发生了一些未知错误，请刷新页面后重新尝试或联系管理员。");
+            catch(Exception ex) {
+                result.ErrorMsgs.Add("发生了一些未知错误，请刷新页面后重新尝试或联系管理员。错误信息：" + ex.Message);
                 return result;
             }
             finally {

@@ -61,7 +61,7 @@ namespace Orion.CRM.WebTools
             try {
                 responseText = new HttpClient().GetStringAsync(url).Result;
             }
-            catch (Exception ex) {
+            catch {
                 //CommonLogger.LogError("调用API:" + url + "时出错！", ex);
             }
             return responseText;
@@ -75,7 +75,7 @@ namespace Orion.CRM.WebTools
                 StringContent content = new StringContent(requestData, System.Text.Encoding.UTF8, "application/json");
                 responseText = new HttpClient().PostAsync(url, content).Result.Content.ReadAsStringAsync().Result;
             }
-            catch (Exception ex) {
+            catch {
                 //CommonLogger.LogError("调用API:" + url + "时出错！", ex);
             }
             return responseText;

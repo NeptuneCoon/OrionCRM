@@ -586,7 +586,7 @@ namespace Orion.CRM.WebApp.Controllers
                 Wechat = viewModel.Wechat?.Trim(),
                 QQ = viewModel.QQ?.Trim(),
                 Email = viewModel.Email,
-                Address = viewModel.Address,
+                Address = viewModel.Province + viewModel.City + viewModel.Address,
                 Inclination = viewModel.Inclination,
                 TalkCount = 0,
                 SourceFrom = viewModel.SourceFrom,
