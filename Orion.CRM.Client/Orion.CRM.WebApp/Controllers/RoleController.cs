@@ -320,11 +320,6 @@ namespace Orion.CRM.WebApp.Controllers
                         bool rpInsertResult = APIInvoker.Post<bool>(rolePermissionInsertApiUrl, rolePermissions);
                     }
 
-                    // 2.4移除该角色有关的菜单缓存
-                    //redisClient.Remove("left_menu_" + viewModel.Id);
-                    //redisClient.Remove("top_menu_" + viewModel.Id);
-                    //redisClient.Remove("left_all_menu_" + viewModel.Id);
-
                     TempData["result"] = true;
                 }
                 else {
