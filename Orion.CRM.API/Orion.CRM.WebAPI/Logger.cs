@@ -13,8 +13,13 @@ namespace Orion.CRM.WebAPI
         public static void Write(string content)
         {
             //string path = System.IO.Directory.GetCurrentDirectory();
-            content = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]" + content + "\r\n";
-            System.IO.File.AppendAllText(@"E:\website\crm_webapi\webapi_log.txt", content, System.Text.Encoding.UTF8);
+            try {
+                content = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]" + content + "\r\n";
+                System.IO.File.AppendAllText(@"E:\website\crm_webapi\webapi_log.txt", content, System.Text.Encoding.UTF8);
+            }
+            catch {
+                // ...
+            }
         }
 
         public static void RedisLog(string content)

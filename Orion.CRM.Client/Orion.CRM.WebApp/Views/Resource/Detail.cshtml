@@ -11,7 +11,12 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@Model.CustomerName - 资源详情</title>
+    <!-- Bootstrap -->
+    @*<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">*@
+    <!-- 自定义样式 -->
     <link href="/css/customer.css" rel="stylesheet" />
+    <!-- combox -->
+    @*<link href="/vendors/chosen.css" rel="stylesheet" />*@
 </head>
 <body>
     <div class="container">
@@ -215,13 +220,14 @@
                 </tbody>
             </table>
 
+            <!-- 添加洽谈记录 -->
             <table style="border-collapse:collapse;margin-top:20px">
                 <tr>
                     <td>
                         洽谈方式：
                     </td>
                     <td style="width:110px">
-                        <select id="talkWay" class="select">
+                        <select id="talkWay" class="select" onchange="talkWayChange()">
                             <option value="1">电话</option>
                             <option value="2">网聊</option>
                             <option value="3">面谈</option>
@@ -229,9 +235,20 @@
                             <option value="5">其他</option>
                         </select>
                     </td>
+                    <td style="display:none" id="facetalkTd">
+                        谈单人：
+                            <select class="select" id="faceTalkUser" style="width:120px">
+                            <option value="">请选择业务</option>
+                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                                foreach (var user in Model.OrgUsers) {
+                                    <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                }
+                            }
+                            </select>
+                    </td>
                     <td>小结：</td>
-                    <td style="width:320px">
-                        <textarea style="width:300px;height:30px" id="talkResult"></textarea>
+                    <td style="width:300px">
+                        <textarea style="width:280px;height:30px" id="talkResult"></textarea>
                     </td>
                     <td>
                         <input type="button" value="添加" style="cursor:pointer" class="button" onclick="addTalkRecord()" />
@@ -304,9 +321,22 @@
                     qq.focus();
                     res = false;
                 }
-
             }
             return res;
+        }
+
+        /*
+        * 洽谈方式下拉框切换事件
+        * 如果洽谈方式是"面谈"，则展示谈单人，否则隐藏谈单人
+        */
+        function talkWayChange() {
+            var talkWay = $('#talkWay').find("option:selected").val();
+            if (talkWay == "3") {
+                $('#facetalkTd').show();
+            }
+            else {
+                $('#facetalkTd').hide();
+            }
         }
 
         /*
@@ -316,9 +346,17 @@
             var resourceId = $('#ResourceId').val();
             var talkWay = $('#talkWay').find("option:selected").val();
             var talkResult = $('#talkResult').val();
+            var faceTalkUser = $('#faceTalkUser').find("option:selected").val();
+            if (talkWay != "3") {
+                faceTalkUser = ""; // 洽谈方式不是"面谈"将谈单人id置为空，以使后台自动填充当前登录用户id
+            }
             if (!talkResult) {
                 alert('洽谈小结不能为空，请填写。');
                 $('#talkResult').focus();
+            }
+            else if (talkWay == "3" && !faceTalkUser) {
+                alert('请选择谈单人！');
+                $('#faceTalkUser').focus();
             }
             else {
                 var status = $('#oldStatus').val();
@@ -327,7 +365,7 @@
                     alert('抱歉！该资源目前不属于你，你需要先将它划分给自己，然后刷新页面才能继续操作！');
                 }
                 else {
-                    $.post("/Resource/AddTalkRecord", { "resourceId": resourceId, "talkWay": talkWay, "talkResult": talkResult }, function (data) {
+                    $.post("/Resource/AddTalkRecord", { "resourceId": resourceId, "talkWay": talkWay, "talkResult": talkResult,"userId": faceTalkUser }, function (data) {
                         if (data) {
                             window.location.reload();
                         }

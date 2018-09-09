@@ -31,6 +31,9 @@ namespace Orion.CRM.WebApp.ViewComponents
                 // 取出角色下的菜单
                 if (appUser != null) {
                     IEnumerable<Models.Role.RoleMenuComplex> topMenus = await AppDTO.GetTopMenus(appUser.RoleId);
+                    if (topMenus == null || topMenus.ToList().Count <= 0) {
+                        Logger.Write("TopMenuViewComponent.InvokeAsync()方法内：topMenus=null");
+                    }
                     return View(topMenus);
                 }
             }

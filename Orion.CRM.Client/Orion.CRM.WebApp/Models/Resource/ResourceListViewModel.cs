@@ -39,6 +39,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<App_Data.SelectItem> InclinationList { get; set; }
         public List<Models.Source.Source> SourceList { get; set; } 
         public List<App_Data.SelectItem> TalkCountList { get; set; }
+        /// <summary>
+        /// 当前组织机构下的用户
+        /// </summary>
+        public List<Models.AppUser.AppUserComplex> OrgUsers { get; set; }
 
         /// <summary>
         /// 资源可见范围(4=公司资源，3=本项目资源，2=本组资源，1=本人资源)

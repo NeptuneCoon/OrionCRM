@@ -31,9 +31,10 @@ namespace Orion.CRM.WebApp.ViewComponents
                 // 取出角色下的菜单
                 if (appUser != null) {
                     int topId = await GetTopMenuId(appUser.RoleId);
-                    //Logger.Write("LeftMenuViewComponent.InvokeAsync()方法内：topId=" + topId);
                     IEnumerable<Models.Role.RoleMenuComplex> leftMenus = await AppDTO.GetLeftMenus(appUser.RoleId, topId);
-                    //Logger.Write("LeftMenuViewComponent.InvokeAsync()方法内：leftMenus=" + JsonConvert.SerializeObject(leftMenus));
+                    if (leftMenus == null || leftMenus.ToList().Count <= 0) {
+                        Logger.Write("LeftMenuViewComponent.InvokeAsync()方法内：leftMenus=null");
+                    }
                     return View(leftMenus);
                 }
             }

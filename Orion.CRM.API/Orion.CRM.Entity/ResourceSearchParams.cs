@@ -25,6 +25,7 @@ namespace Orion.CRM.Entity
         public int? inc { get; set; }
         public int? source { get; set; }
         public int? assign { get; set; }
+        public int? ft { get; set; } //facetalk(面谈人id)
         public List<int> tagids { get; set; }
         
         // 开始时间(指资源的创建时间)

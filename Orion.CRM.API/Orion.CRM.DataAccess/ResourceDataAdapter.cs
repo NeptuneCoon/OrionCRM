@@ -478,6 +478,11 @@ namespace Orion.CRM.DataAccess
                 sb.Append($" and CreateTime <='{param.end}'");
             }
 
+            // 谈单人(新需求)
+            if(param.ft != null && param.ft > 0) {
+                sb.Append($" and TalkWay=3 and TalkManId={param.ft}");//这里为什么设置TalkWay=3?因为按谈单人查询的话，洽谈方式一定是面谈(3)
+            }
+
             string sqlWhere = sb.ToString();
             return sqlWhere;
         }

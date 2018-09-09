@@ -113,6 +113,10 @@ namespace Orion.CRM.WebApp.Controllers
             // 获取用户自定义的标签
             viewModel.Tags = GetTagList(_AppUser.Id);
 
+            // 组织机构下的业务员
+            string apiUser = _AppConfig.WebApiHost + "/api/AppUser/GetUsersByOrgId?pageIndex=1&pageSize=2000&orgId=" + _AppUser.OrgId;
+            viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
+
             return View(viewModel);
         }
 
@@ -385,56 +389,59 @@ namespace Orion.CRM.WebApp.Controllers
             string resourceApiUrl = _AppConfig.WebApiHost + "/api/Resource/GetResourceById?id=" + id;
             Models.Resource.Resource resource = APIInvoker.Get<Models.Resource.Resource>(resourceApiUrl);
 
-            if (resource != null) { 
-                // 客户(资源)信息
-                viewModel.ResourceId = id;
-                viewModel.CustomerName = resource.CustomerName?.Trim();
-                viewModel.Mobile = resource.Mobile?.Trim();
-                viewModel.QQ = resource.QQ?.Trim();
-                viewModel.Wechat = resource.Wechat?.Trim();
-                viewModel.Tel = resource.Tel?.Trim();
-                viewModel.Email = resource.Email;
-                viewModel.SourceFrom = resource.SourceFrom;
-                viewModel.Status = resource.Status;
-                viewModel.Inclination = resource.Inclination;
-                viewModel.Sex = resource.Sex;
-                viewModel.Address = resource.Address;
-                viewModel.Remark = resource.Remark?.Trim();
-                // 便签
-                string apiNote = _AppConfig.WebApiHost + "/api/ResourceNote/GetNotesByResourceId?resourceId=" + id;
-                viewModel.ResourceNotes = APIInvoker.Get<List<Models.Resource.ResourceNote>>(apiNote);
-
-                // 洽谈记录
-                string apiRecord = _AppConfig.WebApiHost + "/api/TalkRecord/GetRecordsByResourceId?resourceId=" + id;
-                viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
-
-                // 签约记录
-                string apiSign = _AppConfig.WebApiHost + "/api/CustomerSign/GetSignByResourceId?resourceId=" + id;
-                viewModel.Sign = APIInvoker.Get<Models.Sign.CustomerSign>(apiSign);
-
-                // 资源状态&意向&来源
-                viewModel.StatusList = AppDTO.GetStatusFromJson();
-                viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
-                viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
-
-                // 资源编辑权限
-                var resourceHandlePermissions = GetResourceHandlePermissions(_AppUser.RoleId);
-                var editPermission = resourceHandlePermissions.FirstOrDefault(x => x.PermissionId == 8);
-                if (editPermission != null) {
-                    viewModel.ResourceEdit = true;
-                }
-
-                // 客户电话权限
-                var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
-                bool phoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
-                if (!phoneVisible) {
-                    viewModel.Mobile = AppDTO.EncryptPhone(viewModel.Mobile);
-                    viewModel.Tel = AppDTO.EncryptPhone(viewModel.Tel);
-                }
-            }
-            else {
+            if (resource == null)
                 return RedirectToAction("Http404", "Error");
+
+            // 客户(资源)信息
+            viewModel.ResourceId = id;
+            viewModel.CustomerName = resource.CustomerName?.Trim();
+            viewModel.Mobile = resource.Mobile?.Trim();
+            viewModel.QQ = resource.QQ?.Trim();
+            viewModel.Wechat = resource.Wechat?.Trim();
+            viewModel.Tel = resource.Tel?.Trim();
+            viewModel.Email = resource.Email;
+            viewModel.SourceFrom = resource.SourceFrom;
+            viewModel.Status = resource.Status;
+            viewModel.Inclination = resource.Inclination;
+            viewModel.Sex = resource.Sex;
+            viewModel.Address = resource.Address;
+            viewModel.Remark = resource.Remark?.Trim();
+            // 便签
+            string apiNote = _AppConfig.WebApiHost + "/api/ResourceNote/GetNotesByResourceId?resourceId=" + id;
+            viewModel.ResourceNotes = APIInvoker.Get<List<Models.Resource.ResourceNote>>(apiNote);
+
+            // 洽谈记录
+            string apiRecord = _AppConfig.WebApiHost + "/api/TalkRecord/GetRecordsByResourceId?resourceId=" + id;
+            viewModel.TalkRecords = APIInvoker.Get<List<Models.Resource.TalkRecord>>(apiRecord);
+
+            // 签约记录
+            string apiSign = _AppConfig.WebApiHost + "/api/CustomerSign/GetSignByResourceId?resourceId=" + id;
+            viewModel.Sign = APIInvoker.Get<Models.Sign.CustomerSign>(apiSign);
+
+            // 资源状态&意向&来源
+            viewModel.StatusList = AppDTO.GetStatusFromJson();
+            viewModel.InclinationList = AppDTO.GetInclinationsFromJson();
+            viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
+
+            // 资源编辑权限
+            var resourceHandlePermissions = GetResourceHandlePermissions(_AppUser.RoleId);
+            var editPermission = resourceHandlePermissions.FirstOrDefault(x => x.PermissionId == 8);
+            if (editPermission != null) {
+                viewModel.ResourceEdit = true;
             }
+
+            // 客户电话权限
+            var roleDataPermissions = this.GetRoleDataPermissions(_AppUser.RoleId);
+            bool phoneVisible = GetRoleResourcePhoneVisible(roleDataPermissions);
+            if (!phoneVisible) {
+                viewModel.Mobile = AppDTO.EncryptPhone(viewModel.Mobile);
+                viewModel.Tel = AppDTO.EncryptPhone(viewModel.Tel);
+            }
+
+            // 组织机构下的业务员
+            string apiUser = _AppConfig.WebApiHost + "/api/AppUser/GetUsersByOrgId?pageIndex=1&pageSize=2000&orgId=" + _AppUser.OrgId;
+            viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
+
 
             return View(viewModel);
         }
@@ -450,7 +457,7 @@ namespace Orion.CRM.WebApp.Controllers
                     if (resource.Status != 1 && resource.Status != 2 && (viewModel.Status == 1 || viewModel.Status ==2)) {
                         // 写入洽谈记录
                         string talkResult = _AppUser.RealName + "将此资源划入" + (viewModel.Status == 1 ? "公共库" : "垃圾库");
-                        AddTalkRecord(viewModel.ResourceId, 5, talkResult, 1);
+                        AddTalkRecord(viewModel.ResourceId, 5, talkResult, _AppUser.Id, 1);
                     }
 
                     // 资源属性
@@ -810,7 +817,7 @@ namespace Orion.CRM.WebApp.Controllers
             Models.AppUser.AppUserViewModel targetUser = APIInvoker.Get<Models.AppUser.AppUserViewModel>(userGetApi);
             if (targetUser != null) { 
                 string talkResult = _AppUser.RealName + "将此资源分配给" + targetUser.RealName;
-                AddTalkRecord(resourceId, 5, talkResult, 1);
+                AddTalkRecord(resourceId, 5, talkResult, _AppUser.Id, 1);
             }
 
             // 更新资源状态为洽谈中
@@ -863,16 +870,31 @@ namespace Orion.CRM.WebApp.Controllers
         #endregion
 
         #region 添加一条洽谈记录
+        /// <summary>
+        /// 添加一条洽谈记录
+        /// </summary>
+        /// <param name="resourceId">资源Id</param>
+        /// <param name="talkWay">洽谈方式</param>
+        /// <param name="talkResult">洽谈小结</param>
+        /// <param name="userId">洽谈人</param>
+        /// <param name="type">类型(0=用户添加，1=系统资源分配等操作)</param>
+        /// <returns></returns>
         [HttpPost]
-        public bool AddTalkRecord(int resourceId, int talkWay, string talkResult, int type = 0)
+        public bool AddTalkRecord(int resourceId, int talkWay, string talkResult, int userId, int type = 0)
         {
+            // 数据预处理
+            if(userId <= 0) {
+                if (talkWay == 3) return false; // 没有谈单人数据
+                else userId = _AppUser.Id;
+            }
+            // 插入数据库
             string apiUrl = _AppConfig.WebApiHost + "/api/TalkRecord/InsertTalkRecord";
             var record = new
             {
                 ResourceId = resourceId,
                 TalkWay = talkWay,
                 TalkResult = talkResult,
-                UserId = _AppUser.Id,
+                UserId = userId,
                 Type = type,//0=默认，表示用户添加的，1=资源分配操作
                 CreateTime = DateTime.Now
             };

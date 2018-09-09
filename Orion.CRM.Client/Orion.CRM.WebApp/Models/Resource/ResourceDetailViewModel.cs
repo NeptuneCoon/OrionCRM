@@ -22,6 +22,11 @@ namespace Orion.CRM.WebApp.Models.Resource
         public string Remark { get; set; }
         public bool ResourceEdit { get; set; }//是否允许编辑资源基本信息
 
+        /// <summary>
+        /// 当前组织机构下的用户
+        /// </summary>
+        public List<Models.AppUser.AppUserComplex> OrgUsers { get; set; }
+
         public Models.Sign.CustomerSign Sign { get; set; }
         public List<Models.Resource.ResourceNote> ResourceNotes { get; set; }
         public List<Models.Resource.TalkRecord> TalkRecords { get; set; }

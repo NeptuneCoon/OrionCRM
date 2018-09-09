@@ -219,7 +219,11 @@ namespace Orion.CRM.WebAPI.Controllers
                 return new APIDataResult(-1, null, "参数错误：roleId不能小于0");
             }
             IEnumerable<Entity.RoleMenuComplex> roleMenus = new RoleAppService().GetComplexRoleMenusByRoleId(roleId);//从数据库读取(角色下所有菜单)
-            var leftMenus = roleMenus.Where(x => x.Parent != null).OrderBy(x => x.SortNo);
+            var leftMenus = roleMenus?.Where(x => x.Parent != null)?.OrderBy(x => x.SortNo);
+            // 写入日志
+            if (leftMenus == null || leftMenus.ToList().Count <= 0) {
+                Logger.Write("MenuPageController.cs，方法名：GetAllLeftMenusFromRedis，返回结果leftMenus=null");
+            }
 
             APIDataResult dataResult = new APIDataResult(200, leftMenus);
             return dataResult;
@@ -289,7 +293,11 @@ namespace Orion.CRM.WebAPI.Controllers
                 return new APIDataResult(-1, null, "参数错误：roleId或topId不能小于0");
             }
             var roleMenus = new RoleAppService().GetComplexRoleMenusByRoleId(roleId);//从数据库读取(角色下所有菜单)
-            var leftMenus = roleMenus.Where(x => x.Parent == topId).OrderBy(x => x.SortNo);
+            var leftMenus = roleMenus?.Where(x => x.Parent == topId)?.OrderBy(x => x.SortNo);
+            // 写入日志
+            if (leftMenus == null || leftMenus.ToList().Count <= 0) {
+                Logger.Write("MenuPageController.cs，方法名：GetLeftMenusFromRedis，返回结果leftMenus=null");
+            }
 
             APIDataResult dataResult = new APIDataResult(200, leftMenus);
             return dataResult;
@@ -353,7 +361,11 @@ namespace Orion.CRM.WebAPI.Controllers
                 return new APIDataResult(-1, null, "参数错误：roleId不能小于0");
             }
             IEnumerable<Entity.RoleMenuComplex> roleMenus = new RoleAppService().GetComplexRoleMenusByRoleId(roleId);//从数据库读取(角色下所有菜单)
-            var topMenus = roleMenus.Where(x => x.Parent == null).OrderBy(x => x.SortNo);
+            var topMenus = roleMenus?.Where(x => x.Parent == null)?.OrderBy(x => x.SortNo);
+            // 写入日志
+            if (topMenus == null || topMenus.ToList().Count <= 0) {
+                Logger.Write("MenuPageController.cs，方法名：GetTopMenusFromRedis，返回结果topMenus=null");
+            }
 
             APIDataResult dataResult = new APIDataResult(200, topMenus);
             return dataResult;

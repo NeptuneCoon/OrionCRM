@@ -146,6 +146,19 @@
                             }
                         }
                     </select>
+                    <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
+                        <option value="">谈单人</option>
+                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                                foreach (var user in Model.OrgUsers) {
+                                    if (user.Id == Model.Params.ft) {
+                                        <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                    }
+                                    else {
+                                        <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                    }
+                                }
+                            }
+                    </select>
 
                     <div style="float:right">
                         <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled") >
@@ -258,6 +271,19 @@
                                 }
                             }
                         }
+                    </select>
+                    <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
+                        <option value="">谈单人</option>
+                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
+                                foreach (var user in Model.OrgUsers) {
+                                    if (user.Id == Model.Params.ft) {
+                                        <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                    }
+                                    else {
+                                        <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                    }
+                                }
+                            }
                     </select>
                     <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />至
                     <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
