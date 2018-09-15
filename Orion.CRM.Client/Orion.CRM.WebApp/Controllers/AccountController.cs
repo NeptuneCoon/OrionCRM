@@ -26,19 +26,6 @@ namespace Orion.CRM.WebApp.Controllers
         [TypeFilter(typeof(AnonymousFilter))]
         public IActionResult Login()
         {
-            /*
-             * 清除用户cookie（待全部清除后删除这段代码）
-            */
-            try {
-                _memoryCache.Remove("token_" + _AppUser.Id);
-                Response.Cookies.Delete("token");
-                Response.Cookies.Delete("user");
-                Response.Cookies.Delete("user_name");
-            }
-            catch {
-                //... 待上线后删除这段代码
-            }
-
             Models.Account.LoginViewModel viewModel = new Models.Account.LoginViewModel();
 
             if (TempData["ErrorInfo"] != null) { 
