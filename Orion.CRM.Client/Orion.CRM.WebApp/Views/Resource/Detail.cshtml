@@ -12,13 +12,11 @@
     <meta name="viewport" content="width=device-width" />
     <title>@Model.CustomerName - 资源详情</title>
     <script src="/vendors/jquery-1.9.1.js"></script>
-    <!-- Bootstrap -->
-    @*<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">*@
     <!-- 自定义样式 -->
     <link href="/css/customer.css" rel="stylesheet" />
     <!-- jquery chosen -->
-    <script src="/vendors/chosen.jquery.min.js"></script>
-    <link href="/vendors/chosen.css" rel="stylesheet" />
+    @*<script src="/vendors/chosen.jquery.min.js"></script>*@
+    @*<link href="/vendors/chosen.css" rel="stylesheet" />*@
 </head>
 <body>
     <div class="container">
@@ -241,8 +239,8 @@
                         谈单人：
                             <select class="chzn-select select" id="faceTalkUser">
                             <option value="">请选择业务</option>
-                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
-                                foreach (var user in Model.OrgUsers) {
+                            @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
+                                foreach (var user in Model.TalkMans) {
                                     <option value="@user.Id">@user.RealName/@user.UserName</option>
                                 }
                             }
@@ -428,12 +426,13 @@
 
             return result;
         }
-        $(function () {
-            // jquery-chosen下拉控件初始化
-            $(".chzn-select").chosen({
-                width: '122px', no_results_text: "没有业务员"
-            });
-        });
+        // jquery-chosen下拉控件初始化
+        //$(function () {
+            
+        //    $(".chzn-select").chosen({
+        //        width: '122px', no_results_text: "没有业务员"
+        //    });
+        //});
     </script>
 </body>
 </html>

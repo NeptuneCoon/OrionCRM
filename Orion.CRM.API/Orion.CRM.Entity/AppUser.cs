@@ -20,6 +20,7 @@ namespace Orion.CRM.Entity
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public int Enable { get; set; }
+        public int? IsTalkMan { get; set; }//是否是谈单人(0=不是，1=是)
 
 
         #region 扩展属性

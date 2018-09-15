@@ -379,5 +379,45 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
         }
+
+        /// <summary>
+        /// 批量设置谈单人，返回受影响的行数
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <param name="isTalkMan">0=不是谈单人，1=是谈单人</param>
+        /// <returns></returns>
+        [HttpGet]
+        public APIDataResult SetTalkMan(string userIds, int isTalkMan)
+        {
+            try {
+                int res = service.SetTalkMan(userIds, isTalkMan);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+
+        /// <summary>
+        /// 获取谈单人
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public APIDataResult GetTalkMans(int orgId)
+        {
+            try {
+                var res = service.GetTalkMans(orgId);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
     }
 }

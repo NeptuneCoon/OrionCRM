@@ -579,5 +579,18 @@ namespace Orion.CRM.WebApp.Controllers
             return userGroupId;
         }
         #endregion
+
+        [HttpPost]
+        public int SetTalkMan()
+        {
+            string userIds = Request.Form["userIds"];
+            string isTalkMan = Request.Form["isTalkMan"];
+            if (string.IsNullOrEmpty(userIds)) return 0;
+
+            string url = _AppConfig.WebApiHost + "/api/AppUser/SetTalkMan?userIds=" + userIds + "&isTalkMan=" + isTalkMan;
+            int count = APIInvoker.Get<int>(url);//受影响的行数
+
+            return count;
+        }
     }
 }

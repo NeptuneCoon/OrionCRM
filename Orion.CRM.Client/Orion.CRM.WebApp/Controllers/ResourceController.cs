@@ -113,9 +113,8 @@ namespace Orion.CRM.WebApp.Controllers
             // 获取用户自定义的标签
             viewModel.Tags = GetTagList(_AppUser.Id);
 
-            // 组织机构下的业务员
-            string apiUser = _AppConfig.WebApiHost + "/api/AppUser/GetUsersByOrgId?pageIndex=1&pageSize=2000&orgId=" + _AppUser.OrgId;
-            viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
+            // 谈单人列表
+            viewModel.TalkMans = AppDTO.GetTalkMans(_AppUser.OrgId);
 
             return View(viewModel);
         }
@@ -438,9 +437,8 @@ namespace Orion.CRM.WebApp.Controllers
                 viewModel.Tel = AppDTO.EncryptPhone(viewModel.Tel);
             }
 
-            // 组织机构下的业务员
-            string apiUser = _AppConfig.WebApiHost + "/api/AppUser/GetUsersByOrgId?pageIndex=1&pageSize=2000&orgId=" + _AppUser.OrgId;
-            viewModel.OrgUsers = APIInvoker.Get<List<Models.AppUser.AppUserComplex>>(apiUser);
+            // 谈单人
+            viewModel.TalkMans = AppDTO.GetTalkMans(_AppUser.OrgId);
 
 
             return View(viewModel);

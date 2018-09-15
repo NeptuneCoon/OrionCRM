@@ -340,6 +340,33 @@
       <CommandType>Text</CommandType>
       <Description>删除用户及相关数据(物理删除)</Description>
     </SqlMapDetail>
+
+    <!--批量设置谈单人-->
+    <SqlMapDetail>
+      <SqlName>SetTalkMan</SqlName>
+      <OriginalSqlString>
+        update [AppUser] set IsTalkMan=@IsTalkMan where Id in($UserIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量设置谈单人</Description>
+    </SqlMapDetail>
+
+
+    <!--获取谈单人-->
+    <SqlMapDetail>
+      <SqlName>GetTalkMans</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+			      select A.Id,A.UserName,A.RealName from [AppUser] A 
+			      left join [Organization] B on A.OrgId=B.Id
+            where Enable=1 and IsTalkMan=1 and OrgId=@OrgId
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据查询条件，分页获取用户</Description>
+    </SqlMapDetail>
   
 	</SqlMapConfigurations>
 </SqlMap>

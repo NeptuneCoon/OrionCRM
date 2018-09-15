@@ -7,7 +7,7 @@
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@section styles{ 
+@section styles{
     <style type="text/css">
         .select {
             padding: 3px 5px;
@@ -86,8 +86,17 @@
                             }
                         }
                     </select>
+                    <label style="margin-left:10px">谈单人</label>
+                    <select class="select" style="width:80px" name="tk" asp-for="@Model.Params.tk">
+                        <option>不限</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
                     <button type="submit" class="btn btn-default" style="margin-left:5px">
                         <i class="icon-search"></i> 查询
+                    </button>
+                    <button type="button" class="btn btn-default" style="margin-left:5px;" onclick="setTalkMan()">
+                        设置为谈单人
                     </button>
                 </div>
             </div>
@@ -97,6 +106,9 @@
         <table class="table table-bordered" style="margin-top:8px">
             <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" id="ckAll" onclick="checkToggle()" />
+                    </th>
                     <th>序号</th>
                     <th>用户名</th>
                     <th>真实姓名</th>
@@ -113,6 +125,7 @@
                     for (int i = 0; i < Model.Users.Count; i++) {
                         var item = Model.Users[i];
                         <tr>
+                            <td><input type="checkbox" name="ckUser" value="@item.Id" /></td>
                             <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                             <td style="width:100px">@item.UserName</td>
                             <td style="width:80px">@item.RealName</td>
@@ -129,11 +142,17 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/AppUser/Edit/@item.Id">编辑</a></li>
-                                        @if(item.Id != Model.LoginUserId) { 
+                                        @if (item.Id != Model.LoginUserId) {
                                             <li><a href="javascript:;" onclick="deleteConfirm(@item.Id, '@item.RealName')">删除</a></li>
                                         }
                                         <li><a href="/AppUser/ResetPassword/@item.Id">重置密码</a></li>
-                                        @if(item.ProjectId != null && item.GroupId != null) { 
+                                        @if (item.IsTalkMan == 0 || item.IsTalkMan == null) {
+                                            <li><a href="javascript:;" onclick="tobeTalkMan(@item.Id)">设置为谈单人</a></li>
+                                        }
+                                        else {
+                                            <li><a href="javascript:;" onclick="cancelTalkMan(@item.Id)">取消谈单人</a></li>
+                                        }
+                                        @if (item.ProjectId != null && item.GroupId != null) {
                                             <li class="divider"></li>
                                             <li><a href="/AppUser/ResourceExport/@item.Id">资源导出</a></li>
                                         }
@@ -145,7 +164,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="10" style="text-align:center">没有数据</td>
+                        <td colspan="11" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
@@ -168,8 +187,24 @@
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
                 <div style="margin-top:20px;display:none;text-align:right" id="div-action2">
-                    <a href="javascript:;" onclick="exportResource(this)" class="btn btn-inverse" >即刻导出</a>
+                    <a href="javascript:;" onclick="exportResource(this)" class="btn btn-inverse">即刻导出</a>
                     <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--警告弹窗-->
+<div class="modal modal-webpi" id="panelError" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="javascript:window.location.reload();">✖</a>
+    <div class="modal-contents">
+        <h2>操作提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanAlertContent"></span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="javascript:window.location.reload();" />
                 </div>
             </div>
         </div>
@@ -178,7 +213,12 @@
 
 @section Scripts{
     <script type="text/javascript">
-
+        // 全部取消/全部选中
+        function checkToggle() {
+            $('input[name="ckUser"]').each(function () {
+                $(this).prop('checked', $('#ckAll').prop('checked'))
+            });
+        }
         function deleteConfirm(id, realName) {
             var panel = $('#panelAlert');
             panel.attr("param-id", id);
@@ -213,7 +253,54 @@
         function exportResource(e) {
             var id = $(e).parents(".modal").attr("param-id");
             window.location = "/AppUser/ResourceExport/" + id;
+        }
 
+        function setTalkMan() {
+            var users = [];
+            $("input[name='ckUser']:checked").each(function () {
+                users.push($(this).val());
+            });
+            if (users.length > 0) {
+                $.post("/AppUser/SetTalkMan", { "userIds": users.join(","),"isTalkMan": "1" }, function (data) {
+                    if (data > 0) {
+                        $('#spanAlertContent').html('设置成功！');
+                        modalShow($('#panelError'));
+                    }
+                    else {
+                        $('#spanAlertContent').html('抱歉，设置失败！');
+                        modalShow($('#panelError'));
+                    }
+                });
+            }
+            else {
+                $('#spanAlertContent').html('请先选择一个用户！');
+                modalShow($('#panelError'));
+            }
+        }
+        function tobeTalkMan(userId) {
+            $.post("/AppUser/SetTalkMan", { "userIds": userId, "isTalkMan": "1" }, function (data) {
+                if (data > 0) {
+                    $('#spanAlertContent').html('设置成功！');
+                    modalShow($('#panelError'));
+                }
+                else {
+                    $('#spanAlertContent').html('抱歉，设置失败！');
+                    modalShow($('#panelError'));
+                }
+            });
+        }
+        function cancelTalkMan(userId) {
+            $.post("/AppUser/SetTalkMan", { "userIds": userId, "isTalkMan": "0" }, function (data) {
+                if (data > 0) {
+                    $('#spanAlertContent').html('设置成功！');
+                    modalShow($('#panelError'));
+                    window.location.reload();
+                }
+                else {
+                    $('#spanAlertContent').html('抱歉，设置失败！');
+                    modalShow($('#panelError'));
+                }
+            });
         }
     </script>
 }

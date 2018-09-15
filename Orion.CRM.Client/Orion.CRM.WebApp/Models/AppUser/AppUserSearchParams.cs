@@ -31,5 +31,9 @@ namespace Orion.CRM.WebApp.Models.AppUser
         /// 页容量
         /// </summary>
         public int ps { get; set; }
+        /// <summary>
+        /// 谈单人(0=不是，1=是)
+        /// </summary>
+        public int? tk { get; set; }
     }
 }

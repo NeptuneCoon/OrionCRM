@@ -148,8 +148,8 @@
                     </select>
                     <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
                         <option value="">谈单人</option>
-                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
-                                foreach (var user in Model.OrgUsers) {
+                            @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
+                                foreach (var user in Model.TalkMans) {
                                     if (user.Id == Model.Params.ft) {
                                         <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
                                     }
@@ -274,8 +274,8 @@
                     </select>
                     <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
                         <option value="">谈单人</option>
-                            @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
-                                foreach (var user in Model.OrgUsers) {
+                            @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
+                                foreach (var user in Model.TalkMans) {
                                     if (user.Id == Model.Params.ft) {
                                         <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
                                     }

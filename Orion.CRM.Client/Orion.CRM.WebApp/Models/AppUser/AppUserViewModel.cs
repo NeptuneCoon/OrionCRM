@@ -19,6 +19,7 @@ namespace Orion.CRM.WebApp.Models.AppUser
         public string Email { get; set; }
         public string Wechat { get; set; }
         public int Enable { get; set; }
+        public int? IsTalkMan { get; set; }//是否是谈单人(0=不是，1=是)
         #endregion
 
         #region 扩展属性

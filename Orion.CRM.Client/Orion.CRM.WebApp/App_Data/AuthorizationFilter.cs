@@ -40,6 +40,7 @@ namespace Orion.CRM.WebApp.App_Data
                     // 服务器端缓存中的token
                     object tokenInCache = _memoryCache.Get("token_" + cookieUser.Id);
 
+                    /*
                     // 比较token是否一致
                     if (tokenInCache == null) {
                         // 服务器端token丢失，有可能是服务器重启等非用户原因导致
@@ -65,6 +66,8 @@ namespace Orion.CRM.WebApp.App_Data
                             authorized = false;
                         }
                     }
+                    */
+                    if (tokenInCache == null) authorized = false;//重启服务器以让用户都掉线，然后清除用户cookie
                 }
                 if (!authorized) {
                     context.HttpContext.Response.Redirect(_appConfig.ApplicationHost + "/Account/Login");

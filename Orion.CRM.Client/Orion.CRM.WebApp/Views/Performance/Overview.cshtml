@@ -209,7 +209,7 @@
     <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">年度</span>
-            <div class="caption">本年业绩(2017-1-1至今)</div>
+            <div class="caption">本年业绩(@(DateTime.Now.Year + "-1-1")至今)</div>
             @if (ViewBag.YearSigns != null && ViewBag.YearSigns.Count > 0) {
                 <div id="year" class="graph" style="position:relative;"></div>
             }

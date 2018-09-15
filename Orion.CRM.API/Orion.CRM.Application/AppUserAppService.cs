@@ -138,5 +138,26 @@ namespace Orion.CRM.Application
         {
             return adapter.DeleteUser(userId);
         }
+
+        /// <summary>
+        /// 批量设置谈单人，返回受影响的行数
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <param name="isTalkMan">0=不是谈单人，1=是谈单人</param>
+        /// <returns></returns>
+        public int SetTalkMan(string userIds, int isTalkMan)
+        {
+            return adapter.SetTalkMan(userIds, isTalkMan);
+        }
+
+        /// <summary>
+        /// 获取谈单人
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public IEnumerable<Entity.TalkMan> GetTalkMans(int orgId)
+        {
+            return adapter.GetTalkMans(orgId);
+        }
     }
 }

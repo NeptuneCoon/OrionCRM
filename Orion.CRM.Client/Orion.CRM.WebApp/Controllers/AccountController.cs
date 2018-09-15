@@ -26,6 +26,14 @@ namespace Orion.CRM.WebApp.Controllers
         [TypeFilter(typeof(AnonymousFilter))]
         public IActionResult Login()
         {
+            /*
+             * 清除用户cookie（待全部清除后删除这段代码）
+            */
+            //_memoryCache.Remove("token_" + _AppUser.Id);
+            //Response.Cookies.Delete("token");
+            //Response.Cookies.Delete("user");
+            //Response.Cookies.Delete("user_name");
+
             Models.Account.LoginViewModel viewModel = new Models.Account.LoginViewModel();
 
             if (TempData["ErrorInfo"] != null) { 
@@ -65,7 +73,8 @@ namespace Orion.CRM.WebApp.Controllers
                         string tokenContent = appUser.UserName + "," + appUser.Password;
                         string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
                         var cookieOptions = new CookieOptions(){
-                            Expires = DateTime.Now.AddDays(_AppConfig.CookieExpire)
+                            //Expires = DateTime.Now.AddDays(_AppConfig.CookieExpire)
+                            Expires = DateTime.Now.AddHours(_AppConfig.CookieExpire) //改为小时制
                         };
                         Response.Cookies.Append("token", token, cookieOptions);
 

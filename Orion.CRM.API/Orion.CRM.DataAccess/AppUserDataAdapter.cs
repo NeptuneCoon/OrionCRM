@@ -42,6 +42,12 @@ namespace Orion.CRM.DataAccess
             if (searchParam.roleid != null && searchParam.roleid > 0) {
                 sqlWhere += $" and RoleId={searchParam.roleid}";
             }
+            if (searchParam.tk == 1) {
+                sqlWhere += $" and IsTalkMan={searchParam.tk}";
+            }
+            if (searchParam.tk == 0) {
+                sqlWhere += $" and (IsTalkMan=0 or IsTalkMan is null)";
+            }
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
 
             SqlParameter param = new SqlParameter("@OrgId", searchParam.oid);
@@ -166,6 +172,12 @@ namespace Orion.CRM.DataAccess
             if (searchParam.roleid != null && searchParam.roleid > 0) {
                 sqlWhere += $" and RoleId={searchParam.roleid}";
             }
+            if (searchParam.tk == 1) {
+                sqlWhere += $" and IsTalkMan={searchParam.tk}";
+            }
+            if (searchParam.tk == 0) {
+                sqlWhere += $" and (IsTalkMan=0 or IsTalkMan is null)";
+            }
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
 
             SqlParameter param = new SqlParameter("@OrgId", searchParam.oid);
@@ -284,6 +296,31 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@UserId", userId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery("AppUserDomain", "DeleteUser", param);
             return count;
+        }
+
+        /// <summary>
+        /// 批量设置谈单人，返回受影响的行数
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <param name="isTalkMan">0=不是谈单人，1=是谈单人</param>
+        /// <returns></returns>
+        public int SetTalkMan(string userIds, int isTalkMan)
+        {
+            if (string.IsNullOrEmpty(userIds)) return 0;
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("AppUserDomain", "SetTalkMan").Clone();
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$UserIds", userIds);
+
+            SqlParameter param = new SqlParameter("@IsTalkMan", isTalkMan);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+            return count;
+        }
+
+        public IEnumerable<Entity.TalkMan> GetTalkMans(int orgId)
+        {
+            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            IEnumerable<Entity.TalkMan> users = SqlMapHelper.GetSqlMapResult<Entity.TalkMan>("AppUserDomain", "GetTalkMans", param);
+            return users;
         }
     }
 }

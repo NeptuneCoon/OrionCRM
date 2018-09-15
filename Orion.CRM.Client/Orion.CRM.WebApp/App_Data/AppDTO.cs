@@ -380,5 +380,18 @@ namespace Orion.CRM.WebApp.App_Data
             }
         } 
         #endregion
+
+        /// <summary>
+        /// 获取谈单人
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        public static List<Models.AppUser.TalkMan> GetTalkMans(int orgId)
+        {
+            string apiUrl = _webApiHost + "/api/AppUser/GetTalkMans?orgId=" + orgId;
+            var talkMans = APIInvoker.Get<List<Models.AppUser.TalkMan>>(apiUrl);
+
+            return talkMans;
+        }
     }
 }
