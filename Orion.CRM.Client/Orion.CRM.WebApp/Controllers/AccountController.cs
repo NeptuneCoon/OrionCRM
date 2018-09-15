@@ -29,10 +29,15 @@ namespace Orion.CRM.WebApp.Controllers
             /*
              * 清除用户cookie（待全部清除后删除这段代码）
             */
-            //_memoryCache.Remove("token_" + _AppUser.Id);
-            //Response.Cookies.Delete("token");
-            //Response.Cookies.Delete("user");
-            //Response.Cookies.Delete("user_name");
+            try {
+                _memoryCache.Remove("token_" + _AppUser.Id);
+                Response.Cookies.Delete("token");
+                Response.Cookies.Delete("user");
+                Response.Cookies.Delete("user_name");
+            }
+            catch {
+                //... 待上线后删除这段代码
+            }
 
             Models.Account.LoginViewModel viewModel = new Models.Account.LoginViewModel();
 
@@ -83,12 +88,11 @@ namespace Orion.CRM.WebApp.Controllers
                         // 将username写入cookie
                         Response.Cookies.Append("user_name", appUser.UserName, cookieOptions);
 
-                        /* 注释掉，现在改为session 1小时过期机制
                         // 将token保存在服务器端缓存中(永不过期)
                         var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
                         _memoryCache.Set("token_" + appUser.Id, token, cacheOptons);
-                        */
-                        // 新的session方案
+                        
+                        // 加一层session：新的session方案，n小时不使用系统自动掉线
                         HttpContext.Session.SetString("token_" + appUser.Id, token);//将token写入session
 
                         return RedirectToAction("List", "Resource");
@@ -132,12 +136,20 @@ namespace Orion.CRM.WebApp.Controllers
                 string apiUrl = _AppConfig.WebApiHost + "/api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
                 bool result = APIInvoker.Get<bool>(apiUrl);
                 if (result) {
-                    // 更新token
+                    // 生成新token
                     string tokenContent = _AppUser.UserName + "," + viewModel.Password;
                     string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
-                    // 将token保存在服务器端缓存中(永不过期)
+                    // 更新缓存中的token：将token保存在服务器端缓存中(永不过期)
                     var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
                     _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
+                    // 更新cookie中的token
+                    var cookieOptions = new CookieOptions() {
+                        Expires = DateTime.Now.AddDays(_AppConfig.CookieExpire)
+                    };
+                    Response.Cookies.Append("token", token, cookieOptions);
+
+                    // 加一层session：新的session方案，n小时不使用系统自动掉线
+                    HttpContext.Session.SetString("token_" + viewModel.UserId, token);//将token写入session
                 }
                 TempData["result"] = result;
             }

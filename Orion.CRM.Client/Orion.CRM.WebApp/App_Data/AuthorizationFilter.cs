@@ -36,7 +36,7 @@ namespace Orion.CRM.WebApp.App_Data
                 else {
                     string decryptUser = DesEncrypt.Decrypt(userInCookie, _appConfig.DesEncryptKey);
                     var cookieUser = JsonConvert.DeserializeObject<Models.Account.AppUserModel>(decryptUser);
-
+                    string tokenInCache = _memoryCache.Get("token_" + cookieUser.Id)?.ToString(); //服务器缓存中的token
                     /*
                     // 服务器端缓存中的token
                     object tokenInCache = _memoryCache.Get("token_" + cookieUser.Id);
@@ -75,7 +75,8 @@ namespace Orion.CRM.WebApp.App_Data
                     if(tokenTypeArr != null)
                         tokenInSession = System.Text.Encoding.Default.GetString(tokenTypeArr);
 
-                    if (string.IsNullOrEmpty(tokenInSession) || tokenInCookie != tokenInSession) {
+                    // 3剑合一，认为已登录<cookie,session,cache>
+                    if (string.IsNullOrEmpty(tokenInSession) || tokenInCookie != tokenInSession || tokenInSession != tokenInCache) {
                         authorized = false;
                     }
                 }

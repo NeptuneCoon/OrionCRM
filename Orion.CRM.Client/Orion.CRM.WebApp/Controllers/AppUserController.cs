@@ -7,6 +7,7 @@ using Orion.CRM.WebTools;
 using Orion.CRM.WebApp.App_Data;
 using Microsoft.Extensions.Caching.Memory;
 using Orion.CRM.WebApp.Models.AppUser;
+using Microsoft.AspNetCore.Http;
 
 namespace Orion.CRM.WebApp.Controllers
 {
@@ -276,12 +277,15 @@ namespace Orion.CRM.WebApp.Controllers
                 string apiUrl = _AppConfig.WebApiHost + "/api/AppUser/UpdatePassword?userId=" + viewModel.UserId + "&password=" + viewModel.Password;
                 bool result = APIInvoker.Get<bool>(apiUrl);
                 if (result) {
-                    // 更新token
+                    // 生成新token
                     string tokenContent = _AppUser.UserName + "," + viewModel.Password;
                     string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
-                    // 将token保存在服务器端缓存中(永不过期)
+                    // 将token保存在服务器端缓存中(永不过期)<现在保存在session中>
                     var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
                     _memoryCache.Set("token_" + viewModel.UserId, token, cacheOptons);
+
+                    // 加一层session：新的session方案，n小时不使用系统自动掉线
+                    HttpContext.Session.SetString("token_" + viewModel.UserId, token);//将token写入session
                 }
                 TempData["result"] = result;
             }
