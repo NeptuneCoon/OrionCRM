@@ -68,13 +68,12 @@ namespace Orion.CRM.WebApp.Controllers
                         TempData["ErrorInfo"] = JsonConvert.SerializeObject(loginResult);
                         return RedirectToAction("Login", "Account");
                     }
-                    else {
+                    else {                        
                         // 生成一个token并写入cookie，该token以用户名+密码作为用户凭据
                         string tokenContent = appUser.UserName + "," + appUser.Password;
                         string token = DesEncrypt.Encrypt(tokenContent, _AppConfig.DesEncryptKey);
                         var cookieOptions = new CookieOptions(){
-                            //Expires = DateTime.Now.AddDays(_AppConfig.CookieExpire)
-                            Expires = DateTime.Now.AddHours(_AppConfig.CookieExpire) //改为小时制
+                            Expires = DateTime.Now.AddDays(_AppConfig.CookieExpire)
                         };
                         Response.Cookies.Append("token", token, cookieOptions);
 
@@ -84,11 +83,13 @@ namespace Orion.CRM.WebApp.Controllers
                         // 将username写入cookie
                         Response.Cookies.Append("user_name", appUser.UserName, cookieOptions);
 
+                        /* 注释掉，现在改为session 1小时过期机制
                         // 将token保存在服务器端缓存中(永不过期)
                         var cacheOptons = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(30));
                         _memoryCache.Set("token_" + appUser.Id, token, cacheOptons);
-                        // 将用户信息保存在服务器端缓存中(永不过期)
-                        //_memoryCache.Set("user_" + appUser.Id, appUser, cacheOptons);
+                        */
+                        // 新的session方案
+                        HttpContext.Session.SetString("token_" + appUser.Id, token);//将token写入session
 
                         return RedirectToAction("List", "Resource");
                     }

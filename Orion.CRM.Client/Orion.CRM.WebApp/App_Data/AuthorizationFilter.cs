@@ -37,10 +37,10 @@ namespace Orion.CRM.WebApp.App_Data
                     string decryptUser = DesEncrypt.Decrypt(userInCookie, _appConfig.DesEncryptKey);
                     var cookieUser = JsonConvert.DeserializeObject<Models.Account.AppUserModel>(decryptUser);
 
+                    /*
                     // 服务器端缓存中的token
                     object tokenInCache = _memoryCache.Get("token_" + cookieUser.Id);
 
-                    /*
                     // 比较token是否一致
                     if (tokenInCache == null) {
                         // 服务器端token丢失，有可能是服务器重启等非用户原因导致
@@ -67,7 +67,17 @@ namespace Orion.CRM.WebApp.App_Data
                         }
                     }
                     */
-                    if (tokenInCache == null) authorized = false;//重启服务器以让用户都掉线，然后清除用户cookie
+                    // 新的session方案
+                    // 1.取出cookie中的token 2.取出session中的cookie 3.比对是否一致
+                    string tokenInSession = null;
+                    byte[] tokenTypeArr;
+                    context.HttpContext.Session.TryGetValue("token_" + cookieUser.Id, out tokenTypeArr);
+                    if(tokenTypeArr != null)
+                        tokenInSession = System.Text.Encoding.Default.GetString(tokenTypeArr);
+
+                    if (string.IsNullOrEmpty(tokenInSession) || tokenInCookie != tokenInSession) {
+                        authorized = false;
+                    }
                 }
                 if (!authorized) {
                     context.HttpContext.Response.Redirect(_appConfig.ApplicationHost + "/Account/Login");

@@ -40,12 +40,12 @@ namespace Orion.CRM.WebApp
 
 
             // Adds a default in-memory implementation of IDistributedCache.
-            //services.AddDistributedMemoryCache();
+            services.AddDistributedMemoryCache();
 
             // Add Session services.
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
                 options.Cookie.HttpOnly = true;
             });
 
