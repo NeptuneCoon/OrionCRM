@@ -34,6 +34,15 @@ namespace Orion.CRM.WebApp.App_Data
         /// Memcache过期时间(秒)
         /// </summary>
         public int MemcachedExpire { get; set; }
+
+        /// <summary>
+        /// 是否开启错误信息日志记录
+        /// </summary>
+        public int ErrorLog { get; set; }
+        /// <summary>
+        /// 是否开启用户行为日志记录
+        /// </summary>
+        public int ActionLog { get; set; }
     }
 
     public struct Logging

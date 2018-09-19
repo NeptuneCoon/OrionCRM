@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orion.CRM.WebTools;
 using Orion.CRM.WebApp.App_Data;
 using Microsoft.Extensions.Caching.Redis;
+using Newtonsoft.Json;
 
 namespace Orion.CRM.WebApp.Controllers
 {
@@ -211,9 +212,11 @@ namespace Orion.CRM.WebApp.Controllers
                 bool result = APIInvoker.Post<bool>(apiUrl, role);
 
                 if (result) {
+                    Logger.Write($"**************************************************修改权限:roleId={viewModel.Id}**************************************************");
                     // 1.1删除旧的角色和菜单的关系
                     string delRoleMenuApiUrl = _AppConfig.WebApiHost + "/api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
                     int delRMCount = APIInvoker.Get<int>(delRoleMenuApiUrl);
+                    Logger.Write("1.1删除旧的角色和菜单的关系，delRMCount=" + delRMCount);
 
                     // 1.2获取角色和二级菜单的关系
                     List<object> roleMenuRelations = new List<object>();
@@ -262,16 +265,20 @@ namespace Orion.CRM.WebApp.Controllers
                             }
                         }
                     }
+                    Logger.Write("1.2+1.3获取角色和菜单的关系，roleMenuRelations=" + JsonConvert.SerializeObject(roleMenuRelations));
 
-                    // 1.4插入数据库
+                    // 1.4插入新的RoleMenu至数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
                         string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "/api/Role/RoleMenuBatchInsert";
-                        bool rmInsertUrl = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
+                        bool rmInsertResult = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
+                        Logger.Write("1.4插入新的RoleMenu至数据库，rmInsertResult=" + rmInsertResult);
                     }
 
-                    // 2.1删除角色和数据权限的关系
+
+                    // 2.1删除旧的角色和数据权限的关系
                     string delRolePermissionApiUrl = _AppConfig.WebApiHost + "/api/DataPermission/DeleteRoleDataPermissions?roleId=" + viewModel.Id;
                     int delRPCount = APIInvoker.Get<int>(delRolePermissionApiUrl);
+                    Logger.Write("2.1删除旧的角色和数据权限的关系，delRPCount=" + delRPCount);
 
                     // 2.2获取角色和数据权限的关系
                     List<object> rolePermissions = new List<object>();
@@ -313,14 +320,17 @@ namespace Orion.CRM.WebApp.Controllers
                             }
                         }
                     }
+                    Logger.Write("2.2获取新的数据权限，rolePermissions=" + JsonConvert.SerializeObject(rolePermissions));
 
-                    // 2.3插入数据库
+                    // 2.3插入新的数据权限至数据库
                     if (rolePermissions != null && rolePermissions.Count > 0) {
                         string rolePermissionInsertApiUrl = _AppConfig.WebApiHost + "/api/DataPermission/RoleDataPermissionBatchInsert";
                         bool rpInsertResult = APIInvoker.Post<bool>(rolePermissionInsertApiUrl, rolePermissions);
+                        Logger.Write("2.3插入新的数据权限至数据库，rpInsertResult=" + rpInsertResult);
                     }
 
                     TempData["result"] = true;
+                    Logger.Write($"**************************************************修改权限结束**************************************************");
                 }
                 else {
                     TempData["result"] = false;

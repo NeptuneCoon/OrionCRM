@@ -275,6 +275,8 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
             catch (Exception ex) {
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(roleMenus);
+                Logger.ErrorLog("RoleController", "RoleMenuBatchInsert", ex.Message + "|" + ex.InnerException.Message, json);
                 APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
                 return dataResult;
             }

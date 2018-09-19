@@ -43,13 +43,15 @@ namespace Orion.CRM.WebApp.App_Data
             displayName = displayName.Substring(0, p);
 
             // 如果本次操作的/Controller/Action在LeftMenu中，则说明操作的是菜单，需要写入Cookie，以便做菜单的状态保持
-            string name = context.HttpContext.Session.GetString("name");
+            //string name = context.HttpContext.Session.GetString("name");
             string[] nameArr = displayName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (nameArr != null && nameArr.Length > 0) {
                 string action = nameArr[nameArr.Length - 1];
                 string controller = nameArr[nameArr.Length - 2].Replace("Controller", "");
                 string menuUrl = "/" + controller + "/" + action;
 
+                //string ip = context.HttpContext.GetClientUserIP();
+                //string ip2 = context.HttpContext.Request.Headers["X-Real-IP"];
                 // 从cookie中取出appUser对象
                 string encryptUserInfo = context.HttpContext.Request.Cookies["user"];// cookie中加密的用户信息
                 if (string.IsNullOrEmpty(encryptUserInfo)) {
@@ -59,6 +61,10 @@ namespace Orion.CRM.WebApp.App_Data
                     AppUserModel appUser = JsonConvert.DeserializeObject<AppUserModel>(DesEncrypt.Decrypt(encryptUserInfo, _appConfig.DesEncryptKey));
                     // 取出角色下的菜单
                     if (appUser != null) {
+                        if (_appConfig.ActionLog == 1) {
+                            string queryString = context.HttpContext.Request.QueryString.Value;
+                            ActionLogWriter(menuUrl, queryString, appUser);
+                        }
                         var leftMenus = AppDTO.GetAllLeftMenus(appUser.RoleId);
                         if (leftMenus != null && leftMenus.Count > 0 ) {
                             var clickMenu = leftMenus.FirstOrDefault(x => x.URL == menuUrl);//点击的左侧菜单
@@ -87,6 +93,25 @@ namespace Orion.CRM.WebApp.App_Data
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 将用户行为数据写入日志数据库
+        /// </summary>
+        /// <param name="pageUrl"></param>
+        /// <param name="appUser"></param>
+        void ActionLogWriter(string pageUrl, string queryString, AppUserModel appUser)
+        {
+            Models.Log.ActionLog log = new Models.Log.ActionLog();
+            log.PageURL = pageUrl;
+            log.QueryString = queryString;
+            log.UserId = appUser.Id;
+            log.UserName = appUser.UserName;
+            log.RealName = appUser.RealName;
+            log.RoleId = appUser.RoleId;
+            log.RoleName = appUser.RoleName;
+
+            Logger.ActionLog(_appConfig.WebApiHost, log);
         }
 
     }

@@ -16,7 +16,7 @@ namespace Orion.CRM.WebApp.App_Data
 {
     /// <summary>
     /// web App运行环境Filter
-    /// 此Filter将会读取应用程序配置Appconfig，并将之传递给BaseController(暂时没有找到方法直接在BaseController中直接获取配置)
+    /// 此Filter将会读取应用程序配置Appconfig，并将之传递给BaseController(暂时没有找到方法在BaseController中直接获取配置)
     /// </summary>
     public class AppRuntimeFilter : ActionFilterAttribute
     {

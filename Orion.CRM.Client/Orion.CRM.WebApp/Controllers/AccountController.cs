@@ -82,6 +82,9 @@ namespace Orion.CRM.WebApp.Controllers
                         // 加一层session：新的session方案，n小时不使用系统自动掉线
                         HttpContext.Session.SetString("token_" + appUser.Id, token);//将token写入session
 
+                        // 写入登录日志
+                        WriteLoginLog(appUser);
+
                         return RedirectToAction("List", "Resource");
                     }
                 }
@@ -260,6 +263,17 @@ namespace Orion.CRM.WebApp.Controllers
             else {
                 return -1;//验证码无效
             }
+        }
+
+        void WriteLoginLog(Models.Account.AppUserModel appUser)
+        {
+            Models.Log.LoginLog log = new Models.Log.LoginLog();
+            log.UserId = appUser.Id;
+            log.UserName = appUser.UserName;
+            log.RealName = appUser.RealName;
+            log.IP = HttpContext.GetClientUserIP();
+
+            Logger.LoginLog(_AppConfig.WebApiHost, log);
         }
     }
 }

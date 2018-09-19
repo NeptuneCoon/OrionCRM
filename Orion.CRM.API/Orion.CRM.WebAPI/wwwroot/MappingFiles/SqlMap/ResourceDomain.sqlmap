@@ -185,16 +185,23 @@
       <SqlName>GetResourceCountByCondition</SqlName>
       <OriginalSqlString>
         <![CDATA[
-          select count(1) from (
-              select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,G.RealName as AppendMan,H.TagId from [Resource] A
-		          left join [ResourceProject] B on A.Id= B.ResourceId
-		          left join [ResourceGroup] C on A.Id=C.ResourceId
-		          left join [ResourceUser] D on A.Id=D.ResourceId
-				      left join [Project] E on B.ProjectId=E.Id
-				      left join [AppUser] F on D.UserId=F.Id
-				      left join [AppUser] G on A.AppendUserId=G.Id
-              left join [ResourceTag] H on A.Id=H.ResourceId
-	          )t1 where 1=1 $SqlWhere 
+          select count(1) from(
+	        select ROW_NUMBER() OVER (ORDER BY id desc) as RowNumber,*
+	        from(
+	         select distinct Id,CustomerName,Message,Sex,Mobile,Tel,Wechat,QQ,Email,Address,MsgTime,LastTime,Inclination,TalkCount,InvalidReason,SourceFrom,Status,AppendUserId,Remark,CreateTime,UpdateTime,
+	         ProjectId,GroupId,UserId,ProjectName,SaleMan,AppendMan,TagId
+	         from (
+		        select A.*,B.ProjectId,C.GroupId,D.UserId,E.ProjectName,F.RealName as SaleMan,G.RealName as AppendMan,H.TagId,I.TalkWay,I.UserId as TalkManId from [Resource] A
+		        left join [ResourceProject] B on A.Id= B.ResourceId
+		        left join [ResourceGroup] C on A.Id=C.ResourceId
+		        left join [ResourceUser] D on A.Id=D.ResourceId
+		        left join [Project] E on B.ProjectId=E.Id
+		        left join [AppUser] F on D.UserId=F.Id
+		        left join [AppUser] G on A.AppendUserId=G.Id
+		        left join [ResourceTag] H on A.Id=H.ResourceId
+		        left join [TalkRecord] I on A.Id=I.ResourceId
+	        )t1 where 1=1   $SqlWhere )t0
+        )t2
         ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

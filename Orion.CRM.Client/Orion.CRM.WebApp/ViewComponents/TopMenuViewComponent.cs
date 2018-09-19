@@ -32,7 +32,7 @@ namespace Orion.CRM.WebApp.ViewComponents
                 if (appUser != null) {
                     IEnumerable<Models.Role.RoleMenuComplex> topMenus = await AppDTO.GetTopMenus(appUser.RoleId);
                     if (topMenus == null || topMenus.ToList().Count <= 0) {
-                        Logger.Write("TopMenuViewComponent.InvokeAsync()方法内：topMenus=null");
+                       Logger.Write("TopMenuViewComponent.InvokeAsync()方法内：topMenus=null，参数：roleId=" + appUser.RoleId);
                     }
                     return View(topMenus);
                 }

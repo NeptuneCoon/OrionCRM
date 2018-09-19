@@ -5,7 +5,7 @@
 
     function cmbSelect(cmb, str) {
         for (var i = 0; i < cmb.options.length; i++) {
-            if (cmb.options[i].value == str) {
+            if (cmb.options[i].value === str) {
                 cmb.selectedIndex = i;
                 return;
             }
@@ -15,14 +15,19 @@
         var option = document.createElement("OPTION");
         cmb.options.add(option);
         option.innerText = str;
-        option.value = str;
+        if (str.indexOf('-') >= 0) {
+            option.value = '';
+        }
+        else {
+            option.value = str;
+        }
         option.obj = obj;
     }
 
     function changeCity() {
         if (!cmbArea) return;
         cmbArea.options.length = 0;
-        if (cmbCity.selectedIndex == -1) return;
+        if (cmbCity.selectedIndex === -1) return;
         var item = cmbCity.options[cmbCity.selectedIndex].obj;
         for (var i = 0; i < item.areaList.length; i++) {
             cmbAddOption(cmbArea, item.areaList[i], null);
@@ -32,9 +37,10 @@
     function changeProvince() {
         cmbCity.options.length = 0;
         cmbCity.onchange = null;
-        if (cmbProvince.selectedIndex == -1) return;
+        if (cmbProvince.selectedIndex === -1) return;
         var item = cmbProvince.options[cmbProvince.selectedIndex].obj;
         cmbAddOption(cmbCity, '--城市/区--', '');
+        if (!item.cityList) return;
         for (var i = 0; i < item.cityList.length; i++) {
             cmbAddOption(cmbCity, item.cityList[i].name, item.cityList[i]);
         }
@@ -49,13 +55,11 @@
     cmbSelect(cmbProvince, defaultProvince);
     changeProvince();
     cmbProvince.onchange = changeProvince;
-}
+};
 
 var provinceList = [
     {
-        name: '--省份--', cityList: [
-            { name: '--城市/区--', areaList: ['--县--'] }
-        ]
+        name: '--省份--',cityList:[]
     },
     {
         name: '北京', cityList: [

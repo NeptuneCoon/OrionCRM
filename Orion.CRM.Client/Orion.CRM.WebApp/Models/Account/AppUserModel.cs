@@ -31,7 +31,7 @@ namespace Orion.CRM.WebApp.Models.Account
         /// <summary>
         /// 外键属性，用户所属角色Id
         /// </summary>
-        //public int? RoleId { get; set; }
         public int RoleId { get; set; }
+        public string RoleName { get; set; }
     }
 }

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertActionLog</SqlName>
+      <OriginalSqlString>
+        insert into ActionLog(PageURL,QueryString,UserId,UserName,RealName,RoleId,RoleName) values(@PageURL,@QueryString,@UserId,@UserName,@RealName,@RoleId,@RoleName);
+        select cast(@@identity as bigint);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM_Log</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增用户行为日志</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertErrorLog</SqlName>
+      <OriginalSqlString>
+        insert into ErrorLog(Origin,ClassName,MethodName,Parameters,ErrorMsg) values(@Origin,@ClassName,@MethodName,@Parameters,@ErrorMsg);
+        select cast(@@identity as bigint);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM_Log</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增错误信息日志</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>InsertLoginLog</SqlName>
+      <OriginalSqlString>
+        insert into LoginLog(UserId,UserName,RealName,IP) values(@UserId,@UserName,@RealName,@IP);
+        select cast(@@identity as bigint);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM_Log</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增登录日志</Description>
+    </SqlMapDetail>
+   
+	</SqlMapConfigurations>
+</SqlMap>

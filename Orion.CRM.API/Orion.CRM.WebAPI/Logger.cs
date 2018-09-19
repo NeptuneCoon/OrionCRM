@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Orion.CRM.Application;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +27,25 @@ namespace Orion.CRM.WebAPI
         {
             content = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]" + content + "\r\n";
             System.IO.File.AppendAllText(@"E:\website\crm_webapi\redis_log.txt", content, System.Text.Encoding.UTF8);
+        }
+
+
+        public static void ErrorLog(string className, string methodName, string errorMsg, string parameters = "")
+        {
+            try {
+                Entity.CRMLog.ErrorLog log = new Entity.CRMLog.ErrorLog();
+                log.Origin = 0;
+                log.ClassName = className;
+                log.MethodName = methodName;
+                log.ErrorMsg = errorMsg;
+                log.Parameters = parameters;
+
+                CRMLogAppService service = new CRMLogAppService();
+                long cnt = service.InsertErrorLog(log);
+            }
+            catch (Exception ex) {
+
+            }
         }
     }
 }

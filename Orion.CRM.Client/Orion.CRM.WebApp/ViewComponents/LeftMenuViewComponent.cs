@@ -32,9 +32,6 @@ namespace Orion.CRM.WebApp.ViewComponents
                 if (appUser != null) {
                     int topId = await GetTopMenuId(appUser.RoleId);
                     IEnumerable<Models.Role.RoleMenuComplex> leftMenus = await AppDTO.GetLeftMenus(appUser.RoleId, topId);
-                    if (leftMenus == null || leftMenus.ToList().Count <= 0) {
-                        Logger.Write("LeftMenuViewComponent.InvokeAsync()方法内：leftMenus=null");
-                    }
                     return View(leftMenus);
                 }
             }
