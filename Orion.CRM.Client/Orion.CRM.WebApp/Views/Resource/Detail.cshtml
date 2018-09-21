@@ -238,7 +238,7 @@
                     <td style="display:none" id="facetalkTd">
                         谈单人：
                             <select class="chzn-select select" id="faceTalkUser">
-                            <option value="">请选择业务</option>
+                            <option value="">--请选择--</option>
                             @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
                                 foreach (var user in Model.TalkMans) {
                                     <option value="@user.Id">@user.RealName/@user.UserName</option>

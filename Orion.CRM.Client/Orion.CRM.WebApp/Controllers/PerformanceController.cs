@@ -178,7 +178,8 @@ namespace Orion.CRM.WebApp.Controllers
                 PageIndex = param.pi,
                 PageSize = param.ps,
                 TotalCount = totalCount,
-                RouteUrl = "/Performance/Sign"
+                RouteUrl = "/Performance/Sign",
+                QueryString = Request.QueryString.Value
             };
             ViewBag.PagerOption = pageOption;
 
