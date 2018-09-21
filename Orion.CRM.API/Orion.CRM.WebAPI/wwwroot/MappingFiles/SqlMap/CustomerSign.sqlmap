@@ -100,9 +100,10 @@
 		        (
 			        select A.*,B.OrgName from [CustomerSign] A 
               inner join Organization B on A.OrgId=B.Id
+              where OrgId=@OrgId $SqlWhere
 		        )as temp
           )as A 
-        where RowNumber > $PageSize*($PageIndex-1) and OrgId=@OrgId $SqlWhere
+        where RowNumber > $PageSize*($PageIndex-1) 
         ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -112,10 +113,10 @@
 
     <SqlMapDetail>
       <SqlName>GetSignCountByCondition</SqlName>
-      <OriginalSqlString>
-        select count(1) from [CustomerSign] A
-        inner join Organization B on A.OrgId=B.Id
-        where A.OrgId=1 $SqlWhere
+      <OriginalSqlString>    
+			    select count(1) from [CustomerSign] A 
+          inner join Organization B on A.OrgId=B.Id
+          where OrgId=@OrgId $SqlWhere
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

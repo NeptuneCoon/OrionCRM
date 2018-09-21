@@ -267,7 +267,7 @@ namespace Orion.CRM.WebApp.Controllers
 
         void WriteLoginLog(Models.Account.AppUserModel appUser)
         {
-            Models.Log.LoginLog log = new Models.Log.LoginLog();
+            Models.CRMLog.LoginLog log = new Models.CRMLog.LoginLog();
             log.UserId = appUser.Id;
             log.UserName = appUser.UserName;
             log.RealName = appUser.RealName;

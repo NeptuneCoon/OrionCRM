@@ -47,7 +47,7 @@ namespace Orion.CRM.WebApp
             }
         }
 
-        public static void ActionLog(string apiHost, Models.Log.ActionLog log)
+        public static void ActionLog(string apiHost, Models.CRMLog.ActionLog log)
         {
             try {
                 string apiUrl = apiHost + "/api/CRMLog/InsertActionLog";
@@ -58,7 +58,7 @@ namespace Orion.CRM.WebApp
             }
         }
 
-        public static void LoginLog(string apiHost, Models.Log.LoginLog log)
+        public static void LoginLog(string apiHost, Models.CRMLog.LoginLog log)
         {
             try {
                 string apiUrl = apiHost + "/api/CRMLog/InsertLoginLog";

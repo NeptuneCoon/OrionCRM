@@ -102,7 +102,7 @@ namespace Orion.CRM.WebApp.App_Data
         /// <param name="appUser"></param>
         void ActionLogWriter(string pageUrl, string queryString, AppUserModel appUser)
         {
-            Models.Log.ActionLog log = new Models.Log.ActionLog();
+            Models.CRMLog.ActionLog log = new Models.CRMLog.ActionLog();
             log.PageURL = pageUrl;
             log.QueryString = queryString;
             log.UserId = appUser.Id;
