@@ -1,0 +1,305 @@
+﻿@model List<Orion.CRM.WebApp.Models.Reminder.MessageReminder>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>提醒</h3>
+
+<div style="height:33px;margin-left:4px">
+    <a @(ViewBag.Nav==0?"class=nav-checked nav-first":"class=nav-normal nav-first") href="/Reminder/List?begin=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 23:59:59")&i=0">昨日</a>
+    <a @(ViewBag.Nav==1?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=1">今日</a>
+    <a @(ViewBag.Nav==2?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 23:59:59")&i=2">明日</a>
+    <a @(ViewBag.Nav==3?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=&end=&i=3">全部</a>
+</div>
+<div style="border:0px solid #ededed">
+    <img src="~/images/refresh.png" style="width:48px;margin-left:-6px;cursor:pointer" title="刷新" onclick="refresh()" />
+</div>
+
+<div class="row-fluid padd-bottom" style="display:flex;flex-wrap:wrap;align-items:flex-start;">
+    @if (Model != null && Model.Count > 0) {
+        foreach (var item in Model) {
+            <div class="card-box" id="cardbox@(item.Id)">
+                <div class="block">
+                    <div class="navbar navbar-inner block-header block-title-self">
+                        <div class="muted pull-left block-header-div">
+                            @if (item.Closed == 1) {
+                                @:已关闭
+                            }
+                            else if (item.RemindTime <= DateTime.Now) {
+                                @:已过期
+                            }
+                            else {
+                                <span style="color:#5C5C5C">@item.DisplayTime?.Replace("提醒", "")</span>
+                            }
+                        </div>
+                        <i class="icon-remove remove" onclick="delReminder(@item.Id)" style="display:none"></i>
+                    </div>
+                    <div class="block-content collapse in">
+                        <div class="span12">
+                            <div class="alert">
+                                <h4 class="alert-heading">提醒内容</h4>
+                                <div style="margin-top:8px">@item.MsgText</div>
+                            </div>
+                            <div class="alert alert-info">
+                                <h4 class="alert-heading">提醒时间</h4>
+                                <div style="margin-top:8px">2018-9-12 15:30</div>
+                            </div>
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:60px">姓名</td>
+                                        <td>
+                                            <a href="/Resource/Detail/@item.ObjectId" target="_blank">@item.CustomerName</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>所在地</td>
+                                        <td>@item.Address</td>
+                                    </tr>
+                                    <tr>
+                                        <td>手机</td>
+                                        <td>@item.Contact <img src="~/images/copy3.png" style="width:16px;cursor:pointer;display:none" title="复制" onclick="copyMobile()" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>最近洽谈</td>
+                                        <td>
+                                            @if (item.TalkRecords != null && item.TalkRecords.Count > 0) {
+                                                <ul>
+                                                    @for (int i = 0; i < item.TalkRecords.Count; i++) {
+                                                        var record = item.TalkRecords[i];
+                                                        <li @(i > 1 ? "style=display:none" : "")>
+                                                            @record.CreateTime.ToString("yyyy-MM-dd HH:mm:ss") @record.TalkResult
+                                                        </li>
+                                                    }
+                                                </ul>
+                                                @if (item.TalkRecords != null && item.TalkRecords.Count > 2) {
+                                                    <a href="javascript:;" class="more" onclick="showMore(this)" style="text-decoration:underline">更多</a>
+                                                    <a href="javascript:;" class="less" onclick="hideMore(this)" style="text-decoration:underline;display:none">收起</a>
+                                                }
+                                            }
+                                            else {
+                                                @:无实际洽谈记录
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="block-foot">
+                                <button class="btn btn-inverse btn-mini" onclick="delReminder(@item.Id)">删除</button>
+                                @if (item.RemindTime <= DateTime.Now || item.Closed == 1) {
+                                    <button class="btn btn-warning btn-mini" disabled="disabled" style="background-color:#999">关闭提醒</button>
+                                }
+                                else {
+                                    <button class="btn btn-warning btn-mini" onclick="showClosePanel(this, @item.Id,@item.ObjectId)">关闭提醒</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else {
+        <span>没有提醒</span>
+    }
+</div>
+<!--关闭提醒-->
+<div class="modal modal-webpi" id="panelClose" style="width:560px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closePanel()">✖</a>
+    <div class="modal-contents">
+        <h2>关闭提醒</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div style="height:130px">
+                <span style="padding:6px 5px;border-radius:3px;background-color: #e6f7ff;">是否进行了洽谈？洽谈小结？</span><br/>
+                <div style="display:flex;justify-content:flex-start;margin-top:6px;">
+                    <div id="talk">
+                        <textarea style="width:380px;height:70px;margin-top:10px" placeholder="请在此输入洽谈小结，若没有可不填" id="talkResult"></textarea>
+                    </div>
+                    <label class="nebula-label" style="height:70px;margin-top:40px;margin-left:4px" onclick="notalk()">
+                        <input class="nebula-radio" type="radio" value="0" name="notalking" />
+                        <span class="nebula-radioInput"></span>没有洽谈
+                    </label>
+                </div>
+                <!--未实现的功能-->
+                <div style="height:40px;padding-left:4px;display:none">
+                    <label class="nebula-label">
+                        <input class="nebula-radio" type="radio" value="1" name="disposition" />
+                        <span class="nebula-radioInput"></span>转入公共库
+                    </label>
+                    <br/>
+                    <label class="nebula-label">
+                        <input class="nebula-radio" type="radio" value="2" name="disposition" />
+                        <span class="nebula-radioInput"></span>转入垃圾库
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a data-dismiss="modal" class="btn" href="javascript:;" onclick="closePanel()">取消</a>
+            <a data-dismiss="modal" class="btn btn-primary" href="javascript:;" onclick="closeReminder()">OK</a>
+        </div>
+    </div>
+</div>
+<!--[关闭提醒]模态窗体操作的对象id-->
+<input type="hidden" id="reminderId" />
+<input type="hidden" id="resourceId" />
+<input type="hidden" id="userId" value="@ViewBag.UserId" />
+@section styles{ 
+    <style type="text/css">
+        .card-box {
+            width: 311px;
+            margin-right: 10px;
+            margin-bottom:10px;
+            border:3px solid #fff;
+        }
+        .remove {
+            float: right;
+            margin-top: 8px;
+            margin-right: -8px;
+            cursor: pointer
+        }
+        .nav-first {
+            margin-left: 3px !important;
+        }
+        .nav-normal {
+            padding: 4px 20px;
+            border: 1px solid #BDBDBD;
+            background-color: #BDBDBD;
+            color: #fff;
+            opacity: .65;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: -4px;
+            border-left: 1px solid #fff
+        }
+        .nav-checked {
+            padding: 4px 20px;
+            border-top: 1px solid #BDBDBD;
+            border-left: 1px solid #fff;
+            margin-left: -4px;
+            text-decoration: none
+        }
+    </style>
+}
+@section scripts{
+    <script type="text/javascript">
+        /*
+         * 洽谈记录的折叠展开控制
+        */
+        function showMore(e) {
+            $(e).parent().find("ul>li").show();
+            $(e).hide();
+            $(e).parent().find(".less").show();
+        }
+        function hideMore(e) {
+            $(e).parent().find("ul li:gt(1)").hide();
+            $(e).hide();
+            $(e).parent().find(".more").show();
+        }
+        /*
+         * 弹出关闭提醒面板
+        */ 
+        function showClosePanel(e, reminderId, resourceId) {
+            resetClosePanel();
+            modalShow($('#panelClose'));
+
+            $('#reminderId').val(reminderId);
+            $('#resourceId').val(resourceId);
+
+            // 虚边框效果
+            $(e).parents(".card-box").css("border-color", "#faa732");
+            $(e).parents(".card-box").css("border-style","dotted");
+        }
+        function closePanel() {
+            // 移除虚边框
+            $('#cardbox' + $('#reminderId').val()).css("border-color", "#fff");
+
+            $('#reminderId').val('');
+            $('#resourceId').val('');
+            closeModal(document.getElementById('panelClose'));
+            $('#panelClose').hide();          
+        }
+        /*
+         * 没有洽谈
+        */
+        function notalk() {
+            $('#talk').animate({ width: '0px', opacity: '0' }, 'fast');
+        }
+
+        // 重置关闭面板
+        function resetClosePanel() {
+            $('#talkResult').val('');
+            $('#talk').animate({ width: '398px', opacity: '1' }, 0);
+            $("input[name='disposition'],input[name='notalking']").prop("checked", false);
+        }
+
+        /*
+         * 关闭提醒
+        */
+        function closeReminder(id) {
+            // 写入洽谈记录
+            addTalkRecord(function () {
+                // 关闭提醒
+                var id = $('#reminderId').val();
+                $.get("/Reminder/CloseReminder?id=" + id, null, function (result) {
+                    if (result) {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('抱歉，操作失败！');
+                    }
+                });
+            });
+        }
+        /*
+         * 删除提醒
+        */
+        function delReminder(id) {
+            // 虚边框效果
+            $('#cardbox' + id).css("border-color", "#faa732");
+            $('#cardbox' + id).css("border-style", "dotted");
+            
+            // 删除(就为了这个虚边框效果我加了个timeout..)
+            setTimeout(function () {
+                $.get("/Reminder/DeleteReminder?id=" + id, null, function (result) {
+                    if (result) {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('抱歉，操作失败！');
+                        // 移除虚边框
+                        $('#cardbox' + id).css("border-color", "#fff");
+                    }
+                });
+            },200);
+        }
+        /*
+        * 添加洽谈记录
+        */
+        function addTalkRecord(callback) {
+            var userId = $('#userId').val();
+            var resourceId = $('#resourceId').val();
+            var talkResult = $('#talkResult').val();
+            if (talkResult) {
+                $.post("/Resource/AddTalkRecord", { "resourceId": resourceId, "talkWay": 5, "talkResult": talkResult, "userId": userId }, function (data) {
+                    if (data) {
+                        callback();
+                    }
+                    else {
+                        alert('抱歉，发生未知错误，请重试！');
+                    }
+                });
+            }
+            else {
+                callback();
+            }
+        }
+        // 刷新
+        function refresh() {
+            window.location.reload();
+        }
+    </script>
+}
+
+

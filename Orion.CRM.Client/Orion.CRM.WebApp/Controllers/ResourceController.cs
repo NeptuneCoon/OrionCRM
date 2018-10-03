@@ -116,6 +116,11 @@ namespace Orion.CRM.WebApp.Controllers
             // 谈单人列表
             viewModel.TalkMans = AppDTO.GetTalkMans(_AppUser.OrgId);
 
+            // 今日提醒数
+            string begin = DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00";
+            string end = DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59";
+            viewModel.ReminderCount = AppDTO.GetReminderCount(_AppUser.Id, begin, end);
+
             return View(viewModel);
         }
 
@@ -405,6 +410,11 @@ namespace Orion.CRM.WebApp.Controllers
             viewModel.Sex = resource.Sex;
             viewModel.Address = resource.Address;
             viewModel.Remark = resource.Remark?.Trim();
+
+            // 提醒(type=0)
+            string apiReminder = _AppConfig.WebApiHost + "/api/MessageReminder/GetRemindersByObjectId?type=0&objectId=" + id;
+            viewModel.Reminders = APIInvoker.Get<List<Models.Reminder.MessageReminder>>(apiReminder);
+
             // 便签
             string apiNote = _AppConfig.WebApiHost + "/api/ResourceNote/GetNotesByResourceId?resourceId=" + id;
             viewModel.ResourceNotes = APIInvoker.Get<List<Models.Resource.ResourceNote>>(apiNote);
@@ -859,9 +869,9 @@ namespace Orion.CRM.WebApp.Controllers
         #endregion
 
         #region 资源是否存在
-        public bool IsExist(string mobile, string tel, string qq, string wechat)
+        public bool IsExist(string projectId, string mobile, string tel, string qq, string wechat)
         {
-            string apiUrl = _AppConfig.WebApiHost + $"/api/Resource/IsResourceExist?orgId={_AppUser.OrgId}&mobile={mobile}&tel={tel}&qq={qq}&wechat={wechat}";
+            string apiUrl = _AppConfig.WebApiHost + $"/api/Resource/IsResourceExist?orgId={_AppUser.OrgId}&projectId={projectId}&mobile={mobile}&tel={tel}&qq={qq}&wechat={wechat}";
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         } 

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+
+    <SqlMapDetail>
+      <SqlName>InsertReminder</SqlName>
+      <OriginalSqlString>
+        insert into MessageReminder(MsgText,RemindTime,UserId,Closed,Type,ObjectId,CreateTime,UpdateTime) values(@MsgText,@RemindTime,@UserId,@Closed,@Type,@ObjectId,@CreateTime,@UpdateTime);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增提醒</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateReminder</SqlName>
+      <OriginalSqlString>
+        update MessageReminder set MsgText=@MsgText,RemindTime=@RemindTime,Closed=@Closed,UpdateTime=@UpdateTime
+        where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改提醒</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteReminder</SqlName>
+      <OriginalSqlString>
+        delete from MessageReminder where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>物理删除提醒</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>CloseReminder</SqlName>
+      <OriginalSqlString>
+        update MessageReminder set Closed=1,UpdateTime=@UpdateTime
+        where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>关闭提醒</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRemindersByUserId</SqlName>
+      <OriginalSqlString>
+        select * from MessageReminder where UserId=@UserId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按UserId查询</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRemindersByUserIdDate</SqlName>
+      <OriginalSqlString>
+        select A.Id,A.MsgText,A.RemindTime,A.UserId,A.Closed,A.Type,A.ObjectId,B.CustomerName,B.Address,B.Mobile,B.Tel,B.Wechat,B.QQ,C.ResourceId,C.TalkResult,C.CreateTime from MessageReminder A
+        inner join [Resource] B on A.ObjectId=B.Id
+        left join (select * from [TalkRecord] where Type=0) C on A.ObjectId=C.ResourceId
+        where A.Type=0 and A.UserId=@UserId and A.RemindTime between @BeginDate and @EndDate
+        order by RemindTime desc
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按UserId和提醒时间查询可用的提醒</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetReminderCountByUserIdDate</SqlName>
+      <OriginalSqlString>
+        select count(1) from MessageReminder A
+        where A.Type=0 and A.UserId=@UserId and A.RemindTime between @BeginDate and @EndDate
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按UserId和日期获取提醒个数</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetRemindersByObjectId</SqlName>
+      <OriginalSqlString>
+        select * from MessageReminder where [Type]=@Type and [ObjectId]=@ObjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按ObjectId查询提醒</Description>
+    </SqlMapDetail>
+
+
+  </SqlMapConfigurations>
+</SqlMap>

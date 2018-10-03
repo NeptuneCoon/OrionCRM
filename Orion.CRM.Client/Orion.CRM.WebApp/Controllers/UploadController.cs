@@ -318,7 +318,7 @@ namespace Orion.CRM.WebApp.Controllers
 
                 if (orgId > 0 && projectId > 0) {
                     foreach (var data in datas) {
-                        bool isExist = IsResourceExist(data.Mobile, data.Tel, data.QQ, data.Wechat);
+                        bool isExist = IsResourceExist(projectId, data.Mobile, data.Tel, data.QQ, data.Wechat);
                         if (!isExist) {
                             // 插入数据库(为了避免重复，一条一条插入)
                             int id = InsertResource(data);
@@ -374,9 +374,9 @@ namespace Orion.CRM.WebApp.Controllers
         }
 
         #region 资源是否存在
-        bool IsResourceExist(string mobile, string tel, string qq, string wechat)
+        bool IsResourceExist(int projectId, string mobile, string tel, string qq, string wechat)
         {
-            string apiUrl = _AppConfig.WebApiHost + $"/api/Resource/IsResourceExist?orgId={_AppUser.OrgId}&mobile={mobile}&tel={tel}&qq={qq}&wechat={wechat}";
+            string apiUrl = _AppConfig.WebApiHost + $"/api/Resource/IsResourceExist?orgId={_AppUser.OrgId}&projectId={projectId}&mobile={mobile}&tel={tel}&qq={qq}&wechat={wechat}";
             bool result = APIInvoker.Get<bool>(apiUrl);
             return result;
         }

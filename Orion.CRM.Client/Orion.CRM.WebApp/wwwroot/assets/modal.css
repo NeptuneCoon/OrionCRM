@@ -1,4 +1,5 @@
-﻿.modal {
+﻿/*自定义的模态窗体，注意不是bootstrap中的模态窗体*/
+.modal {
     background: none repeat scroll 0 0 #fff;
     /*border: 1px solid #808080;*/
     box-shadow: 0 0 1em #666;
@@ -31,8 +32,8 @@
 }
 
 .modal h2 {
-    font-size: 1em;
-    font-weight: bold;
+    font-weight:normal;
+    font-size: 1.2em;
     color: #000;
     line-height: 1.2em;
 }

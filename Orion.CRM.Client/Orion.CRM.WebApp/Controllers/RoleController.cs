@@ -212,7 +212,7 @@ namespace Orion.CRM.WebApp.Controllers
                 bool result = APIInvoker.Post<bool>(apiUrl, role);
 
                 if (result) {
-                    Logger.Write($"**************************************************修改权限:roleId={viewModel.Id}**************************************************");
+                    Logger.Write($"**************************************************修改权限开始:roleId={viewModel.Id}**************************************************");
                     // 1.1删除旧的角色和菜单的关系
                     string delRoleMenuApiUrl = _AppConfig.WebApiHost + "/api/Role/DeleteRoleMenuByRoleId?roleId=" + viewModel.Id;
                     int delRMCount = APIInvoker.Get<int>(delRoleMenuApiUrl);

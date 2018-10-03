@@ -393,5 +393,14 @@ namespace Orion.CRM.WebApp.App_Data
 
             return talkMans;
         }
+
+        // 获取提醒数
+        public static int GetReminderCount(int userId, string begin, string end)
+        {
+            string apiUrl = _webApiHost + $"/api/MessageReminder/GetReminderCountByUserIdDate?userId={userId}&begin={begin}&end={end}";
+            int count = APIInvoker.Get<int>(apiUrl);
+
+            return count;
+        }
     }
 }

@@ -173,7 +173,7 @@
 		        left join [ResourceTag] H on A.Id=H.ResourceId
 		        left join [TalkRecord] I on A.Id=I.ResourceId
 	        )t1 where 1=1   $SqlWhere )t0
-        )t2 where RowNumber >  $PageSize*($PageIndex-1) 
+        )t2 where RowNumber >  $PageSize*($PageIndex-1) order by id desc 
         ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -225,7 +225,10 @@
     <SqlMapDetail>
       <SqlName>IsResourceExist</SqlName>
       <OriginalSqlString>
-        select count(1) from [Resource] A inner join [ResourceOrganization] B on A.Id=B.ResourceId where B.OrgId=@OrgId and($SqlWhere)
+        select count(1) from [Resource] A 
+        inner join [ResourceOrganization] B on A.Id=B.ResourceId
+        inner join [ResourceProject] C on A.Id=C.ResourceId
+        where B.OrgId=@OrgId and C.ProjectId=@ProjectId and($SqlWhere)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

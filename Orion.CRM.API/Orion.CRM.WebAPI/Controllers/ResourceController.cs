@@ -191,10 +191,10 @@ namespace Orion.CRM.WebAPI.Controllers
 
         // 判断资源是否存在
         [HttpGet]
-        public APIDataResult IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        public APIDataResult IsResourceExist(int orgId, int projectId, string mobile, string tel, string qq, string wechat)
         {
             try {
-                bool result = service.IsResourceExist(orgId, mobile, tel, qq, wechat);
+                bool result = service.IsResourceExist(orgId, projectId, mobile, tel, qq, wechat);
                 APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }

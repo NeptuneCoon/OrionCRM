@@ -28,6 +28,7 @@ namespace Orion.CRM.WebApp.Models.Resource
         public List<Models.AppUser.TalkMan> TalkMans { get; set; }
 
         public Models.Sign.CustomerSign Sign { get; set; }
+        public List<Models.Reminder.MessageReminder> Reminders { get; set; }
         public List<Models.Resource.ResourceNote> ResourceNotes { get; set; }
         public List<Models.Resource.TalkRecord> TalkRecords { get; set; }
         public List<App_Data.SelectItem> StatusList { get; set; }

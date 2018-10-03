@@ -17,6 +17,11 @@
     <!-- jquery chosen -->
     @*<script src="/vendors/chosen.jquery.min.js"></script>*@
     @*<link href="/vendors/chosen.css" rel="stylesheet" />*@
+
+    <!--pickday-->
+    <link href="/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <script src="/assets/pikaday/moment.min.js"></script>
+    <script src="/assets/pikaday/pikaday.js"></script>
 </head>
 <body>
     <div class="container">
@@ -30,7 +35,7 @@
                 <div class="self-alert">抱歉，保存失败，请重试！</div>
             }
         }
-
+        <!--客户信息-->
         <div class="title gradient">客户信息</div>
         <div class="content">
             <form action="/Resource/DetailHandler" method="post">
@@ -173,13 +178,123 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4" style="text-align:center;padding-top:10px">
-                            <input type="button" value="保存信息" onclick="customerSave()" class="button" style="cursor:pointer" />
+                        <td colspan="4" style="text-align:center;padding-top:10px;">
+                            <input type="button" value="保存信息" onclick="customerSave()" class="button" style="cursor:pointer;margin-left:24px" />
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
+
+        <!--添加提醒-->
+        <div class="title gradient">添加提醒</div>
+        <div class="content">
+            <table class="table-talk" style="">
+                <thead>
+                    <tr>
+                        <th style="width:274px;text-align:left">提醒内容</th>
+                        <th style="width:250px;text-align:left">提醒时间</th>
+                        <th style="width:60px;text-align:left">状态</th>
+                        <th style="text-align:left">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Reminders != null && Model.Reminders.Count > 0) {
+                        foreach (var reminder in Model.Reminders) {
+                            <tr>
+                                <td @(reminder.Closed==1?"style=text-decoration:line-through":"")>
+                                    @reminder.MsgText
+                                </td>
+                                <td @(reminder.Closed==1?"style=text-decoration:line-through":"")>
+                                    @reminder.RemindTime.ToString("yyyy-MM-dd HH:mm")
+                                    @if(!string.IsNullOrEmpty(reminder.DisplayTime)) {
+                                        @:<span style="font-style:italic;color:forestgreen">(@reminder.DisplayTime)</span>
+                                    }
+                                </td>
+                                <td @(reminder.Closed == 1 ? "style=text-decoration:line-through" : "")>
+                                    @if (reminder.Closed == 1) {
+                                        <span>已关闭</span>
+                                    }
+                                    else if(reminder.RemindTime < DateTime.Now) {
+                                        <span>已过期</span>
+                                    }
+                                    else {
+                                        <span style="color:green">正常</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (reminder.Closed == 0) {
+                                        <a href="javascript:;" onclick="closeReminder(@reminder.Id)">关闭</a>
+                                    }
+                                    else {
+                                        <a href="javascript:;" onclick="delReminder(@reminder.Id)">删除</a>
+                                    }
+                                    @*<a href="javascript:;" onclick="putoffReminder()">稍后提醒</a>*@
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <table>
+                <tr>
+                    <td>
+                        <textarea style="width:262px;height:30px" id="msgText"></textarea>
+                    </td>
+                    <td>
+                        <input type="text" id="remindDate" class="input" placeholder="提醒日期" style="width:90px" autocomplete="off" reg="regDate" />
+                    </td>
+                    <td>
+                        <select class="select" style="min-width:unset;width:65px" id="remindHour">
+                            <option value="">时</option>
+                            <option value="0">0时</option>
+                            <option value="1">1时</option>
+                            <option value="2">2时</option>
+                            <option value="3">3时</option>
+                            <option value="4">4时</option>
+                            <option value="5">5时</option>
+                            <option value="6">6时</option>
+                            <option value="7">7时</option>
+                            <option value="8">8时</option>
+                            <option value="9">9时</option>
+                            <option value="10">10时</option>
+                            <option value="11">11时</option>
+                            <option value="12">12时</option>
+                            <option value="13">13时</option>
+                            <option value="14">14时</option>
+                            <option value="15">15时</option>
+                            <option value="16">16时</option>
+                            <option value="17">17时</option>
+                            <option value="18">18时</option>
+                            <option value="19">19时</option>
+                            <option value="20">20时</option>
+                            <option value="21">21时</option>
+                            <option value="22">22时</option>
+                            <option value="23">23时</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="select" style="min-width:unset;width:65px" id="remindMinute">
+                            <option value="0">0分</option>
+                            <option value="5">5分</option>
+                            <option value="10">10分</option>
+                            <option value="15">15分</option>
+                            <option value="20">20分</option>
+                            <option value="25">25分</option>
+                            <option value="30">30分</option>
+                            <option value="35">35分</option>
+                            <option value="40">40分</option>
+                            <option value="45">45分</option>
+                            <option value="50">50分</option>
+                            <option value="55">55分</option>
+                        </select>
+                    </td>
+                    <td><input type="button" value="添加" style="cursor:pointer;margin-left:5px" class="button" onclick="addReminder()" /></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--洽谈记录-->
         <div class="title gradient">洽谈记录</div>
         <div class="content">
             <table class="table-talk" style="width:700px">
@@ -214,7 +329,7 @@
                     }
                     else {
                         <tr>
-                            <td colspan="5">还没有洽谈记录</td>
+                            <td colspan="5">无洽谈记录</td>
                         </tr>
                     }
                 </tbody>
@@ -237,17 +352,17 @@
                     </td>
                     <td style="display:none" id="facetalkTd">
                         谈单人：
-                            <select class="chzn-select select" id="faceTalkUser">
+                        <select class="chzn-select select" id="faceTalkUser">
                             <option value="">--请选择--</option>
                             @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
                                 foreach (var user in Model.TalkMans) {
                                     <option value="@user.Id">@user.RealName/@user.UserName</option>
                                 }
                             }
-                            </select>
+                        </select>
                     </td>
                     <td>小结：</td>
-                    <td style="width:300px">
+                    <td style="width:293px">
                         <textarea style="width:280px;height:30px" id="talkResult"></textarea>
                     </td>
                     <td>
@@ -275,6 +390,7 @@
         var regMobile = /^1[3,4,5,7,8]\d{9}$/;
         var regNum = /^\d+$/;//数字
         var regWechat = /^[a-zA-Z\d_-]{3,}$/;
+        var regDate = /^[0-9]{4}-((([13578]|(10|12))-([1-9]|[1-2][0-9]|3[0-1]))|(2-([1-9]|[1-2][0-9]))|(([469]|11)-([1-9]|[1-2][0-9]|30)))$/;
         /*
         * 保存客户
         */
@@ -323,6 +439,52 @@
             }
             return res;
         }
+        function checkReminder() {
+            var res = true;
+            var msgText = $('#msgText').val();
+            var remindDate = $('#remindDate').val();
+            var remindHour = $('#remindHour').val();
+            var remindMinute = $('#remindMinute').val();
+
+            if (!msgText) {
+                res = false;
+                alert('请输入提醒内容！');
+                $('#msgText').focus();
+            }
+            else if (!remindDate) {
+                res = false;
+                alert('请选择提醒日期！');
+                setTimeout(function () {
+                    $('#remindDate').focus();
+                }, 200);
+            }
+            else if (!inputCheck($('#remindDate'))) {
+                res = false;
+                alert('日期格式不正确！');
+                $('#remindDate').focus();
+            }
+            else if (!remindHour) {
+                res = false;
+                alert('请选择几点钟！');
+                $('#remindHour').focus();
+            }
+            else {
+                var now_time = new Date();
+                var remind_time_str = remindDate + " " + remindHour + ":" + remindMinute + ":00";
+                var remind_time = new Date(remind_time_str.replace(/-/g, "\/"));
+                if (now_time >= remind_time) {
+                    res = false;
+                    alert('无效的日期！');
+                    $('#remindHour').focus();
+                }
+            }
+
+            return res;
+        }
+
+        //function compareDate(d1, d2) {
+        //    return ((new Date(d1.replace(/-/g, "\/"))) > (new Date(d2.replace(/-/g, "\/"))));
+        //}
 
         /*
         * 洽谈方式下拉框切换事件
@@ -392,9 +554,63 @@
                 }
             });
         }
-        /**
+        /*
+        * 添加提醒 
+        */
+        function addReminder() {
+            var res = checkReminder();
+            if (res) {
+                var resourceId = $('#ResourceId').val();
+                var msgText = $('#msgText').val();
+                var remindDate = $('#remindDate').val();
+                var remindHour = $('#remindHour').val();
+                var remindMinute = $('#remindMinute').val();
+
+                var reminder = {};
+                reminder.MsgText = msgText;
+                reminder.RemindTime = remindDate + " " + remindHour + ":" + remindMinute + ":00";
+                reminder.Type = 0;// type=0表示提醒类型是资源
+                reminder.ObjectId = resourceId;
+                $.post("/Reminder/InsertReminder", reminder, function (result) {
+                    if (result) {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('抱歉，添加失败！');
+                    }
+                });
+            }
+        }
+        /*
+         * 关闭提醒
+        */
+        function closeReminder(id) {
+            $.get("/Reminder/CloseReminder?id=" +id, null, function (result) {
+                if (result) {
+                    window.location.reload();
+                }
+                else {
+                    alert('抱歉，操作失败！');
+                }
+            });
+        }
+        /*
+         * 删除提醒
+        */
+        function delReminder(id) {
+            $.get("/Reminder/DeleteReminder?id=" + id, null, function (result) {
+                if (result) {
+                    window.location.reload();
+                }
+                else {
+                    alert('抱歉，操作失败！');
+                }
+            });
+        }
+
+        /*
         * 通用文本框内容验证方法：使用正则表达式进行文本框输入内容的验证
-        * @@param input 文本框对象
+        * input 文本框对象
         */
         function inputCheck(input) {
             var result = true;
@@ -426,6 +642,25 @@
 
             return result;
         }
+        $(function () {
+            // 日历控件初始化
+            var picker_start = new Pikaday({
+                field: document.getElementById('remindDate'),
+                format: 'YYYY-M-D',
+                minDate: new Date(),
+                maxDate: null,
+                i18n: {
+                    previousMonth: '上一月',
+                    nextMonth: '下一月',
+                    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+                    weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                },
+                showMonthAfterYear: true,
+                theme: 'triangle-theme',
+                yearSuffix: '年'
+            });
+        });
         // jquery-chosen下拉控件初始化
         //$(function () {
             

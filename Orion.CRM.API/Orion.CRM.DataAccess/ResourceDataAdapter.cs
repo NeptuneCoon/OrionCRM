@@ -133,10 +133,13 @@ namespace Orion.CRM.DataAccess
         #endregion
 
         #region 判断资源是否存在
-        public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        public bool IsResourceExist(int orgId, int projectId, string mobile, string tel, string qq, string wechat)
         {
             SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "IsResourceExist").Clone();
-            SqlParameter param = new SqlParameter("@OrgId", orgId);
+            SqlParameter[] paramArr = {
+                new SqlParameter("@OrgId", orgId),
+                new SqlParameter("@ProjectId", projectId)
+            };
 
             string sqlWhere = "";
             if (!string.IsNullOrEmpty(mobile)) {
@@ -171,7 +174,7 @@ namespace Orion.CRM.DataAccess
 
             mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
 
-            int count = SqlMapHelper.ExecuteSqlMapScalar<int>(mapDetail, param);
+            int count = SqlMapHelper.ExecuteSqlMapScalar<int>(mapDetail, paramArr);
             return count > 0;
         }
         #endregion

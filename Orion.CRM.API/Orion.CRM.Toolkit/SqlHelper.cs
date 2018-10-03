@@ -190,13 +190,7 @@ namespace Orion.CRM.Toolkit
 
                 DataTable dataTable = ListToDataTable(entities);
                 // 执行批量插入
-                try {
-                    bulkCopy.WriteToServer(dataTable);
-                    
-                }
-                catch (Exception ex) {
-                    result = false;
-                }
+                bulkCopy.WriteToServer(dataTable);                                                
             }
 
             return result;

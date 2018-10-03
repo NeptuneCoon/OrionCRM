@@ -159,3 +159,22 @@
     margin-left: 22px;
     width: 100%;
 }
+
+/*今日提醒页面的title背景色*/
+.reminder-block {
+    width: 311px;
+    margin-right: 12px
+}
+.block-title-self {
+    background: #fff !important;
+    min-height: 32px !important;
+}
+.block-header-div{
+    padding-top:6px !important;/*overwrite*/
+}
+.block-foot {
+    margin-top: 20px;
+    text-align: right;
+    display: flex;
+    justify-content: space-between
+}

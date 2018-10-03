@@ -51,7 +51,7 @@
         <form action="/Resource/List" method="get">
             <input type="hidden" id="hidGroupId" value="@Model.Params.gid" />
             <input type="hidden" id="hidUserId" value="@Model.Params.uid" />
-            
+
             @if (Model.RoleResourceVisible == 4 || Model.RoleResourceVisible == 3 || Model.RoleResourceVisible == 2) {
                 <div class="form-inline">
                     <!--手机/微信/QQ-->
@@ -61,7 +61,7 @@
                     <!--客户姓名-->
                     <input type="text" class="search-input" name="name" id="name" value="@Model.Params.name" placeholder="客户姓名" />
                     <!--项目-->
-                    @if(Model.RoleResourceVisible == 4) { 
+                    @if (Model.RoleResourceVisible == 4) {
                         <select name="pid" id="pid" class="search-select" onchange="projectChange()">
                             <option value="">项目</option>
                             @if (Model.ProjectList != null) {
@@ -148,30 +148,30 @@
                     </select>
                     <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
                         <option value="">谈单人</option>
-                            @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
-                                foreach (var user in Model.TalkMans) {
-                                    if (user.Id == Model.Params.ft) {
-                                        <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
-                                    }
-                                    else {
-                                        <option value="@user.Id">@user.RealName/@user.UserName</option>
-                                    }
+                        @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
+                            foreach (var user in Model.TalkMans) {
+                                if (user.Id == Model.Params.ft) {
+                                    <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                }
+                                else {
+                                    <option value="@user.Id">@user.RealName/@user.UserName</option>
                                 }
                             }
+                        }
                     </select>
 
                     <div style="float:right">
-                        <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled") >
+                        <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled")>
                             <i class="icon-search"></i> 查询
                         </button>
-                        
+
                         <div class="btn-group">
-                            <a class="btn dropdown-toggle"  data-toggle="dropdown" href="#">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                 操作
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                @if(Model.CanBatchAssign) {
+                                @if (Model.CanBatchAssign) {
                                     <li><a href="javascript:;" onclick="showBatchAssignPanel()">批量分配</a></li>
                                 }
                                 <li><a href="javascript:;" onclick="showTagPanel()">打标签</a></li>
@@ -182,7 +182,7 @@
                 <div class="form-inline" style="margin-top:12px">
                     <select name="source" id="source" class="search-select" onchange="submit()">
                         <option value="">来源</option>
-                        @if(Model.SourceList != null) {
+                        @if (Model.SourceList != null) {
                             foreach (var source in Model.SourceList) {
                                 if (source.Id == Model.Params.source) {
                                     <option value="@source.Id" selected="selected">@source.SourceName</option>
@@ -196,7 +196,7 @@
                     @if (Model.RoleResourceVisible == 4 || Model.RoleResourceVisible == 3 || Model.RoleResourceVisible == 2) {
                         <select name="assign" id="assign" class="search-select" onchange="submit()">
                             <option value="">分配情况</option>
-                            @if(Model.Params.assign == 1) {
+                            @if (Model.Params.assign == 1) {
                                 <option value="1" selected="selected">客服未分</option>
                             }
                             else {
@@ -251,7 +251,7 @@
                         @if (Model.InclinationList != null) {
                             foreach (var inc in Model.InclinationList) {
                                 if (inc.value == Model.Params.inc) {
-                                    <option value="@inc.value" selected="selected">@inc.displayText</option> 
+                                    <option value="@inc.value" selected="selected">@inc.displayText</option>
                                 }
                                 else {
                                     <option value="@inc.value">@inc.displayText</option>
@@ -274,16 +274,16 @@
                     </select>
                     <select name="ft" id="ft" class="search-select" style="width:120px" onchange="submit()">
                         <option value="">谈单人</option>
-                            @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
-                                foreach (var user in Model.TalkMans) {
-                                    if (user.Id == Model.Params.ft) {
-                                        <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
-                                    }
-                                    else {
-                                        <option value="@user.Id">@user.RealName/@user.UserName</option>
-                                    }
+                        @if (Model.TalkMans != null && Model.TalkMans.Count > 0) {
+                            foreach (var user in Model.TalkMans) {
+                                if (user.Id == Model.Params.ft) {
+                                    <option value="@user.Id" selected="selected">@user.RealName/@user.UserName</option>
+                                }
+                                else {
+                                    <option value="@user.Id">@user.RealName/@user.UserName</option>
                                 }
                             }
+                        }
                     </select>
                     <input type="text" class="search-input" placeholder="开始时间" name="start" id="start" value="@Model.Params.start" autocomplete="off" />至
                     <input type="text" class="search-input" placeholder="结束时间" name="end" id="end" value="@Model.Params.end" autocomplete="off" />
@@ -292,7 +292,7 @@
                         <button type="submit" class="btn btn-default" @(Model.CanSearch ? "" : "disabled=disabled")>
                             <i class="icon-search"></i> 查询
                         </button>
-                        
+
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                 操作
@@ -312,7 +312,7 @@
             <!--标签-->
             <div style="margin-top:10px">
                 @if (Model.Tags != null && Model.Tags.Count > 0) {
-                    foreach(var tag in Model.Tags) {
+                    foreach (var tag in Model.Tags) {
                         @if (Model.Params.tagids != null && Model.Params.tagids.Contains(tag.Id)) {
                             <span class="label label-info tag tag-checked" onclick="tagChecked(this)">
                                 @tag.TagName
@@ -329,6 +329,16 @@
                 }
             </div>
         </form>
+        <!--提醒-->
+        @if (Model.ReminderCount > 0) {
+            <div class="alert" style="width:160px">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>今日</strong> 
+                <a href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=1">@(Model.ReminderCount)个提醒</a>
+            </div>
+        }
+
+        <!--数据列表-->
         <table class="table table-bordered table-data">
             <thead>
                 <tr>
@@ -355,30 +365,30 @@
                 @if (Model.Resources != null && Model.Resources.Count > 0) {
                     foreach (var resource in Model.Resources) {
                         string color = "#fff";
-                        if(resource.Inclination == 9) {
+                        if (resource.Inclination == 9) {
                             color = "#FFDEAD";
                         }
-                        else if(resource.Inclination == 8) {
+                        else if (resource.Inclination == 8) {
                             color = "#FFEFD5";
                         }
-                        else if(resource.Status == 6) {
+                        else if (resource.Status == 6) {
                             color = "#E3F5FB";
                         }
                         <tr style="background-color:@color">
                             <td><input type="checkbox" name="ckResource" value="@resource.Id" /></td>
                             <td style="max-width:180px">
                                 <a href="/Resource/Detail/@resource.Id" target="_blank">@resource.CustomerName</a>
-                                @if(resource.TalkCount == 0) {
+                                @if (resource.TalkCount == 0) {
                                     <img src="~/images/new.gif" />
                                 }
                             </td>
                             <td>@resource.ContactInfo</td>
                             <td>@(resource.LastTime != null ? Convert.ToDateTime(resource.LastTime).ToString("yyyy-MM-dd HH:mm") : "-")</td>
                             <td>@resource.SourceFromText</td>
-                            <td @(resource.Status == 5 ?" style=color:green":"")>@resource.StatusText</td>
+                            <td @(resource.Status == 5 ? " style=color:green" : "")>@resource.StatusText</td>
                             <td>@(string.IsNullOrEmpty(resource.InclinationText) ? "-" : resource.InclinationText)</td>
                             <td>@resource.TalkCount</td>
-                            <td>@Html.Raw(resource.GroupId==0? "<span style='color:red'>客服未分</span>" : (resource.SaleMan == null ? "<span style='color:red'>组长未分</span>" : resource.SaleMan))</td>
+                            <td>@Html.Raw(resource.GroupId == 0 ? "<span style='color:red'>客服未分</span>" : (resource.SaleMan == null ? "<span style='color:red'>组长未分</span>" : resource.SaleMan))</td>
                             <td>@resource.AppendMan</td>
                             <td>@resource.ProjectName <input type="hidden" id="resourceProject" value="@resource.ProjectId" /></td>
                             <td>@resource.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>

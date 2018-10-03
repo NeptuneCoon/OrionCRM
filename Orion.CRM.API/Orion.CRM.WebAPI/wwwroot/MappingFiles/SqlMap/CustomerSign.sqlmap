@@ -104,6 +104,7 @@
 		        )as temp
           )as A 
         where RowNumber > $PageSize*($PageIndex-1) 
+        order by Id desc
         ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

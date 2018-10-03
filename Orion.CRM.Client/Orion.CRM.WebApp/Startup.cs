@@ -52,6 +52,8 @@ namespace Orion.CRM.WebApp
             services.Configure<IISOptions>(options => {
             });
 
+            services.AddRouting(options => options.LowercaseUrls = true);// url小写
+
             //services.AddDistributedRedisCache(options =>
             //{
             //    options.Configuration = "localhost:6379";

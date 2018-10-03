@@ -83,9 +83,9 @@ namespace Orion.CRM.Application
         }
 
         // 判断资源是否存在
-        public bool IsResourceExist(int orgId, string mobile, string tel, string qq, string wechat)
+        public bool IsResourceExist(int orgId, int projectId, string mobile, string tel, string qq, string wechat)
         {
-            return adapter.IsResourceExist(orgId, mobile, tel, qq, wechat);
+            return adapter.IsResourceExist(orgId, projectId, mobile, tel, qq, wechat);
         }
 
         // 设置资源状态

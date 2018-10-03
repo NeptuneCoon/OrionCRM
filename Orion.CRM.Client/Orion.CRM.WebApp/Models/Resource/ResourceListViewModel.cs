@@ -85,5 +85,10 @@ namespace Orion.CRM.WebApp.Models.Resource
         /// 用户定义的资源标签
         /// </summary>
         public List<Models.Tag.Tag> Tags { get; set; }
+
+        /// <summary>
+        /// 今日提醒数
+        /// </summary>
+        public int ReminderCount { get; set; }
     }
 }

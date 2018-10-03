@@ -95,7 +95,7 @@ body {
 .block {
 	border: 1px solid #ccc;
 	background: white;
-	margin: 1em 0em;
+	/*margin: 1em 0em;*/
 	border-top: none;
 }
 

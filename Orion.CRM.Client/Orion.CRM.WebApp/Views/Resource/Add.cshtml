@@ -15,7 +15,7 @@
 
 <div class="row-fluid">
     <!-- block -->
-    <div class="block" style="margin:0px">
+    <div class="block">
         <div class="navbar navbar-inner block-header">
             <div class="muted pull-left">资源录入</div>
         </div>
@@ -190,9 +190,10 @@
         <h2>提示</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
             <div>
-                <span id="spanResult">抱歉，<span class="tip">资源已存在</span>！
+                <div id="error_info"></div>
+                @*<span id="spanResult">抱歉，<span class="tip">资源已存在</span>！
                     <br/>按 <span style="color:#08c">手机号/固定电话/QQ/微信</span> 已找到相同客户。
-                </span>
+                </span>*@
                 <div style="margin-top:20px">
                     <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
@@ -232,6 +233,14 @@
                         }
                     }
                 });
+                // 验证是否输入了联系方式
+                var mix_text = $('#Mobile').val() + $('#Tel').val() + $('#Wechat').val() + $('#QQ').val() + $('#Email').val();
+                mix_text = $.trim(mix_text);
+                if (!mix_text) {
+                    result = false;
+                    $('#error_info').html('<span id="spanResult">抱歉，<span class="tip">缺少联系方式</span>！<br/>您至少需要输入手机号/固定电话/QQ/微信/Email中的一种！</span>');
+                    modalShow($('#panelResult'));
+                }
             }
             catch (ex) {
                 result = false;
@@ -245,6 +254,7 @@
 
             // 验证是否已存在
             if (result) {
+                var projectId = $("select[name='ProjectId']").find("option:selected").val();
                 var mobile = $('#Mobile').val();
                 var tel = $('#Tel').val();
                 var qq = $('#QQ').val();
@@ -257,12 +267,13 @@
                         type: "get",
                         url: "IsExist",
                         async: false,
-                        data: { "mobile": mobile, "tel": tel, "qq": qq, "wechat": wechat },
+                        data: { "projectId": projectId, "mobile": mobile, "tel": tel, "qq": qq, "wechat": wechat },
                         dataType: "json",
                         success: function (data) {
                             console.info(data);
                             if (data) {
                                 result = false;
+                                $('#error_info').html('<span id="spanResult">抱歉，<span class="tip">资源已存在</span>！<br/>按 <span style="color:#08c">手机号/固定电话/QQ/微信</span> 已找到相同客户。</span>');
                                 modalShow($('#panelResult'));
                             }
                         }
