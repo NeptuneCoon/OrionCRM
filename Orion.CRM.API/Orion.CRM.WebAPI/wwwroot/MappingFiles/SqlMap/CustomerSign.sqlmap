@@ -4,8 +4,8 @@
     <SqlMapDetail>
       <SqlName>InsertSign</SqlName>
       <OriginalSqlString>
-        insert into [CustomerSign](Amount,CustomerName,CustomerPhone,ResourceId,SignTime,SignUserId,SignMan,GroupId,GroupName,ProjectId,OrgId,CreateTime,AppendUserId,AppendMan)
-        values(@Amount,@CustomerName,@CustomerPhone,@ResourceId,@SignTime,@SignUserId,@SignMan,@GroupId,@GroupName,@ProjectId,@OrgId,@CreateTime,@AppendUserId,@AppendMan);
+        insert into [CustomerSign](Amount,CustomerName,CustomerPhone,IdentityNo,PaymentType,ResourceId,SignTime,SignUserId,SignMan,GroupId,GroupName,ProjectId,OrgId,CreateTime,AppendUserId,AppendMan)
+        values(@Amount,@CustomerName,@CustomerPhone,@IdentityNo,@PaymentType,@ResourceId,@SignTime,@SignUserId,@SignMan,@GroupId,@GroupName,@ProjectId,@OrgId,@CreateTime,@AppendUserId,@AppendMan);
         select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -98,9 +98,10 @@
         select top $PageSize * from(
             select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
 		        (
-			        select A.*,B.OrgName from [CustomerSign] A 
+			        select A.*,B.OrgName,C.ProjectName from [CustomerSign] A 
               inner join Organization B on A.OrgId=B.Id
-              where OrgId=@OrgId $SqlWhere
+              inner join Project C on A.ProjectId=C.Id
+              where A.OrgId=@OrgId $SqlWhere
 		        )as temp
           )as A 
         where RowNumber > $PageSize*($PageIndex-1) 
@@ -114,10 +115,11 @@
 
     <SqlMapDetail>
       <SqlName>GetSignCountByCondition</SqlName>
-      <OriginalSqlString>    
-			    select count(1) from [CustomerSign] A 
-          inner join Organization B on A.OrgId=B.Id
-          where OrgId=@OrgId $SqlWhere
+      <OriginalSqlString>
+        select count(1) from [CustomerSign] A
+        inner join Organization B on A.OrgId=B.Id
+        inner join Project C on A.ProjectId=C.Id
+        where A.OrgId=@OrgId $SqlWhere
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

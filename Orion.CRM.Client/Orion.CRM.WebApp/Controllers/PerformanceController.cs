@@ -64,10 +64,8 @@ namespace Orion.CRM.WebApp.Controllers
                     else {
                         rank.Percent = "0.0";
                     }
-
                     rankRecords.Add(rank);
                 }
-
                 ViewBag.RankRecords = rankRecords;
             }
             

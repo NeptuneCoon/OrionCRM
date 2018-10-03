@@ -16,6 +16,8 @@ namespace Orion.CRM.DataAccess
                 new SqlParameter("@Amount", sign.Amount),
                 new SqlParameter("@CustomerName", CheckNull(sign.CustomerName)),
                 new SqlParameter("@CustomerPhone", CheckNull(sign.CustomerPhone)),
+                new SqlParameter("@IdentityNo", CheckNull(sign.IdentityNo)),
+                new SqlParameter("@PaymentType", CheckNull(sign.PaymentType)),
                 new SqlParameter("@ResourceId", CheckNull(sign.ResourceId)),
                 new SqlParameter("@SignTime", sign.SignTime),
                 new SqlParameter("@SignUserId", sign.SignUserId),

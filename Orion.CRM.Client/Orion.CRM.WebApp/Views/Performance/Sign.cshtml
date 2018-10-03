@@ -80,10 +80,13 @@
                 var signProjectId = $('#signProject').find("option:selected").val();
                 var customerName = $('#signName').val();
                 var customerPhone = $('#signPhone').val();
+                var identityNo = $('#identityNo').val();
+                var paymentType = $('#paymentType').find("option:selected").val();
 
                 var data = {
                     "Amount": amount, "ResourceId": null, "SignTime": signTime, "SignUserId": signUserId,
-                    "ProjectId": signProjectId, "CustomerName": customerName, "CustomerPhone": customerPhone
+                    "ProjectId": signProjectId, "CustomerName": customerName, "CustomerPhone": customerPhone,
+                    "IdentityNo":identityNo, "PaymentType":paymentType
                 };
                 $.post("/Resource/InsertCustomerSign", data, function (result) {
                     if (result) {
@@ -147,11 +150,19 @@
                 }
             }
             if (res.result) {
+                var signName = $('#signName').val();
+                if (signName == "") {
+                    res.result = false;
+                    res.errorMsg = '客户姓名不能为空！';
+                    res.errorElement = $('#signName');
+                }
+            }
+            if (res.result) {
                 // 签约用户的校验
                 var signUserId = $('#signUserPanel').find("option:selected").val();
                 if (!signUserId) {
                     res.result = false;
-                    res.errorMsg = '请选择完成签约的业务员！';
+                    res.errorMsg = '请选择促成签约的业务人员！';
                     res.errorElement = $('#signUserPanel');
                 }
             }
@@ -254,11 +265,13 @@
                 <tr>
                     <th>序号</th>
                     <th>签约金额</th>
-                    <th>签约时间</th>
+                    <th>资金类型</th>
+                    <th>签约日期</th>
                     <th>客户姓名/手机</th>
                     <th>所属业务</th>
                     <th>添加人</th>
                     <th>添加时间</th>
+                    <th>项目</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -269,11 +282,23 @@
                         <tr>
                             <td style="width:40px">@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                             <td>@(item.Amount)元</td>
+                            <td>
+                                @if (item.PaymentType == 0) {
+                                    @:全款
+                                }
+                                else if(item.PaymentType == 1) {
+                                    @:定金
+                                }
+                                else if(item.PaymentType == 2) {
+                                    @:余款
+                                }
+                            </td>
                             <td>@item.SignTime.ToString("yyyy-MM-dd")</td>
                             <td>@item.CustomerName/@item.CustomerPhone</td>
                             <td>@item.SignMan</td>
                             <td>@item.AppendMan</td>
                             <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@item.ProjectName</td>
                             <td>
                                 <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>
                             </td>
@@ -282,7 +307,7 @@
                 }
                 else {
                     <tr>
-                        <td colspan="8" style="text-align:center">没有数据</td>
+                        <td colspan="10" style="text-align:center">没有数据</td>
                     </tr>
                 }
             </tbody>
@@ -305,17 +330,27 @@
                     <tr>
                         <td style="width:100px;text-align:right"><span class="tip">*</span>合同金额：</td>
                         <td style="padding-left:10px">
-                            <input type="text" class="search-input" style="width:160px" reg="regNum" id="signAmount"  />
+                            <input type="text" class="search-input" style="width:160px" reg="regNum" id="signAmount" />
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align:right"><span class="tip">*</span>签约时间：</td>
+                        <td style="width:100px;text-align:right"><span class="tip">*</span>资金类型：</td>
+                        <td style="padding-left:10px">
+                            <select class="search-select" style="width:120px" id="paymentType">
+                                <option value="0">全款</option>
+                                <option value="1">定金</option>
+                                <option value="2">余款</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><span class="tip">*</span>签约日期：</td>
                         <td style="padding-left:10px">
                             <input type="text" class="search-input" style="width:160px" reg="regDate" id="signTime" />
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align:right">客户姓名：</td>
+                        <td style="text-align:right"><span class="tip">*</span>客户姓名：</td>
                         <td style="padding-left:10px">
                             <input type="text" class="search-input" style="width:160px" id="signName" />
                         </td>
@@ -327,11 +362,14 @@
                         </td>
                     </tr>
                     <tr>
+                        <td style="text-align:right">身份证：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" class="search-input" style="width:160px" id="identityNo" />
+                        </td>
+                    </tr>
+                    <tr>
                         <td style="text-align:right"><span class="tip">*</span>业务：</td>
                         <td style="padding-left:10px">
-                            @*<select class="panel-select" id="assignSelectSaler">
-                                <option value="">请选择业务</option>
-                            </select>*@
                             <select id="signUserPanel" class="chzn-select span4">
                                 <option value="">请选择业务</option>
                                 @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0) {
@@ -362,9 +400,9 @@
                     </tr>
                 </table>
                 <div id="addTips" style="padding:3px;color:red;display:none"></div>
-                <div style="margin-top:20px">
-                    <input type="button" value="确定" class="btn btn-inverse" onclick="addSign()" />
+                <div class="modal-footer">
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                    <input type="button" value="确定" class="btn btn-success" onclick="addSign()" />
                 </div>
             </div>
         </div>
