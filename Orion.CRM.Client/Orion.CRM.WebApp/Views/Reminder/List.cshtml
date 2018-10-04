@@ -7,10 +7,10 @@
 <h3>提醒</h3>
 
 <div style="height:33px;margin-left:4px">
-    <a @(ViewBag.Nav==0?"class=nav-checked nav-first":"class=nav-normal nav-first") href="/Reminder/List?begin=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 23:59:59")&i=0">昨日</a>
-    <a @(ViewBag.Nav==1?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=1">今日</a>
-    <a @(ViewBag.Nav==2?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 23:59:59")&i=2">明日</a>
-    <a @(ViewBag.Nav==3?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=&end=&i=3">全部</a>
+    <a @(ViewBag.Nav==1?"class=nav-checked nav-first":"class=nav-normal nav-first") href="/Reminder/List?begin=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+" 23:59:59")&i=1">昨日</a>
+    <a @(ViewBag.Nav==2?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=2">今日</a>
+    <a @(ViewBag.Nav==3?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")+" 23:59:59")&i=3">明日</a>
+    <a @(ViewBag.Nav==4?"class=nav-checked":"class=nav-normal") href="/Reminder/List?begin=2018-01-01 00:00:00&end=2050-12-31 23:59:59&i=4">全部</a>
 </div>
 <div style="border:0px solid #ededed">
     <img src="~/images/refresh.png" style="width:48px;margin-left:-6px;cursor:pointer" title="刷新" onclick="refresh()" />

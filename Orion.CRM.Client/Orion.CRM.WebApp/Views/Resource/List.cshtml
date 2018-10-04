@@ -334,7 +334,7 @@
             <div class="alert" style="width:160px">
                 <button class="close" data-dismiss="alert">×</button>
                 <strong>今日</strong> 
-                <a href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=1">@(Model.ReminderCount)个提醒</a>
+                <a style="text-decoration:underline" href="/Reminder/List?begin=@(DateTime.Now.ToString("yyyy-MM-dd")+" 00:00:00")&end=@(DateTime.Now.ToString("yyyy-MM-dd")+" 23:59:59")&i=2">@(Model.ReminderCount)个提醒(点击查看)</a>
             </div>
         }
 

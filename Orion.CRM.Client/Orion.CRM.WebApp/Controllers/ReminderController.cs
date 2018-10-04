@@ -55,11 +55,13 @@ namespace Orion.CRM.WebApp.Controllers
         /// <param name="end">提醒时间-截止</param>
         /// <param name="i">页面内部nav的索引，从0开始</param>
         /// <returns></returns>
-        public IActionResult List(string begin, string end, int i)
+        public IActionResult List(string begin, string end, int? i)
         {
             int userId = _AppUser.Id;
-            if (string.IsNullOrEmpty(begin)) begin = "2018-01-01 00:00:00";
-            if (string.IsNullOrEmpty(end)) end = "2050-12-31 23:59:59";
+            // 默认为今日提醒
+            if (string.IsNullOrEmpty(begin)) begin = DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00";
+            if (string.IsNullOrEmpty(end)) end = DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59";
+            if (i == null || i <= 0) i = 2;
 
             string apiUrl = _AppConfig.WebApiHost + $"/api/MessageReminder/GetRemindersByUserIdDate?userId={userId}&begin={begin}&end={end}";
             var list = APIInvoker.Get<List<Models.Reminder.MessageReminder>>(apiUrl);
@@ -69,12 +71,6 @@ namespace Orion.CRM.WebApp.Controllers
             ViewBag.Nav = i;
 
             return View(list);
-        }
-
-
-        public IActionResult Test()
-        {
-            return View();
         }
     }
 }
