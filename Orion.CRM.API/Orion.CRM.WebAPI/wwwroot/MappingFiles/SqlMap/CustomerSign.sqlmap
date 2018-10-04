@@ -96,7 +96,7 @@
       <OriginalSqlString>
         <![CDATA[
         select top $PageSize * from(
-            select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from 
+            select ROW_NUMBER() OVER (ORDER BY id desc) as RowNumber,* from 
 		        (
 			        select A.*,B.OrgName,C.ProjectName from [CustomerSign] A 
               inner join Organization B on A.OrgId=B.Id
@@ -105,7 +105,6 @@
 		        )as temp
           )as A 
         where RowNumber > $PageSize*($PageIndex-1) 
-        order by Id desc
         ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
