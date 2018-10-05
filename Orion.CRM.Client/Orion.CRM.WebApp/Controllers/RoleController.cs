@@ -219,16 +219,15 @@ namespace Orion.CRM.WebApp.Controllers
                     Logger.Write("1.1删除旧的角色和菜单的关系，delRMCount=" + delRMCount);
 
                     // 1.2获取角色和二级菜单的关系
-                    List<object> roleMenuRelations = new List<object>();
+                    List<Models.Role.RoleMenu> roleMenuRelations = new List<Models.Role.RoleMenu>();
                     string menuIds = Request.Form["RoleMenu"];
                     if (!string.IsNullOrEmpty(menuIds)) {
                         string[] menuIdArr = menuIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (menuIdArr.Length > 0) {
                             foreach (var menuId in menuIdArr) {
-                                roleMenuRelations.Add(new
-                                {
+                                roleMenuRelations.Add(new Models.Role.RoleMenu() {
                                     RoleId = viewModel.Id,
-                                    MenuId = menuId,
+                                    MenuId = Convert.ToInt32(menuId),
                                     CreateTime = DateTime.Now
                                 });
                             }
@@ -254,8 +253,7 @@ namespace Orion.CRM.WebApp.Controllers
                                 }
                                 if (parentMenuIds.Count > 0) {
                                     foreach (var parentMenuId in parentMenuIds) {
-                                        roleMenuRelations.Add(new
-                                        {
+                                        roleMenuRelations.Add(new Models.Role.RoleMenu() {
                                             RoleId = viewModel.Id,
                                             MenuId = parentMenuId,
                                             CreateTime = DateTime.Now

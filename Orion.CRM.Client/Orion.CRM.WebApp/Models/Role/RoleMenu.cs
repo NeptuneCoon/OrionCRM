@@ -9,5 +9,6 @@ namespace Orion.CRM.WebApp.Models.Role
     {
         public int RoleId { get; set; }
         public int MenuId { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }
