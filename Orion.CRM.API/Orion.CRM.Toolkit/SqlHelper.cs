@@ -166,7 +166,7 @@ namespace Orion.CRM.Toolkit
 
                         entities.Add(entity);
                     }
-                }            
+                }
 
                 reader.Dispose();
             }
@@ -190,7 +190,7 @@ namespace Orion.CRM.Toolkit
 
                 DataTable dataTable = ListToDataTable(entities);
                 // 执行批量插入
-                bulkCopy.WriteToServer(dataTable);                                                
+                bulkCopy.WriteToServer(dataTable);
             }
 
             return result;
@@ -206,7 +206,7 @@ namespace Orion.CRM.Toolkit
         private static T EntityConvert<T>(Dictionary<string, object> dict)
         {
             Type type = typeof(T);
-            if(type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(string) || type == typeof(float) || type == typeof(double) 
+            if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(string) || type == typeof(float) || type == typeof(double)
                 || type == typeof(char) || type == typeof(bool)) {
                 return (T)dict.First().Value;
             }
@@ -241,7 +241,7 @@ namespace Orion.CRM.Toolkit
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        private static DataTable ListToDataTable<T>(IEnumerable<T> list)
+        private static DataTable ListToDataTable2<T>(IEnumerable<T> list)
         {
             DataTable table = new DataTable();
 
@@ -259,5 +259,59 @@ namespace Orion.CRM.Toolkit
 
             return table;
         }
+
+        #region ListToDataTable 
+        public static DataTable ListToDataTable<T>(IEnumerable<T> items)
+        {
+            var tb = new DataTable(typeof(T).Name);
+
+            PropertyInfo[] props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo prop in props) {
+                Type t = GetCoreType(prop.PropertyType);
+                tb.Columns.Add(prop.Name, t);
+            }
+
+            foreach (T item in items) {
+                var values = new object[props.Length];
+
+                for (int i = 0; i < props.Length; i++) {
+                    values[i] = props[i].GetValue(item, null);
+                }
+
+                tb.Rows.Add(values);
+            }
+
+            return tb;
+        }
+
+
+        /// <summary>
+        /// Determine of specified type is nullable
+        /// </summary>
+        public static bool IsNullable(Type t)
+        {
+            return !t.IsValueType || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>));
+        }
+
+        /// <summary>
+        /// Return underlying type if type is Nullable otherwise return the type
+        /// </summary>
+        public static Type GetCoreType(Type t)
+        {
+            if (t != null && IsNullable(t)) {
+                if (!t.IsValueType) {
+                    return t;
+                }
+                else {
+                    return Nullable.GetUnderlyingType(t);
+                }
+            }
+            else {
+                return t;
+            }
+        } 
+        #endregion
+
     }
 }
