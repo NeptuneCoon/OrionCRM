@@ -123,8 +123,10 @@ namespace Orion.CRM.Application
             return adapter.GetAllComplexRoleMenus();
         }
 
-        public bool RoleMenuBatchInsert(IEnumerable<Entity.RoleMenu> roleMenus)
+        public int RoleMenuBatchInsert(IEnumerable<Entity.RoleMenu> roleMenus)
         {
+            if (roleMenus == null || roleMenus.ToList().Count <= 0) return -1;
+
             return adapter.RoleMenuBatchInsert(roleMenus);
         }
 

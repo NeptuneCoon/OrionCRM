@@ -210,7 +210,7 @@
                     </td>
                 </tr>
             </table>
-            <button type="submit" class="btn btn-primary" onclick="return validateForm()">保存</button>
+            <button type="button" class="btn btn-primary" onclick="submitForm()" id="btnSave">保存</button>
             <button type="button" class="btn btn-default" onclick="javascript: window.location = '/Role/List';">返回</button>
         </div>
     </div>
@@ -279,8 +279,15 @@
                 $('#spanDataPermission').hide();
             }
 
-            console.info("表单验证结果：" + validateResult);
+            //console.info("表单验证结果：" + validateResult);
             return validateResult;
+        }
+        function submitForm() {
+            var validateResult = validateForm();
+            if (validateResult) {
+                $('#btnSave').attr("disabled", "disabled");
+                window.document.forms[0].submit();
+            }
         }
         function hideTips() {
             $('#spanRoleNameTips').hide();

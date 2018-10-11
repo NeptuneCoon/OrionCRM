@@ -270,8 +270,8 @@ namespace Orion.CRM.WebAPI.Controllers
         public APIDataResult RoleMenuBatchInsert([FromBody]IEnumerable<Entity.RoleMenu> roleMenus)
         {
             try {
-                bool res = service.RoleMenuBatchInsert(roleMenus);
-                APIDataResult dataResult = new APIDataResult(200, res);
+                int cnt = service.RoleMenuBatchInsert(roleMenus);
+                APIDataResult dataResult = new APIDataResult(200, cnt);
                 return dataResult;
             }
             catch (Exception ex) {

@@ -62,8 +62,7 @@ namespace Orion.CRM.DataAccess
 
             SqlParameter[] paramArr = {
                 new SqlParameter("@RoleId", roleMenu.RoleId),
-                new SqlParameter("@MenuId", roleMenu.MenuId),
-                new SqlParameter("@CreateTime", DateTime.Now)
+                new SqlParameter("@MenuId", roleMenu.MenuId)
             };
 
             int identityId = SqlMapHelper.ExecuteSqlMapScalar<int>("RoleDomain", "InsertRoleMenu", paramArr);
@@ -183,10 +182,22 @@ namespace Orion.CRM.DataAccess
             return roleMenuComplexs;
         }
 
-        public bool RoleMenuBatchInsert(IEnumerable<Entity.RoleMenu> roleMenus)
+        public int RoleMenuBatchInsert(IEnumerable<Entity.RoleMenu> roleMenus)
         {
-            bool result = SqlMapHelper.ExecuteBatchInsert<Entity.RoleMenu>("RoleDomain", "RoleMenuBatchInsert", roleMenus);
-            return result;
+            //bool result = SqlMapHelper.ExecuteBatchInsert<Entity.RoleMenu>("RoleDomain", "RoleMenuBatchInsert", roleMenus);
+            //return result;
+            // 构造批量插入sql
+            StringBuilder sb = new StringBuilder();
+            foreach(var rm in roleMenus) {
+                sb.Append($"insert into RoleMenu(RoleId,MenuId) values({rm.RoleId},{rm.MenuId});");
+            }
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("RoleDomain", "RoleMenuBatchInsert").Clone();
+            mapDetail.OriginalSqlString = sb.ToString();
+
+            int cnt = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+        
+            return cnt;
         }
 
         // 获取角色下的用户数量

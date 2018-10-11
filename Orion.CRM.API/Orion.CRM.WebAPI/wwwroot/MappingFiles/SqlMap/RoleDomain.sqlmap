@@ -50,7 +50,7 @@
     <SqlMapDetail>
       <SqlName>InsertRoleMenu</SqlName>
       <OriginalSqlString>
-        insert into RoleMenu(RoleId,MenuId,CreateTime) values(@RoleId,@MenuId,@CreateTime);select cast(@@identity as int);
+        insert into RoleMenu(RoleId,MenuId) values(@RoleId,@MenuId);select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

@@ -228,7 +228,7 @@ namespace Orion.CRM.WebApp.Controllers
                                 roleMenuRelations.Add(new Models.Role.RoleMenu() {
                                     RoleId = viewModel.Id,
                                     MenuId = Convert.ToInt32(menuId),
-                                    CreateTime = DateTime.Now
+                                    //CreateTime = DateTime.Now
                                 });
                             }
                         }
@@ -256,7 +256,7 @@ namespace Orion.CRM.WebApp.Controllers
                                         roleMenuRelations.Add(new Models.Role.RoleMenu() {
                                             RoleId = viewModel.Id,
                                             MenuId = parentMenuId,
-                                            CreateTime = DateTime.Now
+                                            //CreateTime = DateTime.Now
                                         });
                                     }
                                 }
@@ -268,10 +268,9 @@ namespace Orion.CRM.WebApp.Controllers
                     // 1.4插入新的RoleMenu至数据库
                     if (roleMenuRelations != null && roleMenuRelations.Count > 0) {
                         string roleMenuInsertApiUrl = _AppConfig.WebApiHost + "/api/Role/RoleMenuBatchInsert";
-                        bool rmInsertResult = APIInvoker.Post<bool>(roleMenuInsertApiUrl, roleMenuRelations);
+                        int rmInsertResult = APIInvoker.Post<int>(roleMenuInsertApiUrl, roleMenuRelations);
                         Logger.Write("1.4插入新的RoleMenu至数据库，rmInsertResult=" + rmInsertResult);
                     }
-
 
                     // 2.1删除旧的角色和数据权限的关系
                     string delRolePermissionApiUrl = _AppConfig.WebApiHost + "/api/DataPermission/DeleteRoleDataPermissions?roleId=" + viewModel.Id;
