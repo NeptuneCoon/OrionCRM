@@ -46,6 +46,12 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label">所属项目</label>
+                        <div class="controls">
+                            <label class="control-label" style="text-align:left">@(string.IsNullOrEmpty(Model.ProjectName) ? "-" : Model.ProjectName)</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">所属业务组</label>
                         <div class="controls">
                             <label class="control-label" style="text-align:left">@(string.IsNullOrEmpty(Model.GroupName) ? "-" : Model.GroupName)</label>

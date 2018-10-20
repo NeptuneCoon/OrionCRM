@@ -141,12 +141,13 @@
     <SqlMapDetail>
       <SqlName>GetUserById</SqlName>
       <OriginalSqlString>
-        select A.*,B.ProjectId,C.GroupId,D.RoleId,F.RoleName,E.GroupName from [AppUser] A
+        select A.*,B.ProjectId,C.GroupId,D.RoleId,F.RoleName,E.GroupName,G.ProjectName from [AppUser] A
         left join [UserProject] B on A.Id=B.UserId
         left join [UserGroup] C on A.Id=C.UserId
         left join [UserRole] D on A.Id=D.UserId
         left join [Group] E on C.GroupId=E.Id
         left join [Role] F on D.RoleId=F.Id
+        left join [Project] G on B.ProjectId=G.Id
         where A.Id=@Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

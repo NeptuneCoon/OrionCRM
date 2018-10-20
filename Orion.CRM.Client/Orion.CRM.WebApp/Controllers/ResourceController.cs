@@ -275,6 +275,15 @@ namespace Orion.CRM.WebApp.Controllers
             if (viewModel != null) {
                 bool result = false;
 
+                // 1.判断资源是否存在
+                bool isExist = IsExist(viewModel.ProjectId.ToString(), viewModel.Mobile, viewModel.Tel, viewModel.QQ, viewModel.Wechat);
+                if (isExist) {
+                    TempData["result"] = result;
+                    TempData["errorMsg"] = "抱歉，您要添加的资源已存在！";
+                    return RedirectToAction("Add");
+                }
+                
+                // 2.执行插入操作
                 int resourceId = InsertResource(viewModel);
                 if (resourceId > 0) {
                     // 插入资源和组织机构之间的关系

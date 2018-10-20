@@ -21,5 +21,6 @@ namespace Orion.CRM.WebApp.Models.Account
 
         public int? GroupId { get; set; }
         public string GroupName { get; set; }
+        public string ProjectName { get; set; }
     }
 }

@@ -30,25 +30,34 @@
                         </div>
                     }
                     else {
-                        <!--操作失败通知-->
-                        <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
-                            <button class="close" data-dismiss="alert">×</button>
-                            <span>抱歉，添加失败，请重试！</span>
-                        </div>
+                        if (TempData["errorMsg"] == null || TempData["errorMsg"].ToString() == "") {
+                            <!--操作失败通知-->
+                            <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                                <button class="close" data-dismiss="alert">×</button>
+                                <span>抱歉，添加失败，请重试！</span>
+                            </div>
+                        }
+                        else {
+                            <!--操作失败通知（带具体通知内容）-->
+                            <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                                <button class="close" data-dismiss="alert">×</button>
+                                <span>@TempData["errorMsg"]</span>
+                            </div>
+                        }
                     }
                 }
-                
+
                 <form class="form-horizontal" method="post" action="/Resource/AddHandler">
                     <div class="control-group" style="margin-top:10px">
                         <label class="control-label">客户姓名<span class="required">*</span></label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.CustomerName" placeholder="客户姓名" reg="regString" is-null="required" maxlength="200" />
+                            <input type="text" class="span6" asp-for="@Model.CustomerName" placeholder="客户姓名" reg="regString" is-null="required" maxlength="200" autocomplete="off" />
                             <p class="help-block">请输入客户的姓名，如不明确请填写"无"或"未知"</p>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">留言项目<span class="required">*</span></label>
-                        <div class="controls">                      
+                        <div class="controls">
                             @if (Model.Projects != null && Model.Projects.Count > 0) {
                                 <select class="span6 m-wrap" name="ProjectId" placeholder="留言项目" is-null="required" reg="regNum">
                                     <option value="">请选择...</option>
@@ -71,31 +80,31 @@
                     <div class="control-group">
                         <label class="control-label">手机号码</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.Mobile" placeholder="手机号码" reg="regMobile" maxlength="11" />
+                            <input type="text" class="span6" asp-for="@Model.Mobile" placeholder="手机号码" reg="regMobile" maxlength="11" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">固定电话</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.Tel" placeholder="固定电话" reg="regString" maxlength="12" />
+                            <input type="text" class="span6" asp-for="@Model.Tel" placeholder="固定电话" reg="regString" maxlength="12" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">微信</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.Wechat" placeholder="微信" reg="regWechat" maxlength="20" />
+                            <input type="text" class="span6" asp-for="@Model.Wechat" placeholder="微信" reg="regWechat" maxlength="20" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">QQ</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.QQ" placeholder="QQ" reg="regNum" maxlength="12" />
+                            <input type="text" class="span6" asp-for="@Model.QQ" placeholder="QQ" reg="regNum" maxlength="12" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Email</label>
                         <div class="controls">
-                            <input type="text" class="span6" asp-for="@Model.Email" placeholder="Email" reg="regEmail" maxlength="50" />
+                            <input type="text" class="span6" asp-for="@Model.Email" placeholder="Email" reg="regEmail" maxlength="50" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
@@ -103,7 +112,7 @@
                         <div class="controls">
                             <select asp-for="@Model.Province" style="width:90px"></select>
                             <select asp-for="@Model.City" style="width:100px"></select>
-                            <input type="text" class="span4" asp-for="@Model.Address" placeholder="详细地址" reg="regString" maxlength="50" />
+                            <input type="text" class="span4" asp-for="@Model.Address" placeholder="详细地址" reg="regString" maxlength="50" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
@@ -123,10 +132,10 @@
                     <div class="control-group">
                         <label class="control-label">初步意向</label>
                         <div class="controls">
-                            <select class="span6 m-wrap" name="Inclination" placeholder="初步意向"  reg="regNum">
+                            <select class="span6 m-wrap" name="Inclination" placeholder="初步意向" reg="regNum">
                                 <option value="">请选择...</option>
                                 @if (Model.Inclinations != null) {
-                                    @foreach(var item in Model.Inclinations) { 
+                                    @foreach (var item in Model.Inclinations) {
                                         <option value="@item.value">@item.displayText</option>
                                     }
                                 }
@@ -149,7 +158,7 @@
                     <div class="control-group">
                         <label class="control-label" style="margin-top:-4px">资源归属</label>
                         <div class="controls">
-                            @if(ViewBag.GroupId != null && ViewBag.GroupId > 0) {
+                            @if (ViewBag.GroupId != null && ViewBag.GroupId > 0) {
                                 <label class="nebula-label">
                                     <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" checked="checked" />
                                     <span class="nebula-radioInput"></span>本人
@@ -161,7 +170,7 @@
                             }
                             else {
                                 <label class="nebula-label" title="您还没有被分配到任何业务组，暂不能将资源划分给自己">
-                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" disabled="disabled"  />
+                                    <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" disabled="disabled" />
                                     <span class="nebula-radioInput"></span>本人
                                 </label>
                                 <label class="nebula-label">
@@ -255,10 +264,10 @@
             // 验证是否已存在
             if (result) {
                 var projectId = $("select[name='ProjectId']").find("option:selected").val();
-                var mobile = $('#Mobile').val();
-                var tel = $('#Tel').val();
-                var qq = $('#QQ').val();
-                var wechat = $('#Wechat').val();
+                var mobile = $.trim($('#Mobile').val());
+                var tel = $.trim($('#Tel').val());
+                var qq = $.trim($('#QQ').val());
+                var wechat = $.trim($('#Wechat').val());
 
                 var text = mobile + tel + qq + wechat;
 
