@@ -227,7 +227,7 @@
     <div style="width:700px">
         <div class="graph-container">
             <span class="graph-mark">业务排行</span>
-            <div class="caption">最具潜力业务排行(Top20)</div>
+            <div class="caption">最具潜力业务排行</div>
 
             <div class="filter">
                 <div style="position:relative;width:110px">
@@ -246,7 +246,7 @@
                 <div class="by afz" id="ranking">
                     @if (ViewBag.RankRecords != null && ViewBag.RankRecords.Count > 0) {
                         foreach (var record in ViewBag.RankRecords) {
-                            <a class="rp tr yg" href="#">
+                            <a class="rp tr yg" href="javascript:;">
                                 <span class="azj" style="width: @(record.Percent)%;"></span>
                                 <span>@record.SignMan</span>
                                 <span class="axn">@(record.Amount)元</span>

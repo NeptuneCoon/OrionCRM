@@ -33,9 +33,9 @@ namespace Orion.CRM.Application
             return adapter.GetSignByResourceId(resourceId);
         }
 
-        public IEnumerable<Entity.CustomerSign> GetSignsByTime(int orgId, string beginTime, string endTime)
+        public IEnumerable<Entity.CustomerSign> GetSignsByTime(int orgId, int? projectId, string beginTime, string endTime)
         {
-            return adapter.GetSignsByTime(orgId, beginTime, endTime);
+            return adapter.GetSignsByTime(orgId, projectId, beginTime, endTime);
         }
 
         public IEnumerable<Entity.CustomerSign> GetGroupMemberSigns(int groupId, string beginTime, string endTime)

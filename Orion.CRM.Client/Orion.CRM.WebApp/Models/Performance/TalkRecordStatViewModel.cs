@@ -10,6 +10,8 @@ namespace Orion.CRM.WebApp.Models.Performance
     /// </summary>
     public class TalkRecordStatViewModel
     {
+        // 用户所属项目
+        public int? UserProjectId { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public List<Models.Project.Project> ProjectList { get; set; }

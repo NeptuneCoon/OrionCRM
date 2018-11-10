@@ -67,15 +67,56 @@ namespace Orion.CRM.DataAccess
             return entity;
         }
 
-        public IEnumerable<Entity.CustomerSign> GetSignsByTime(int orgId, string beginTime, string endTime)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="projectId">可能为空，管理员查询时projectId通常为空</param>
+        /// <param name="beginTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public IEnumerable<Entity.CustomerSign> GetSignsByTime(int orgId, int? projectId, string beginTime, string endTime)
         {
             if (orgId <= 0) return null;
+            //SqlParameter[] paramArr ={
+            //    new SqlParameter("@OrgId", orgId),
+            //    new SqlParameter("@BeginTime", beginTime),
+            //    new SqlParameter("@EndTime", endTime)
+            //};
+            //var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>("CustomerSign", "GetSignsByTime", paramArr);
+            //return result;
+
+            string groupIdStr = "";
+            if (projectId != null && projectId > 0) {
+                var groups = new GroupDataAdapter().GetGroupsByProjectId(Convert.ToInt32(projectId));
+                List<int> groupIds = new List<int>();
+                foreach (var group in groups) {
+                    groupIds.Add(group.Id);
+                }
+                groupIdStr = string.Join(",", groupIds);
+            }
+            
+
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("CustomerSign", "GetSignsByTime").Clone();
+
+            string sqlWhere = "";
+            if (projectId != null && projectId > 0) {
+                sqlWhere += $" and ProjectId=" + projectId;
+            }
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere$", sqlWhere);
+            if (!string.IsNullOrEmpty(groupIdStr)) {
+                mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere2$", " and B.GroupId in(" + groupIdStr + ")");
+            }
+            else {
+                mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere2$", "");
+            }
+
             SqlParameter[] paramArr ={
                 new SqlParameter("@OrgId", orgId),
                 new SqlParameter("@BeginTime", beginTime),
                 new SqlParameter("@EndTime", endTime)
             };
-            var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>("CustomerSign", "GetSignsByTime", paramArr);
+            var result = SqlMapHelper.GetSqlMapResult<Entity.CustomerSign>(mapDetail, paramArr);
             return result;
         }
 

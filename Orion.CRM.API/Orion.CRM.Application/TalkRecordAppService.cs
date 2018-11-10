@@ -51,13 +51,14 @@ namespace Orion.CRM.Application
                 dict.OrderByDescending(x => x.Value);
  
                 List<Entity.TalkcountRank> rankRecords = new List<Entity.TalkcountRank>();
-                double totalCount = talkcountRanks.Max(x => x.Count) * 1.2;
+                //double totalCount = talkcountRanks.Max(x => x.Count) * 1.2;
+                double baseCount = talkcountRanks.Max(x => x.Count);//以最大值为基准(即最大值为100%)
                 foreach (var item in dict) {
                     Entity.TalkcountRank rank = new Entity.TalkcountRank();
                     rank.Saleman = item.Key;
                     rank.Count = item.Value;
-                    if(totalCount != 0) { 
-                        rank.Percent = (item.Value / totalCount * 100).ToString("f1");
+                    if(baseCount != 0) { 
+                        rank.Percent = (item.Value / baseCount * 100).ToString("f1");
                     }
                     else {
                         rank.Percent = "0.0";

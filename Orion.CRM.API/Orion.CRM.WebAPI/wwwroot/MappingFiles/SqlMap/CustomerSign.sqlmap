@@ -58,10 +58,11 @@
     <SqlMapDetail>
       <SqlName>GetSignsByTime</SqlName>
       <OriginalSqlString>
-        select  D.Amount,A.RealName as SignMan,B.GroupId,C.GroupName,A.Id as SignUserId,D.AppendUserId,D.AppendMan from [AppUser] A
+        select D.Amount,A.RealName as SignMan,B.GroupId,C.GroupName,A.Id as SignUserId,D.AppendUserId,D.AppendMan from [AppUser] A
         inner join [UserGroup] B on A.Id=B.UserId
         inner join [Group] C on B.GroupId=C.Id
-        left join (select * from [CustomerSign] where (SignTime between @BeginTime and @EndTime or SignTime is null) and OrgId=@OrgId) D on A.Id=D.SignUserId
+        left join (select * from [CustomerSign] where (SignTime between @BeginTime and @EndTime or SignTime is null) and OrgId=@OrgId $SqlWhere$) D on A.Id=D.SignUserId
+        where 1=1 $SqlWhere2$
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

@@ -7,6 +7,8 @@ namespace Orion.CRM.WebApp.Models.Performance
 {
     public class GroupSaleViewModel
     {
+        // 用户所属项目
+        public int? UserProjectId { get; set; }
         /// <summary>
         /// 组成员分析的 开始时间
         /// </summary>

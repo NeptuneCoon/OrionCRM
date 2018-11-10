@@ -251,6 +251,7 @@
                         var option = '<option value="' + group.id + '">' + group.groupName + '</option>';
                         $(group_select).append(option);
                     }
+                    renderMemberChart();
                 }
                 else {
                     $(group_select).append('<option>没有业务组</option>');
@@ -368,10 +369,15 @@
                     <i class="icon-calendar icon-position"></i>
                 </div>
 
-                <select class="select" style="width:120px;margin-left:10px" id="projectGroup" onchange="renderGroupRanking()">
+                <select class="select" style="width:120px;margin-left:10px" id="projectGroup" onchange="renderGroupRanking()" title="项目" @(Model.UserProjectId != null && Model.UserProjectId > 0 ? "disabled=disabled" : "")>
                     @if (Model.ProjectList != null) {
                         foreach (var project in Model.ProjectList) {
-                            <option value="@project.Id">@project.ProjectName</option>
+                            if (Model.UserProjectId == project.Id) {
+                                <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                            }
+                            else {
+                                <option value="@project.Id">@project.ProjectName</option>
+                            }
                         }
                     }
                     else {
@@ -414,10 +420,15 @@
         <div class="graph-container">
             <span class="graph-mark">组成员业绩</span>
             <div class="filter">
-                <select class="select" style="width:120px" id="projectMember" onchange="memberProjectChange(this)">
+                <select class="select" style="width:120px" id="projectMember" onchange="memberProjectChange(this)" @(Model.UserProjectId != null && Model.UserProjectId > 0 ? "disabled=disabled" : "")>
                     @if (Model.ProjectList != null) {
                         foreach (var project in Model.ProjectList) {
-                            <option value="@project.Id">@project.ProjectName</option>
+                            if (Model.UserProjectId == project.Id) {
+                                <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                            }
+                            else {
+                                <option value="@project.Id">@project.ProjectName</option>
+                            }
                         }
                     }
                     else {
@@ -425,7 +436,7 @@
                     }
                 </select>
 
-                <select class="select" style="width:120px;margin-left:10px" id="member_group" onchange="renderMemberChart()">
+                <select class="select" style="width:120px;margin-left:10px" id="member_group" onchange="renderMemberChart()" title="业务组">
                     @if (Model.GroupList != null && Model.GroupList.Count > 0) {
                         foreach (var group in Model.GroupList) {
                             <option value="@group.Id">@group.GroupName</option>
@@ -459,10 +470,15 @@
         <div class="graph-container">
             <span class="graph-mark">变化趋势</span>
             <div class="filter">
-                <select class="select" style="width:120px" id="projectTrend" onchange="renderTrendChart()">
+                <select class="select" style="width:120px" id="projectTrend" onchange="renderTrendChart()" @(Model.UserProjectId != null && Model.UserProjectId > 0 ? "disabled=disabled" : "")>
                     @if (Model.ProjectList != null) {
                         foreach (var project in Model.ProjectList) {
-                            <option value="@project.Id">@project.ProjectName</option>
+                            if (Model.UserProjectId == project.Id) {
+                                <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                            }
+                            else {
+                                <option value="@project.Id">@project.ProjectName</option>
+                            }
                         }
                     }
                     else {

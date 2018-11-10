@@ -19,22 +19,22 @@ namespace Orion.CRM.WebApp.Controllers
         {
             string apiBaseUrl = _AppConfig.WebApiHost + "/api/CustomerSign/GetSignsByTime";
 
-            // 当月业绩
+            // 月度
             string month_beginTime = DateTime.Now.Year + "-" + DateTime.Now.Month + "-1 00:00:00";
             string month_endTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string monthApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + month_beginTime + "&endTime=" + month_endTime;
+            string monthApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + month_beginTime + "&endTime=" + month_endTime + "&projectId=" + _AppUser.ProjectId;
             List<CustomerSign> monthSignRecords = APIInvoker.Get<List<CustomerSign>>(monthApiUrl);
 
-            // 本年业绩
+            // 年度
             string year_beginTime = DateTime.Now.Year + "-1-1 00:00:00";
             string year_endTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string yearApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + year_beginTime + "&endTime=" + year_endTime;
+            string yearApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + year_beginTime + "&endTime=" + year_endTime+ "&projectId=" + _AppUser.ProjectId;
             List<CustomerSign> yearSignRecords = APIInvoker.Get<List<CustomerSign>>(yearApiUrl);
 
             ViewBag.MonthSigns = ConvertToSignViewModel(monthSignRecords);
             ViewBag.YearSigns = ConvertToSignViewModel(yearSignRecords);
 
-            // 以下数据从当朋数据monthSignRecords中获取
+            // 以下数据从月度数据[monthSignRecords]中获取
             Dictionary<string, int> dict = new Dictionary<string, int>();
             if(monthSignRecords != null && monthSignRecords.Count > 0) {
                 foreach(var record in monthSignRecords) {
@@ -48,18 +48,18 @@ namespace Orion.CRM.WebApp.Controllers
             }
             dict = dict.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-            dict = dict.Take(20).ToDictionary(x => x.Key, x => x.Value);
+            //dict = dict.Take(20).ToDictionary(x => x.Key, x => x.Value);
 
             // 注意：最具潜力业务排行的数据来源是当月数据(默认从当月1号开始统计)
             if(dict != null && dict.Keys.Count > 0) {
                 List<Models.Performance.SignRank> rankRecords = new List<Models.Performance.SignRank>();
-                decimal totalAmount = dict.Sum(x => x.Value);
+                decimal baseAmount = dict.Max(x => x.Value);//以最大值为基准(即最大值为100%)
                 foreach(var item in dict) {
                     Models.Performance.SignRank rank = new Models.Performance.SignRank();
                     rank.SignMan = item.Key;
                     rank.Amount = item.Value;
-                    if (totalAmount != 0) {
-                        rank.Percent = (item.Value / totalAmount * 100).ToString("f1");
+                    if (baseAmount != 0) {
+                        rank.Percent = (item.Value / baseAmount * 100).ToString("f1");
                     }
                     else {
                         rank.Percent = "0.0";
@@ -87,9 +87,20 @@ namespace Orion.CRM.WebApp.Controllers
             int firstGroupId = 0;
             viewModel.ProjectList = App_Data.AppDTO.GetProjectsFromDb(_AppUser.OrgId);
             if (viewModel.ProjectList != null && viewModel.ProjectList.Count > 0) {
-                viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(viewModel.ProjectList[0].Id);
-                if(viewModel.GroupList != null && viewModel.GroupList.Count > 0) {
-                    firstGroupId = viewModel.GroupList.First().Id;
+                if (_AppUser.ProjectId != null) {
+                    // 用户属于某一个项目
+                    int userPID = Convert.ToInt32(_AppUser.ProjectId);
+                    viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(userPID);
+                    if (viewModel.GroupList != null && viewModel.GroupList.Count > 0) {
+                        firstGroupId = viewModel.GroupList.First().Id;
+                    }
+                }
+                else {
+                    // 用户不属于某一个项目
+                    viewModel.GroupList = App_Data.AppDTO.GetGroupsByProjectId(viewModel.ProjectList[0].Id);
+                    if (viewModel.GroupList != null && viewModel.GroupList.Count > 0) {
+                        firstGroupId = viewModel.GroupList.First().Id;
+                    }
                 }
             }
 
@@ -113,6 +124,8 @@ namespace Orion.CRM.WebApp.Controllers
             // step3.获取某段时间内组业绩
             ViewBag.GroupSaleRanking = GetGroupSaleRanking(projectId, viewModel.StartDateMember, viewModel.EndDateMember);
 
+            viewModel.UserProjectId = _AppUser.ProjectId;
+
             return View(viewModel);
         }
 
@@ -132,6 +145,9 @@ namespace Orion.CRM.WebApp.Controllers
             }
             else { 
                 viewModel.EndDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;//默认为当天
+            }
+            if(_AppUser.ProjectId != null && _AppUser.ProjectId > 0) {
+                projectId = (int)_AppUser.ProjectId;
             }
 
             viewModel.ProjectList = App_Data.AppDTO.GetProjectsFromDb(_AppUser.OrgId);
@@ -154,6 +170,7 @@ namespace Orion.CRM.WebApp.Controllers
             if (viewModel.TalkcountRanks != null) {
                viewModel.TalkcountRanks = viewModel.TalkcountRanks.OrderByDescending(x => x.Count).ToList();
             }
+            viewModel.UserProjectId = _AppUser.ProjectId;
 
             return View(viewModel);
         }
@@ -210,7 +227,7 @@ namespace Orion.CRM.WebApp.Controllers
             // 当月业绩
             string month_beginTime = startDate + " 00:00:00";
             string month_endTime = endDate + " 23:59:59";
-            string monthApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + month_beginTime + "&endTime=" + month_endTime;
+            string monthApiUrl = apiBaseUrl + "?orgId=" + _AppUser.OrgId + "&beginTime=" + month_beginTime + "&endTime=" + month_endTime + "&projectId=" + _AppUser.ProjectId;
             List<CustomerSign> monthSignRecords = APIInvoker.Get<List<CustomerSign>>(monthApiUrl);
 
             // 以下数据从当朋数据monthSignRecords中获取
@@ -227,18 +244,18 @@ namespace Orion.CRM.WebApp.Controllers
             }
             dict = dict.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-            dict = dict.Take(20).ToDictionary(x => x.Key, x => x.Value);
+            //dict = dict.Take(20).ToDictionary(x => x.Key, x => x.Value);
 
             // 注意：最具潜力业务排行的数据来源是当月数据(默认从当月1号开始统计)
             List<Models.Performance.SignRank> rankRecords = new List<Models.Performance.SignRank>();
             if (dict != null && dict.Keys.Count > 0) {
-                decimal totalAmount = dict.Sum(x => x.Value);
+                decimal baseAmount = dict.Max(x => x.Value);
                 foreach (var item in dict) {
                     Models.Performance.SignRank rank = new Models.Performance.SignRank();
                     rank.SignMan = item.Key;
                     rank.Amount = item.Value;
-                    if (totalAmount != 0) {
-                        rank.Percent = (item.Value / totalAmount * 100).ToString("f1");
+                    if (baseAmount != 0) {
+                        rank.Percent = (item.Value / baseAmount * 100).ToString("f1");
                     }
                     else {
                         rank.Percent = "0.0";

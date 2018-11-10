@@ -185,10 +185,14 @@
             <span class="graph-mark">电话量排行</span>
             <form method="get" action="/Performance/Talkcount">
                 <div class="filter">
-                    <select class="select" style="width:120px" id="projectId" name="projectId" onchange="projectChange(this)">
+                    <select class="select" style="width:120px" id="projectId" name="projectId" onchange="projectChange(this)" 
+                            @(Model.UserProjectId != null && Model.UserProjectId > 0 ? "disabled=disabled" : "")>
                         @if (Model.ProjectList != null) {
                             foreach (var project in Model.ProjectList) {
-                                @if(Context.Request.Query["projectId"] == project.Id.ToString()) { 
+                                @if (Context.Request.Query["projectId"] == project.Id.ToString()) {
+                                    <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                }
+                                else if (Model.UserProjectId == project.Id) {
                                     <option value="@project.Id" selected="selected">@project.ProjectName</option>
                                 }
                                 else {

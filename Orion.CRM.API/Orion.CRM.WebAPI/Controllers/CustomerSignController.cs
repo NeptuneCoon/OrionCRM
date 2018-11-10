@@ -85,10 +85,10 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
         [HttpGet]
-        public APIDataResult GetSignsByTime(int orgId, string beginTime, string endTime)
+        public APIDataResult GetSignsByTime(int orgId, int? projectId, string beginTime, string endTime)
         {
             try {
-                var result = service.GetSignsByTime(orgId, beginTime, endTime);
+                var result = service.GetSignsByTime(orgId, projectId, beginTime, endTime);
                 APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }

@@ -130,6 +130,7 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
+            viewModel.Params.pid = _AppUser.ProjectId;
             viewModel.StatusList = AppDTO.GetStatusFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
 
@@ -174,6 +175,7 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Resource.ResourceListViewModel viewModel = new ResourceListViewModel();
 
             viewModel.Params = param;
+            viewModel.Params.pid = _AppUser.ProjectId;
             viewModel.StatusList = AppDTO.GetStatusFromJson();
             viewModel.SourceList = AppDTO.GetSourcesFromDb(_AppUser.OrgId);
 
