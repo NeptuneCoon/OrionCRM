@@ -30,7 +30,7 @@
     <None Include="Views\AppUser\List.cshtml" />
     <None Include="Views\AppUser\ResetPassword.cshtml" />
     <None Include="Views\AppUser\ResourceExport.cshtml" />
-    <None Include="Views\Customer\Search.cshtml" />
+    <None Include="Views\Customer\All.cshtml" />
     <None Include="Views\Error\Http404.cshtml" />
     <None Include="Views\Error\Index.cshtml" />
     <None Include="Views\Group\List.cshtml" />

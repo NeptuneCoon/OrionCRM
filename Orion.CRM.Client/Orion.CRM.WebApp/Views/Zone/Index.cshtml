@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default span12">
+    <div class="panel-heading">
+        <h3 class="panel-title">区域视图</h3>
+    </div>
+
+    <div class="panel-body">
+        <!--查询-->
+        <form action="/Customer/All" method="get">
+            <input type="hidden" id="hidGroupId" />
+
+            <div style="background-color:#f5f5f5;padding:10px;">
+                <div style="background-color:#fff;padding:5px">
+                    <div class="form-inline" style="margin-top:10px">
+                        <span>项目</span>
+                        <select class="search-select"><option>请选择</option></select>
+
+                        <span style="margin-left:10px">品牌</span>
+                        <select class="search-select"><option>请选择</option></select>
+                        @*<span style="margin-left:10px">区域</span>
+                        <select class="search-select"><option>请选择</option></select>*@
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div style="background-color:#f5f5f5;padding:10px;">
+            <div style="background-color:#fff;padding:5px">
+                <div style="display:flex;justify-content:flex-start">
+                    <img src="~/images/temp/map.png" />
+
+                    <div style="padding:10px">
+                        <div class="alert">
+                            <h4 class="alert-heading">省级代理</h4>
+                            <div style="margin-top:8px">张三</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h4 class="alert-heading">市级代理</h4>
+                            <div style="margin-top:8px">李四</div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <h4 class="alert-heading">市级代理</h4>
+                            <div style="margin-top:8px">王非</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

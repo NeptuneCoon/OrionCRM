@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="panel panel-default span10">
+    <div class="panel-heading">
+        <h3 class="panel-title">新建客户</h3>
+    </div>
+
+    <div class="panel-body">
+        <form action="/Customer/AddHandler" method="post" class="form-horizontal">
+            <div style="background-color:#f5f5f5;padding:10px;width:680px">
+                <div style="background-color:#fff;padding:5px">
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">客户姓名<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="text" style="width:200px" placeholder="客户姓名" reg="regString" is-null="required" maxlength="200" autocomplete="off" />
+                            <p class="help-block">请输入客户的姓名，如不明确请填写"无"或"未知"</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">项目<span class="required">*</span></label>
+                        <div class="controls">
+                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                                <option value="">请选择...</option>
+                            </select>
+                            <p class="help-block">请选择用户留言的项目</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">手机号码</label>
+                        <div class="controls">
+                            <input type="text" style="width:200px" placeholder="手机号码" reg="regMobile" maxlength="11" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">身份证号</label>
+                        <div class="controls">
+                            <input type="text" style="width:200px" placeholder="身份证号" reg="regMobile" maxlength="11" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">代理品牌</label>
+                        <div class="controls">
+                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                                <option value="">请选择...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">代理级别</label>
+                        <div class="controls">
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" disabled="disabled" />
+                                <span class="nebula-radioInput"></span>省会城市
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
+                                <span class="nebula-radioInput"></span>地区
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
+                                <span class="nebula-radioInput"></span>地市
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
+                                <span class="nebula-radioInput"></span>县
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
+                                <span class="nebula-radioInput"></span>经销商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">代理区域</label>
+                        <div class="controls">
+                            <select class="m-wrap" style="width:220px"  name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                                <option value="">请选择...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">分配售后</label>
+                        <div class="controls">
+                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                                <option value="">请选择...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="padding-left:140px">
+                        <button type="submit" class="btn btn-primary" id="btnSubmit" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
+                        <a href="/Customer/All" class="btn">返回</a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
