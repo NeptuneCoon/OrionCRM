@@ -38,6 +38,10 @@ namespace Orion.CRM.WebApp.Controllers
 
             string filename = guid + extension;            // 新的文件名称
             var fullPath = $@"{root}\upload\{filename}";   // 新的存储路径
+            string str = Path.GetDirectoryName(fullPath);
+            if (!System.IO.Directory.Exists(Path.GetDirectoryName(fullPath))) {
+                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            }
             using (FileStream stream = new FileStream(fullPath, FileMode.Create)) {
                 file.CopyToAsync(stream);
             }
@@ -54,6 +58,9 @@ namespace Orion.CRM.WebApp.Controllers
             Models.Upload.InsertResult result = new Models.Upload.InsertResult();
 
             var filepath = $@"{_hostingEnv.WebRootPath}\upload\{filename}";
+            if (!System.IO.Directory.Exists(Path.GetDirectoryName(filepath))) {
+                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+            }
             FileInfo file = new FileInfo(filepath);
             try {
                 using (ExcelPackage package = new ExcelPackage(file)) {
@@ -71,7 +78,7 @@ namespace Orion.CRM.WebApp.Controllers
                             else {
                                 // 从Excel中提取数据
                                 List<Models.Resource.Resource> resources = ExtractData(worksheet);
-
+                                Logger.ErrorLog(_AppConfig.WebApiHost, "UploadController", "ImportData", "从Excel中提取到的数据：" + Newtonsoft.Json.JsonConvert.SerializeObject(resources));
                                 if (resources != null && resources.Count > 0) {
                                     // 验证Excel数据正确性
                                     string errorInfo = ValidateData(resources);
@@ -244,6 +251,7 @@ namespace Orion.CRM.WebApp.Controllers
                 sbError.Append($"同一Excel文件中出现了多个项目[{projectNameStr}]！为了保证数据一致性，请勿在一个Excel文件中包含多个项目的数据，谢谢！");
             }
 
+            Logger.ErrorLog(_AppConfig.WebApiHost, "UploadController", "ValidateData", "验证信息：" + sbError.ToString());
             return sbError.ToString();
         } 
         #endregion

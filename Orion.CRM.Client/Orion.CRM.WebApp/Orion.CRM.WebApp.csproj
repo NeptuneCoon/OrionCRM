@@ -61,10 +61,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\upload\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Orion.CRM.WebTools\Orion.CRM.WebTools.csproj" />
   </ItemGroup>
 
