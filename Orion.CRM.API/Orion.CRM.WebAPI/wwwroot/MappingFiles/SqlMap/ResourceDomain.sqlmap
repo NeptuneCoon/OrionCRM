@@ -522,6 +522,16 @@
       <CommandType>Text</CommandType>
       <Description>根据ResourceIds批量删除ResourceGroup</Description>
     </SqlMapDetail>
+    
+    <SqlMapDetail>
+      <SqlName>DeleteResourceGroupByUserId</SqlName>
+      <OriginalSqlString>
+        delete from [ResourceGroup] where ResourceId in(select ResourceId from ResourceUser where UserId=@UserId)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>移除某个用户下所有资源和业务组的关系</Description>
+    </SqlMapDetail>
 
     <SqlMapDetail>
       <SqlName>BatchDeleteResourceUser</SqlName>
@@ -544,29 +554,29 @@
     </SqlMapDetail>
     
     <SqlMapDetail>
-      <SqlName>UpdateResourceProjectByResourceIds</SqlName>
+      <SqlName>UpdateResourceProjectByUserId</SqlName>
       <OriginalSqlString>
-        update [ResourceProject] set ProjectId=@ProjectId where ResourceId in ($ResourceIds)
+        update ResourceProject set ProjectId=@NewProjectId where ResourceId in(select ResourceId from ResourceUser where UserId=@UserId)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)</Description>
+      <Description>批量更新ResourceProject(用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)</Description>
     </SqlMapDetail>
     
     <SqlMapDetail>
-      <SqlName>UpdateResourceGroupByResourceIds</SqlName>
+      <SqlName>UpdateResourceGroupByUserId</SqlName>
       <OriginalSqlString>
-        update [ResourceGroup] set GroupId=@GroupId where ResourceId in ($ResourceIds)
+        update ResourceGroup set GroupId=@NewGroupId where ResourceId in(select ResourceId from ResourceUser where UserId=@UserId)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)</Description>
+      <Description>批量更新ResourceGroup(用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)</Description>
     </SqlMapDetail>
 
     <SqlMapDetail>
-      <SqlName>BatchDeleteResourceProject</SqlName>
+      <SqlName>DeleteResourceProjectByUserId</SqlName>
       <OriginalSqlString>
-        delete from [ResourceProject] where ResourceId in ($ResourceIds)
+        delete from [ResourceProject] where ResourceId in (select ResourceId from ResourceUser where UserId=@UserId)
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

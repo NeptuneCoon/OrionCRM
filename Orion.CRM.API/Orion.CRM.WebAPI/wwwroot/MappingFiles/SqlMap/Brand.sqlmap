@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertBrand</SqlName>
+      <OriginalSqlString>
+        insert into Brand(BrandName,Description,ProjectId) values(@BrandName,@Description,@ProjectId);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增品牌</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateBrand</SqlName>
+      <OriginalSqlString>
+        update [Brand] set BrandName=@BrandName,Description=@Description,ProjectId=@ProjectId where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改品牌</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>DeleteBrand</SqlName>
+      <OriginalSqlString>
+        delete from [Brand] where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除品牌</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetAllBrands</SqlName>
+      <OriginalSqlString>
+        select A.*,B.ProjectName from Brand A
+        inner join Project B on A.ProjectId=B.Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>获取所有品牌</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>GetBrandsByProjectId</SqlName>
+      <OriginalSqlString>
+        select A.*,B.ProjectName from Brand A
+        inner join Project B on A.ProjectId=B.Id
+        where ProjectId=@ProjectId
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>根据项目获取所有品牌</Description>
+    </SqlMapDetail>
+
+   
+	</SqlMapConfigurations>
+</SqlMap>

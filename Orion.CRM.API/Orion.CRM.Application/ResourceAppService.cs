@@ -326,25 +326,26 @@ namespace Orion.CRM.Application
         }
 
         /// <summary>
-        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
+        /// 批量更新ResourceProject(用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
         /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="projectId"></param>
+        /// <param name="newProjectId">新项目Id</param>
+        /// <param name="userId">用户Id</param>
         /// <returns></returns>
-        public int UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
+
+        public int UpdateResourceProjectByUserId(int newProjectId, int userId)
         {
-            return adapter.UpdateResourceProjectByResourceIds(resourceIds, projectId);
+            return adapter.UpdateResourceProjectByUserId(newProjectId, userId);
         }
 
         /// <summary>
-        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
+        /// 批量更新ResourceGroup(用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
         /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="projectId"></param>
+        /// <param name="newGroupId">新组Id</param>
+        /// <param name="userId">用户Id</param>
         /// <returns></returns>
-        public int UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
+        public int UpdateResourceGroupByUserId(int newGroupId, int userId)
         {
-            return adapter.UpdateResourceGroupByResourceIds(resourceIds, groupId);
+            return adapter.UpdateResourceGroupByUserId(newGroupId, userId);
         }
 
         /// <summary>
@@ -352,9 +353,9 @@ namespace Orion.CRM.Application
         /// </summary>
         /// <param name="resourceIds"></param>
         /// <returns></returns>
-        public int BatchDeleteResourceProject(string resourceIds)
+        public int DeleteResourceProjectByUserId(int userId)
         {
-            return adapter.BatchDeleteResourceProject(resourceIds);
+            return adapter.DeleteResourceProjectByUserId(userId);
         }
 
         /// <summary>
@@ -365,6 +366,11 @@ namespace Orion.CRM.Application
         public int BatchDeleteResourceGroup(string resourceIds)
         {
             return adapter.BatchDeleteResourceGroup(resourceIds);
+        }
+
+        public int DeleteResourceGroupByUserId(int userId)
+        {
+            return adapter.DeleteResourceGroupByUserId(userId);
         }
 
 

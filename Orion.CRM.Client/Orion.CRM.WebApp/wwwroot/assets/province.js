@@ -57,15 +57,59 @@
     cmbProvince.onchange = changeProvince;
 };
 
+var zoneInit = {
+    /*
+     * 渲染省下拉框 
+    */
+    renderProvince: function (provinceId) {
+        $('#' + provinceId).find('option').not(":first").remove();
+        for (var i = 1; i < provinceList.length; i++) {
+            var province = provinceList[i];
+            var opt = '<option value=' + province.name + '>' + province.name + '</option>';
+            $('#' + provinceId).append(opt);
+        }
+    },
+    renderCity: function (provinceText, cityId) {
+        $('#' + cityId).find('option').not(":first").remove();
+        for (var i = 1; i < provinceList.length; i++) {
+            var province = provinceList[i];
+            if (province.name == provinceText) {
+                for (var j = 0; j < province.cityList.length; j++) {
+                    var city = province.cityList[j];
+                    var opt = '<option value=' + city.name + '>' + city.name + '</option>';
+                    $('#' + cityId).append(opt);
+                }
+            }
+        }
+    },
+    renderDistrict: function (provinceText, cityText, districtId) {
+        $('#' + districtId).find('option').not(":first").remove();
+        for (var i = 1; i < provinceList.length; i++) {
+            var province = provinceList[i];
+            if (province.name == provinceText) {
+                for (var j = 0; j < province.cityList.length; j++) {
+                    var city = province.cityList[j];
+                    if (city.name == cityText) {
+                        for (var k = 0; k < city.areaList.length; k++) {
+                            var district = city.areaList[k];
+                            var opt = '<option value=' + district + '>' + district + '</option>';
+                            $('#' + districtId).append(opt);
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
 var provinceList = [
     {
-        name: '--省份--',cityList:[]
+        name: '--省份--', cityList: []
     },
     {
         name: '北京', cityList: [
             { name: '东城区', },
             { name: '西城区', },
-            { name: '海淀区'},
+            { name: '海淀区' },
             { name: '朝阳区' },
             { name: '丰台区' },
             { name: '门头沟区' },

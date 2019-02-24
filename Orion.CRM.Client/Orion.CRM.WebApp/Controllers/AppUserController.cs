@@ -153,7 +153,8 @@ namespace Orion.CRM.WebApp.Controllers
         public IActionResult EditHandler(Models.AppUser.AppUserViewModel viewModel)
         {
             if (viewModel != null) {
-                string url = _AppConfig.WebApiHost + "/api/AppUser/GetUserById?id=" + viewModel.Id;
+                int userId = viewModel.Id;
+                string url = _AppConfig.WebApiHost + "/api/AppUser/GetUserById?id=" + userId;
                 Models.AppUser.AppUserViewModel user = APIInvoker.Get<Models.AppUser.AppUserViewModel>(url);
                 int? old_projectId = 0, old_groupId = 0;
 
@@ -180,7 +181,7 @@ namespace Orion.CRM.WebApp.Controllers
                         string userRoleApi = _AppConfig.WebApiHost + "/api/AppUser/UpdateUserRole";
                         var userRole = new
                         {
-                            UserId = viewModel.Id,
+                            UserId = userId,
                             RoleId = viewModel.RoleId
                         };
 
@@ -216,28 +217,29 @@ namespace Orion.CRM.WebApp.Controllers
                             }
                         }
 
-                        // 先获取此用户所有的资源
-                        List<int> resourceIdList = APIInvoker.Get<List<int>>(_AppConfig.WebApiHost + "/api/Resource/GetResourcesByUserId?userId=" + viewModel.Id);
-                        if(resourceIdList != null && resourceIdList.Count > 0) {
-                            string resourceIds = string.Join(",", resourceIdList);
+                        // 先判断用户是否有资源
+                        int resourceCount = APIInvoker.Get<int>(_AppConfig.WebApiHost + "/api/Resource/GetResourceCountByUserId?userId=" + userId);//用户拥有的资源数量
+                        if(resourceCount > 0) {
+                            //string resourceIds = string.Join(",", resourceIdList);
                             // 1.处理用户的资源和Project之间的关系
                             if(viewModel.ProjectId == null || viewModel.ProjectId <= 0) {
                                 // 删除此用户的所有资源和此Project之间的关系
-                                APIInvoker.Get<int>(_AppConfig.WebApiHost + "/api/Resource/BatchDeleteResourceProject?resourceIds=" + resourceIds);
+                                int cnt = APIInvoker.Get<int>(_AppConfig.WebApiHost + "/api/Resource/DeleteResourceProjectByUserId?userId=" + userId);
                             }
                             else if(viewModel.ProjectId != old_projectId) {
                                 // 修改
-                                APIInvoker.Get<int>(_AppConfig.WebApiHost + $"/api/Resource/UpdateResourceProjectByResourceIds?resourceIds={resourceIds}&projectId={viewModel.ProjectId}");
+                                int cnt = APIInvoker.Get<int>(_AppConfig.WebApiHost + $"/api/Resource/UpdateResourceProjectByUserId?newProjectId={viewModel.ProjectId}&userId={userId}");
                             }
 
                             // 2.处理用户的资源和Group之间的关系
                             if(viewModel.GroupId == null || viewModel.GroupId <= 0) {
                                 // 删除此用户的所有资源和此Group之间的关系
-                                APIInvoker.Get<int>(_AppConfig.WebApiHost + "/api/Resource/BatchDeleteResourceGroup?resourceIds=" + resourceIds);
+                                int cnt = APIInvoker.Get<int>(_AppConfig.WebApiHost + "/api/Resource/DeleteResourceGroupByUserId?userId=" + userId);
                             }
                             else if(viewModel.GroupId != old_groupId) {
                                 // 修改
-                                APIInvoker.Get<int>(_AppConfig.WebApiHost + $"/api/Resource/UpdateResourceGroupByResourceIds?resourceIds={resourceIds}&groupId={viewModel.GroupId}");
+                                //int cnt = APIInvoker.Get<int>(_AppConfig.WebApiHost + $"/api/Resource/UpdateResourceGroupByResourceIds?resourceIds={resourceIds}&groupId={viewModel.GroupId}");
+                                int cnt = APIInvoker.Get<int>(_AppConfig.WebApiHost + $"/api/Resource/UpdateResourceGroupByUserId?newGroupId={viewModel.GroupId}&userId={userId}");
                             }
                         }
                     }

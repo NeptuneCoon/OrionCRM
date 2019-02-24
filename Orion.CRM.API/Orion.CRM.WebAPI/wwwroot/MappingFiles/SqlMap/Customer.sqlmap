@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlMap>
+  <SqlMapConfigurations>
+    <SqlMapDetail>
+      <SqlName>InsertCustomer</SqlName>
+      <OriginalSqlString>
+        insert into Customer(RealName,Sex,Mobile,IdentityNo,BrandId,AgentLevel,AgentZone1,AgentZone2,AgentZone3,ProjectId,ServiceUserId)
+        values(@RealName,@Sex,@Mobile,@IdentityNo,@BrandId,@AgentLevel,@AgentZone1,@AgentZone2,@AgentZone3,@ProjectId,@ServiceUserId);
+        select cast(@@identity as int);
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>新增客户</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>UpdateCustomer</SqlName>
+      <OriginalSqlString>
+        update [Customer] set RealName=@RealName,Sex=@Sex,Mobile=@Mobile,IdentityNo=@IdentityNo,BrandId=@BrandId,AgentLevel=@AgentLevel,
+        AgentZone1=@AgentZone1,AgentZone2=@AgentZone2,AgentZone3=@AgentZone3,ProjectId=@ProjectId,UpdateTime=@UpdateTime
+        where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>修改客户</Description>
+    </SqlMapDetail>
+
+
+   
+	</SqlMapConfigurations>
+</SqlMap>

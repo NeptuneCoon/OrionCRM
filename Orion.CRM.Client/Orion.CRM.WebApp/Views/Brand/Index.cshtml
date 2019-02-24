@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Orion.CRM.WebApp.Models.Brand.Brand>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -27,68 +27,82 @@
             <strong></strong>
         </div>
 
-        <table class="table table-bordered" style="margin-top:8px">
+        <table class="table table-bordered" style="margin-top:8px" id="brands">
             <thead>
                 <tr>
                     <th>序号</th>
                     <th>品牌名称</th>
-                    <th>描述</th>
+                    <th>所属项目</th>
                     <th>客户数</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>开课吧</td>
-                    <td>12312afgbadsfasd</td>
-                    <td>12个</td>
-                    <td>
-                        <a href="javascript:;" onclick="showEditPanel(1, '开课吧')">编辑</a> | 
-                        <a href="javascript:;" onclick="deleteConfirm(1)">删除</a> | 
-                        <a href="javascript:;">查看区域</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>极客学院</td>
-                    <td>abcdadfasfd</td>
-                    <td>6个</td>
-                    <td>
-                        <a href="javascript:;" onclick="showEditPanel(2, '极客学院')">编辑</a> |
-                        <a href="javascript:;" onclick="deleteConfirm(2)">删除</a> |
-                        <a href="javascript:;">查看区域</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>慕课网</td>
-                    <td>abcdadfasfd</td>
-                    <td>23个</td>
-                    <td>
-                        <a href="javascript:;" onclick="showEditPanel(3, '慕课网')">编辑</a> |
-                        <a href="javascript:;" onclick="deleteConfirm(3)">删除</a> |
-                        <a href="javascript:;">查看区域</a>
-                    </td>  
-                </tr>
+                @if (Model != null && Model.Count > 0) {
+                    for (int i = 0; i < Model.Count; i++) {
+                        var item = Model[i];
+                        <tr>
+                            <td>@(i+1)</td>
+                            <td>@item.BrandName</td>
+                            <td>@item.ProjectName</td>
+                            <td>12个</td>
+                            <td>
+                                <a href="javascript:;" onclick="showEditPanel(@item.Id, '@item.BrandName',@item.ProjectId)">编辑</a> |
+                                <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a> |
+                                <a href="javascript:;">查看区域</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                    <tr><td colspan="5">没有数据</td></tr>
+                }
+
             </tbody>
         </table>
     </div>
 </div>
 
-
+<input type="hidden" id="brandIdHidden" />
 <!--create/edit panel-->
 <div class="modal modal-webpi" style="display: none;" id="panelEdit">
     <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
     <div class="modal-contents">
         <h2>添加-品牌</h2>
         <div style="border:1px solid #e1e2e2;padding:15px;">
-            <div class="form-inline">
-                <input type="text" placeholder="请输入品牌名称" class="modal-input" id="brandName" maxlength="15" />
-                <input type="hidden" id="projectIdHidden" />
-                <input type="button" value="保存" class="btn btn-inverse" style="border-radius:0 !important;padding:4px 8px" onclick="saveChange()" />
+            <div>
+                <table>
+                    <tr>
+                        <td style="width:100px;text-align:right"><span class="tip">*</span>品牌名称：</td>
+                        <td style="padding-left:10px">
+                            <input type="text" placeholder="请输入品牌名称" class="modal-input" id="brandName" maxlength="15" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:100px;text-align:right"><span class="tip">*</span>所属项目：</td>
+                        <td style="padding-left:10px">
+                            <select class="search-select" id="selectProject">
+                                <option value="">请选择...</option>
+                                @if (ViewBag.Projects != null) {
+                                    foreach (var project in ViewBag.Projects) {
+                                        if (ViewBag.ProjectId != null && ViewBag.ProjectId == project.Id) {
+                                            <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                        }
+                                        else {
+                                            <option value="@project.Id">@project.ProjectName</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="panelTips" style="padding:3px;color:red;display:none;margin-left:22px;margin-top:5px"></div>
+                <div style="display:flex;justify-content:flex-end;margin-top:15px">
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" style="margin-right:10px" />
+                    <input type="button" value="确定" class="btn btn-success" onclick="saveChange()" />
+                </div>
             </div>
-            <div id="panelTips" style="padding:3px;color:red; display:none" msg="请输入品牌名称"></div>
         </div>
     </div>
 </div>
@@ -118,17 +132,18 @@
 
 @section scripts{
     <script type="text/javascript">
-        function showEditPanel(id, brandName) {
+        function showEditPanel(id, brandName,projectId) {
             var panel = $('#panelEdit');
             if (id) {
                 panel.find(".modal-contents>h2").html('编辑-品牌');
-                $('#projectIdHidden').val(id);
+                $('#brandIdHidden').val(id);
                 $('#brandName').val(brandName);
+                $('#selectProject').val(projectId);
             }
             else {
                 panel.find(".modal-contents>h2").html('添加-品牌');
                 $('#brandName').val('');
-                $('#projectIdHidden').val('');
+                $('#brandIdHidden').val('');
             }
 
             modalShow(panel);
@@ -136,19 +151,25 @@
         }
         function saveChange() {
             var brandName = $('#brandName').val();
+            var projectId = $('#selectProject').find("option:selected").val();
             if (!brandName) {
-                $('#panelTips').html($('#panelTips').attr("msg")).show();
+                $('#panelTips').html('请输入品牌名称！').show();
                 $('#brandName').focus();
+                return false;
+            }
+            else if (!projectId) {
+                $('#panelTips').html('请选择品牌所属项目！').show();
+                $('#selectProject').focus();
                 return false;
             }
             else {
                 $('#panelTips').hide();
             }
-            var id = $('#projectIdHidden').val();
+            var id = $('#brandIdHidden').val();
             if (id) {
                 // 修改
-                var entity = { "Id": id, "ProjectName": brandName };
-                $.post("/Project/Update", entity, function (result) {
+                var entity = { "Id": id, "BrandName": brandName, "ProjectId": projectId };
+                $.post("/Brand/Update", entity, function (result) {
                     $('#successAlert').hide();
                     $('#errorAlert').hide();
                     if (result) {
@@ -164,8 +185,8 @@
             }
             else {
                 // 新增
-                var entity = { "ProjectName": brandName };
-                $.post("/Project/Insert", entity, function (result) {
+                var entity = { "BrandName": brandName, "ProjectId": projectId  };
+                $.post("/Brand/Insert", entity, function (result) {
                     if (result) {
                         $('#successAlert').find("strong").html('添加成功！');
                         $('#successAlert').show();
@@ -211,7 +232,7 @@
 
         // 异步重载数据列表
         function reloadList() {
-            $.get("/Project/ReloadList", null, function (data) {
+            $.get("/Brand/ReloadList", null, function (data) {
                 if (data && data.length > 0) {
                     console.info(data);
                     var dataHtml = '';
@@ -220,20 +241,21 @@
                         itemHtml += '<tr>';
                         itemHtml += '<td>' + (i + 1) + '</td>';
                         itemHtml += '<td>' + data[i].brandName + '</td>';
-                        itemHtml += '<td>' + data[i].groupCount + '</td>';
-                        itemHtml += '<td>' + moment(data[i].createTime).format('YYYY-MM-DD HH:mm') + '</td>';
+                        itemHtml += '<td>' + data[i].projectName + '</td>';
+                        itemHtml += '<td>' + '12个' + '</td>';
                         itemHtml += '<td>';
-                        itemHtml += '<a href="javascript:;" onclick="showEditPanel(' + data[i].id + ', \'' + data[i].brandName + '\')">编辑</a> ';
-                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ')">删除</a>';
+                        itemHtml += '<a href="javascript:;" onclick="showEditPanel(' + data[i].id + ', \'' + data[i].brandName + '\',' + data[i].projectId +')">编辑</a> | ';
+                        itemHtml += '<a href="javascript:;" onclick="deleteConfirm(' + data[i].id + ')">删除</a> | ';
+                        itemHtml += '<a href="javascript:;">查看区域</a>';
                         itemHtml += '</td>';
                         itemHtml += '</tr>';
 
                         dataHtml += itemHtml;
                     }
-                    $(".table>tbody").html(dataHtml);
+                    $("#brands>tbody").html(dataHtml);
                 }
                 else {
-                    $(".table>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
+                    $("#brands>tbody").html('<tr><td colspan="5" style="text-align:center">没有数据</td></tr>');
                 }
             });
         }

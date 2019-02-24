@@ -23,10 +23,33 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label">性别</label>
+                        <div class="controls" style="padding-top:4px">
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="Sex" value="1">
+                                <span class="nebula-radioInput"></span>男
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="Sex" value="2">
+                                <span class="nebula-radioInput"></span>女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">项目<span class="required">*</span></label>
                         <div class="controls">
-                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum" onchange="projectChange(this)">
                                 <option value="">请选择...</option>
+                                @if (ViewBag.Projects != null) {
+                                    foreach (var project in ViewBag.Projects) {
+                                        if (ViewBag.ProjectId != null && ViewBag.ProjectId == project.Id) {
+                                            <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                        }
+                                        else {
+                                            <option value="@project.Id">@project.ProjectName</option>
+                                        }
+                                    }
+                                }
                             </select>
                             <p class="help-block">请选择用户留言的项目</p>
                         </div>
@@ -46,48 +69,38 @@
                     <div class="control-group">
                         <label class="control-label">代理品牌</label>
                         <div class="controls">
-                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                            <select class="m-wrap" style="width:220px" name="BrandId" placeholder="项目" is-null="required" reg="regNum" id="brandSelect">
                                 <option value="">请选择...</option>
                             </select>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">代理级别</label>
-                        <div class="controls">
+                        <div class="controls" style="padding-top:4px">
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="1" disabled="disabled" />
-                                <span class="nebula-radioInput"></span>省会城市
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="1" onclick="agentLevelChange()" />
+                                <span class="nebula-radioInput"></span>省
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
-                                <span class="nebula-radioInput"></span>地区
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="2" onclick="agentLevelChange()" />
+                                <span class="nebula-radioInput"></span>市
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
-                                <span class="nebula-radioInput"></span>地市
-                            </label>
-                            <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
-                                <span class="nebula-radioInput"></span>县
-                            </label>
-                            <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="ResourceBelong" value="0" checked="checked" />
-                                <span class="nebula-radioInput"></span>经销商
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="3" onclick="agentLevelChange()" />
+                                <span class="nebula-radioInput"></span>县/行政区
                             </label>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">代理区域</label>
                         <div class="controls">
-                            <select class="m-wrap" style="width:220px"  name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                            <select class="m-wrap" style="width:120px" name="AgentZone1" id="provinceSelect" onchange="provinceChange()">
                                 <option value="">请选择...</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">分配售后</label>
-                        <div class="controls">
-                            <select class="m-wrap" style="width:220px" name="ProjectId" placeholder="项目" is-null="required" reg="regNum">
+                            <select class="m-wrap" style="width:180px" name="AgentZone2" id="citySelect" onchange="cityChange()">
+                                <option value="">请选择...</option>
+                            </select>
+                            <select class="m-wrap" style="width:180px" name="AgentZone3" id="districtSelect">
                                 <option value="">请选择...</option>
                             </select>
                         </div>
@@ -105,7 +118,83 @@
 </div>
 
 
+@section scripts{
+    <script src="~/assets/province.js"></script>
+    <script type="text/javascript">
+        function projectChange(e) {
+            var projectId = $(e).find("option:selected").val();
+            $("#brandSelect option").not(":first").remove();
+            $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var option = '<option value="' + item.id + '">' + item.brandName + '</option>';
+                        $('#brandSelect').append(option);
+                    }
+                }
+            });
+        }
+        function provinceChange() {
+            $('#citySelect,#districtSelect').show();
 
+            var agentLevel = $('input[name="AgentLevel"]:checked').val();
+            console.info(agentLevel);
+            if (agentLevel == "1") {
+                $('#citySelect,#districtSelect').hide();  
+            }
+            else if (agentLevel == "2") {
+                // 生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                console.info(province);
+                zoneInit.renderCity(province, 'citySelect');
+                // 隐藏县/区下拉框
+                $('#districtSelect').hide();  
+            }
+            else {
+                // 生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                zoneInit.renderCity(province, 'citySelect');
+
+                $('#citySelect,#districtSelect').show();  
+            }
+        }
+        function cityChange() {
+            $('#citySelect,#districtSelect').show();
+
+            var province = $('#provinceSelect').find("option:selected").val();
+            var city = $('#citySelect').find("option:selected").val();
+            zoneInit.renderDistrict(province, city, 'districtSelect');
+
+            var agentLevel = $('input[name="AgentLevel"]:checked').val();
+            if (agentLevel == "2") {
+                $('#districtSelect').hide();  
+            }
+            else {
+                $('#citySelect,#districtSelect').hide();  
+            }
+        }
+
+        function agentLevelChange() {
+            $('#citySelect,#districtSelect').show();
+            var agentLevel = $('input[name="AgentLevel"]:checked').val();
+            if (agentLevel == "1") {
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                $('#districtSelect').hide();  
+            }
+
+            //var optionCount = $('#provinceSelect').find("option").length;
+            //if (optionCount <= 1) {
+            //    zoneInit.renderProvince('provinceSelect');
+            //}
+        }
+
+        $(document).ready(function () {
+            zoneInit.renderProvince('provinceSelect');
+        });
+    </script>
+}
 
 
 

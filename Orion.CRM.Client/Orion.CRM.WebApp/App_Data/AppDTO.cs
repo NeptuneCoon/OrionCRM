@@ -402,5 +402,13 @@ namespace Orion.CRM.WebApp.App_Data
 
             return count;
         }
+
+        // 根据项目获取品牌
+        public static List<Models.Brand.Brand> GetBrandsByProjectId(int projectId)
+        {
+            string apiUrl = _webApiHost + $"/api/Brand/GetBrandsByProjectId?projectId={projectId}";
+            var brands = APIInvoker.Get<List<Models.Brand.Brand>>(apiUrl);
+            return brands;
+        }
     }
 }

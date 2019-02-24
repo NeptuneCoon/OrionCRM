@@ -654,37 +654,28 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
-        /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
+         
         [HttpGet]
-        public APIDataResult UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
+        public APIDataResult UpdateResourceProjectByUserId(int newProjectId, int userId)
         {
-            try {
-                int count = service.UpdateResourceProjectByResourceIds(resourceIds, projectId);
+            try
+            {
+                int count = service.UpdateResourceProjectByUserId(newProjectId, userId);
                 APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
                 return dataResult;
             }
         }
 
-        /// <summary>
-        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
-        /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="groupId"></param>
-        /// <returns></returns>
         [HttpGet]
-        public APIDataResult UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
+        public APIDataResult UpdateResourceGroupByUserId(int newGroupId, int userId)
         {
             try {
-                int count = service.UpdateResourceGroupByResourceIds(resourceIds, groupId);
+                int count = service.UpdateResourceGroupByUserId(newGroupId, userId);
                 APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
@@ -697,13 +688,13 @@ namespace Orion.CRM.WebAPI.Controllers
         /// <summary>
         /// 批量删除ResourceProject
         /// </summary>
-        /// <param name="resourceIds"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public APIDataResult BatchDeleteResourceProject(string resourceIds)
+        public APIDataResult DeleteResourceProjectByUserId(int userId)
         {
             try {
-                int count = service.BatchDeleteResourceProject(resourceIds);
+                int count = service.DeleteResourceProjectByUserId(userId);
                 APIDataResult dataResult = new APIDataResult(200, count);
                 return dataResult;
             }
@@ -727,6 +718,22 @@ namespace Orion.CRM.WebAPI.Controllers
                 return dataResult;
             }
             catch (Exception ex) {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
+        public APIDataResult DeleteResourceGroupByUserId(int userId)
+        {
+            try
+            {
+                int count = service.DeleteResourceGroupByUserId(userId);
+                APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
                 APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
                 return dataResult;
             }

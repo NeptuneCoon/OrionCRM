@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Orion.CRM.WebApp.App_Data;
 
 namespace Orion.CRM.WebApp.Controllers
 {
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
         public IActionResult All()
         {
@@ -20,6 +21,8 @@ namespace Orion.CRM.WebApp.Controllers
 
         public IActionResult Add()
         {
+            ViewBag.Projects = AppDTO.GetProjectsFromDb(_AppUser.OrgId);
+            
             return View();
         }
 
@@ -27,5 +30,6 @@ namespace Orion.CRM.WebApp.Controllers
         {
             return View();
         }
+
     }
 }

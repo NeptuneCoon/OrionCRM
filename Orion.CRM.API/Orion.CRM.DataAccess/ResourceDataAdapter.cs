@@ -96,7 +96,7 @@ namespace Orion.CRM.DataAccess
 
             int result = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "DeleteResourceUserByUserId", param);
             return result;
-        } 
+        }
         #endregion
 
         #region 恢复一条资源
@@ -129,7 +129,7 @@ namespace Orion.CRM.DataAccess
 
             var result = SqlMapHelper.GetSqlMapSingleResult<Entity.Resource>("ResourceDomain", "GetResourceByNameMobileWechatQQ", paramArr);
             return result;
-        } 
+        }
         #endregion
 
         #region 判断资源是否存在
@@ -142,30 +142,40 @@ namespace Orion.CRM.DataAccess
             };
 
             string sqlWhere = "";
-            if (!string.IsNullOrEmpty(mobile)) {
+            if (!string.IsNullOrEmpty(mobile))
+            {
                 sqlWhere += $" Mobile='{mobile}'";
             }
-            if (!string.IsNullOrEmpty(tel)) {
-                if (sqlWhere.Length > 0) {
+            if (!string.IsNullOrEmpty(tel))
+            {
+                if (sqlWhere.Length > 0)
+                {
                     sqlWhere += $" or Tel='{tel}'";
                 }
-                else {
+                else
+                {
                     sqlWhere += $" Tel='{tel}'";
                 }
             }
-            if (!string.IsNullOrEmpty(qq)) {
-                if (sqlWhere.Length > 0) {
+            if (!string.IsNullOrEmpty(qq))
+            {
+                if (sqlWhere.Length > 0)
+                {
                     sqlWhere += $" or QQ='{qq}'";
                 }
-                else {
+                else
+                {
                     sqlWhere += $" QQ='{qq}'";
                 }
             }
-            if (!string.IsNullOrEmpty(wechat)) {
-                if (sqlWhere.Length > 0) {
+            if (!string.IsNullOrEmpty(wechat))
+            {
+                if (sqlWhere.Length > 0)
+                {
                     sqlWhere += $" or Wechat='{wechat}'";
                 }
-                else {
+                else
+                {
                     sqlWhere += $" Wechat='{wechat}'";
                 }
             }
@@ -219,7 +229,7 @@ namespace Orion.CRM.DataAccess
 
             int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, null);
             return count;
-        } 
+        }
         #endregion
 
         #region 添加资源和组织机构之间的关系
@@ -260,7 +270,7 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@Id", id);
             Entity.Resource resource = SqlMapHelper.GetSqlMapSingleResult<Entity.Resource>("ResourceDomain", "GetResourceById", param);
             return resource;
-        } 
+        }
         #endregion
 
         #region 根据筛选条件查询资源
@@ -426,63 +436,79 @@ namespace Orion.CRM.DataAccess
             SqlParameter param = new SqlParameter("@OrgId", orgId);
             var list = SqlMapHelper.GetSqlMapResult<Entity.ResourceSource>("ResourceDomain", "GetResourceSourceStat", param);
             return list;
-        } 
+        }
         #endregion
 
         #region 生成SQL查询的where子句
         private string GetSqlWhere(Entity.ResourceSearchParams param)
         {
             StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(param.name)) {
+            if (!string.IsNullOrEmpty(param.name))
+            {
                 sb.Append($" and CustomerName like '%{param.name}%'");
             }
-            if (!string.IsNullOrEmpty(param.key)) {
+            if (!string.IsNullOrEmpty(param.key))
+            {
                 sb.Append($" and (Mobile='{param.key}' or QQ='{param.key}' or Wechat='{param.key}')");
             }
-            if (param.pid != null && param.pid > 0) {
+            if (param.pid != null && param.pid > 0)
+            {
                 sb.Append($" and ProjectId={param.pid}");
             }
-            if (param.gid != null && param.gid > 0) {
+            if (param.gid != null && param.gid > 0)
+            {
                 sb.Append($" and GroupId={param.gid}");
             }
-            if (param.uid != null && param.uid > 0) {
+            if (param.uid != null && param.uid > 0)
+            {
                 sb.Append($" and UserId={param.uid}");
             }
-            if (param.status != null && param.status > 0) {
+            if (param.status != null && param.status > 0)
+            {
                 sb.Append($" and Status={param.status}");
             }
-            if (param.talk != null && param.talk > 0) {
+            if (param.talk != null && param.talk > 0)
+            {
                 sb.Append($" and TalkCount={param.talk}");
             }
-            if (param.inc != null && param.inc > 0) {
+            if (param.inc != null && param.inc > 0)
+            {
                 sb.Append($" and Inclination={param.inc}");
             }
-            if (param.source != null && param.source > 0) {
+            if (param.source != null && param.source > 0)
+            {
                 sb.Append($" and SourceFrom={param.source}");
             }
-            if (param.assign != null && param.assign > 0) {
-                if (param.assign == 1) {
+            if (param.assign != null && param.assign > 0)
+            {
+                if (param.assign == 1)
+                {
                     // 客服未分
                     sb.Append($" and GroupId is null");
                 }
-                else if (param.assign == 2) {
+                else if (param.assign == 2)
+                {
                     // 组长未分
                     sb.Append($" and (GroupId>0 and UserId is null)");
                 }
             }
-            if (param.tagids != null && param.tagids.Count > 0) {
+            if (param.tagids != null && param.tagids.Count > 0)
+            {
                 string strTagIds = string.Join(",", param.tagids);
                 sb.Append($" and TagId in({strTagIds})");
             }
-            if (!string.IsNullOrEmpty(param.start)) {
+            if (!string.IsNullOrEmpty(param.start))
+            {
                 sb.Append($" and CreateTime >='{param.start}'");
             }
-            if (!string.IsNullOrEmpty(param.end)) {
+            if (!string.IsNullOrEmpty(param.end))
+            {
                 sb.Append($" and CreateTime <='{param.end}'");
             }
 
             // 谈单人(新需求)
-            if(param.ft != null && param.ft > 0) {
+            if (param.ft != null && param.ft > 0)
+            {
                 sb.Append($" and TalkWay=3 and TalkManId={param.ft}");//这里为什么设置TalkWay=3?因为按谈单人查询的话，洽谈方式一定是面谈(3)
             }
 
@@ -501,7 +527,7 @@ namespace Orion.CRM.DataAccess
 
             int count = SqlMapHelper.ExecuteSqlMapScalar<int>("ResourceDomain", "GetResourceCountBySourceFrom", parameters);
             return count;
-        } 
+        }
         #endregion
 
         #region 设置某个来源下的所有资源的SourceFrom为空
@@ -626,6 +652,16 @@ namespace Orion.CRM.DataAccess
             return count;
         }
 
+        public int DeleteResourceGroupByUserId(int userId)
+        {
+            if (userId <= 0) return 0;
+
+            SqlParameter parameter = new SqlParameter("@UserId", userId);
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "DeleteResourceGroupByUserId", parameter);
+            return count;
+        }
+
         public int BatchDeleteResourceUser(string resourceIds)
         {
             if (string.IsNullOrEmpty(resourceIds)) return 0;
@@ -649,52 +685,58 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
-        /// <summary>
-        /// 批量更新ResourceProject(一般用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
-        /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        public int UpdateResourceProjectByResourceIds(string resourceIds, int projectId)
-        {
-            if (string.IsNullOrEmpty(resourceIds) || projectId <= 0) return 0;
 
-            SqlParameter param = new SqlParameter("@ProjectId", projectId);
-            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "UpdateResourceProjectByResourceIds").Clone();
-            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+        /// <summary>
+        /// 批量更新ResourceProject(用于将一批资源从一个项目迁移到另一个项目下，这种操作比较少见)
+        /// </summary>
+        /// <param name="newProjectId">新项目Id</param>
+        /// <param name="userId">用户Id</param>
+        /// <returns></returns>
+        public int UpdateResourceProjectByUserId(int newProjectId, int userId)
+        {
+            if (newProjectId <= 0 || userId <= 0) return 0;
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@NewProjectId", newProjectId),
+                new SqlParameter("@UserId", userId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateResourceProjectByUserId", parameters);
             return count;
         }
 
-        /// <summary>
-        /// 批量更新ResourceGroup(一般用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
-        /// </summary>
-        /// <param name="resourceIds"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        public int UpdateResourceGroupByResourceIds(string resourceIds, int groupId)
-        {
-            if (string.IsNullOrEmpty(resourceIds) || groupId <= 0) return 0;
 
-            SqlParameter param = new SqlParameter("@GroupId", groupId);
-            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "UpdateResourceGroupByResourceIds").Clone();
-            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, param);
+        /// <summary>
+        /// 批量更新ResourceGroup(用于将一个用户从一个组划分到另外一个组，此时他的资源应同时迁入该组)
+        /// </summary>
+        /// <param name="newGroupId">新组Id</param>
+        /// <param name="userId">用户Id</param>
+        /// <returns></returns>
+        public int UpdateResourceGroupByUserId(int newGroupId, int userId)
+        {
+            if (newGroupId <= 0 || userId <= 0) return 0;
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@NewGroupId", newGroupId),
+                new SqlParameter("@UserId", userId)
+            };
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "UpdateResourceGroupByUserId", parameters);
             return count;
         }
 
         /// <summary>
         /// 批量删除ResourceProject
         /// </summary>
-        /// <param name="resourceIds"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public int BatchDeleteResourceProject(string resourceIds)
+        public int DeleteResourceProjectByUserId(int userId)
         {
-            if (string.IsNullOrEmpty(resourceIds)) return 0;
+            if (userId <= 0) return 0;
 
-            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("ResourceDomain", "BatchDeleteResourceProject").Clone();
-            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$ResourceIds", resourceIds);
-            int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail);
+            SqlParameter parameter = new SqlParameter("@UserId", userId);
+
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("ResourceDomain", "DeleteResourceProjectByUserId", parameter);
             return count;
         }
 
