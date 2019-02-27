@@ -1,10 +1,11 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Customer.CustomerListViewModel
 @{
     ViewData["Title"] = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
     <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <link href="~/vendors/chosen.css" rel="stylesheet" />
     <style type="text/css">
         input[type="radio"], input[type="checkbox"] {
             margin: 0 0 0;
@@ -36,41 +37,137 @@
     </div>
 
     <div class="panel-body">
+
+        @if (TempData["result"] != null)
+        {
+            if ((bool)TempData["result"])
+            {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>恭喜您，添加成功！</span>
+                </div>
+            }
+            else
+            {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>抱歉，添加失败，请重试！</span>
+                </div>
+            }
+        }
         <!--查询-->
         <form action="/Customer/All" method="get">
-            <input type="hidden" id="hidGroupId" />
-
             <div style="background-color:#f5f5f5;padding:10px">
                 <div style="background-color:#fff;padding:5px">
                     <div class="form-inline" style="margin-top:10px">
-                        <span>项目</span>
-                        <select class="search-select"><option>请选择</option></select>
-
-                        <span style="margin-left:10px">品牌</span>
-                        <select class="search-select"><option>请选择</option></select>
-                        <span style="margin-left:10px">区域</span>
-                        <select class="search-select"><option>请选择</option></select>
+                        <span>姓名</span>
+                        <input type="text" class="search-input" placeholder="客户姓名" name="name" value="@Model.Params.name" />
+                        <span style="margin-left:10px">手机</span>
+                        <input type="text" class="search-input" placeholder="手机号码" name="mobile" value="@Model.Params.mobile" />
                     </div>
                     <div class="form-inline" style="margin-top:10px">
-                        <span>姓名</span>
-                        <input type="text" class="search-input" placeholder="客户姓名" />
-                        <span style="margin-left:10px">手机</span>
-                        <input type="text" class="search-input" placeholder="手机号码" />
-                        <span style="margin-left:10px">添加时间</span>
-                        <input type="text" class="search-input" placeholder="起始" />-<input type="text" class="search-input" placeholder="结束" />
+                        <span>项目</span>
+                        <select class="search-select" id="pid" name="pid" onchange="projectChange(this)">
+                            <option>请选择</option>
+                            @if (Model.ProjectList != null)
+                            {
+                                foreach (var project in Model.ProjectList)
+                                {
+                                    if (project.Id == Model.Params.pid)
+                                    {
+                                        <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@project.Id">@project.ProjectName</option>
+                                    }
+                                }
+                            }
+                        </select>
+
+                        <span style="margin-left:10px">品牌</span>
+                        <select class="search-select" id="bid" name="bid"><option>请选择</option></select>
+                        <span style="margin-left:10px">代理级别</span>
+                        <select class="search-select" id="level" name="level" onchange="agentLevelChange()">
+                            <option>请选择</option>
+
+                            @if (Model.Params.level == 4)
+                            {
+                                <option value="4" selected="selected">直辖市</option>
+                            }
+                            else
+                            {
+                                <option value="4">直辖市</option>
+                            }
+
+                            @if (Model.Params.level == 1)
+                            {
+                                <option value="1" selected="selected">省</option>
+                            }
+                            else
+                            {
+                                <option value="1">省</option>
+                            }
+
+                            @if (Model.Params.level == 2)
+                            {
+                                <option value="2" selected="selected">市</option>
+                            }
+                            else
+                            {
+                                <option value="2">市</option>
+                            }
+
+                            @if (Model.Params.level == 3)
+                            {
+                                <option value="3" selected="selected">县/区</option>
+                            }
+                            else
+                            {
+                                <option value="3">县/区</option>
+                            }
+                        </select>
+                        <span style="margin-left:10px">区域</span>
+                        <select class="search-select" name="z1" id="provinceSelect" onchange="provinceChange()">
+                            <option value="">请选择...</option>
+                        </select>
+                        <select class="search-select" name="z2" id="citySelect" onchange="cityChange()">
+                            <option value="">请选择...</option>
+                        </select>
+                        <select class="search-select" name="z3" id="districtSelect">
+                            <option value="">请选择...</option>
+                        </select>
 
                         <button type="submit" class="btn btn-primary" style="margin-left:70px">
                             查询
                         </button>
+                        <a href="/Customer/All" class="btn btn-default">清空</a>
                     </div>
+
                     <div class="form-inline" style="margin-top:10px">
                         <a href="/Customer/Add" class="btn btn-default">
                             新 建 <i class="icon-plus"></i>
                         </a>
+
+                        <button type="button" class="btn btn-default" style="margin-left:8px;display:none" id="btnBatchAssign" onclick="showAssignPanel()" >
+                            批量分配售后
+                        </button>
                     </div>
                 </div>
             </div>
+            <input type="hidden" id="hidBrandId" value="@Model.Params.bid" />
+            <input type="hidden" id="hidZone1" value="@Model.Params.z1" />
+            <input type="hidden" id="hidZone2" value="@Model.Params.z2" />
+            <input type="hidden" id="hidZone3" value="@Model.Params.z3" />
+
+            <!--当前操作的客户Id-->
+            <input type="hidden" id="hidCurrentCustomerId" />
+            <!--当前操作类型，1=单个分配，2=批量分配-->
+            <input type="hidden" id="hidOperType" />
         </form>
+
         <!--数据列表-->
         <div style="background-color:#f5f5f5;padding:10px;">
             <div style="background-color:#fff;padding:5px">
@@ -82,7 +179,8 @@
                             </th>
                             <th>客户姓名</th>
                             <th>联系方式</th>
-                            <th>签约时间</th>
+                            <th>售后专员</th>
+                            <th>创建时间</th>
                             <th>项目</th>
                             <th>品牌</th>
                             <th>代理级别</th>
@@ -91,50 +189,58 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="checkbox" name="ckResource" value="" /></td>
-                            <td><a href="">客户1</a></td>
-                            <td>132xxxx4567</td>
-                            <td>2018-12-22</td>
-                            <td>欣欣学堂</td>
-                            <td>品牌1</td>
-                            <td>省级代理</td>
-                            <td>河南省</td>
-                            <td><a href="javascript:;" onclick="showAssignPanel(1)">分配售后</a> | <a href="/Customer/Detail">详情</a></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="ckResource" value="" /></td>
-                            <td>客户2</td>
-                            <td>183xxxx4567</td>
-                            <td>2018-12-22</td>
-                            <td>欣欣学堂</td>
-                            <td>品牌1</td>
-                            <td>市级代理</td>
-                            <td>北京市</td>
-                            <td><a href="javascript:;">分配售后</a> | <a href="/Customer/Detail">详情</a></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="ckResource" value="" /></td>
-                            <td>客户3</td>
-                            <td>136xxxx4567</td>
-                            <td>2018-12-22</td>
-                            <td>欣欣学堂</td>
-                            <td>品牌1</td>
-                            <td>县级代理</td>
-                            <td>密云县</td>
-                            <td><a href="javascript:;">分配售后</a> | <a href="/Customer/Detail">详情</a></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="ckResource" value="" /></td>
-                            <td>客户4</td>
-                            <td>135xxxx4567</td>
-                            <td>2018-12-22</td>
-                            <td>开课吧</td>
-                            <td>品牌12</td>
-                            <td>地区代理</td>
-                            <td>淮北地区</td>
-                            <td><a href="javascript:;">分配售后</a> | <a href="/Customer/Detail">详情</a></td>
-                        </tr>
+                        @if (Model != null && Model.Customers != null && Model.Customers.Count > 0)
+                        {
+                            foreach (var item in Model.Customers)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="ckCustomer" value="@item.Id" onclick="ckClick()" /></td>
+                                    <td><a href="">@item.RealName</a></td>
+                                    <td>@item.Mobile</td>
+                                    <td>@item.ServiceUserName</td>
+                                    <td>@item.CreateTime.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.BrandName</td>
+                                    <td>
+                                        @if (item.AgentLevel == 4)
+                                        {
+                                            <span>直辖市</span>
+                                        }
+                                        else if (item.AgentLevel == 1)
+                                        {
+                                            <span>省</span>
+                                        }
+                                        else if (item.AgentLevel == 2)
+                                        {
+                                            <span>市</span>
+                                        }
+                                        else if (item.AgentLevel == 3)
+                                        {
+                                            <span>县/区</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.AgentZone1))
+                                        {
+                                            <span>@item.AgentZone1</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.AgentZone2))
+                                        {
+                                            <span>-@item.AgentZone2</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.AgentZone3))
+                                        {
+                                            <span>-@item.AgentZone3</span>
+                                        }
+                                    </td>
+                                    <td><a href="javascript:;" onclick="showAssignPanel(@item.Id)">分配售后</a> | <a href="/Customer/Detail/@item.Id">详情</a></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="10" style="text-align:center">没有数据</td></tr>
+                        }
                     </tbody>
                 </table>
                 <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
@@ -156,17 +262,22 @@
                     <tr>
                         <td style="width:140px">请选择售后服务专员：</td>
                         <td>
-                            <select class="panel-select" id="assignSelectGroup" onchange="assignGroupChange()">
-                                <option value="">请选择</option>
-                                <option>售后专员1</option>
-                                <option>售后专员2</option>
+                            <select id="assignSelectGroup" class="chzn-select span4">
+                                <option value="">请选择业务</option>
+                                @if (Model.OrgUsers != null && Model.OrgUsers.Count > 0)
+                                {
+                                    foreach (var user in Model.OrgUsers)
+                                    {
+                                        <option value="@user.Id">@user.RealName/@user.UserName</option>
+                                    }
+                                }
                             </select>
                         </td>
                     </tr>
                 </table>
                 <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
                 <div style="margin-top:20px">
-                    <input type="button" value="确定" class="btn btn-inverse" onclick="resourceAssign()" />
+                    <input type="button" value="确定" class="btn btn-inverse" onclick="serviceAssign()" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
@@ -174,28 +285,291 @@
     </div>
 </div>
 
-@section scripts{ 
+<!--操作结果-->
+<div class="modal modal-webpi" id="panelResult" style="width:500px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>结果</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <span id="spanResult">操作已成功！</span>
+                <div style="margin-top:20px">
+                    <input type="button" value="关闭" class="btn btn-default" onclick="closeModal(this,reload)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/vendors/chosen.jquery.min.js"></script>
+    <script src="~/assets/province.js"></script>
     <script type="text/javascript">
         // 弹出资源分配模态窗体
         function showAssignPanel(customerId) {
-            //$('#assignResourceId').val(resourceId);
-            //$("#assignSelectGroup option").not(":first").remove();
-            //$('#assignSelectSaler option').not(":first").remove();
-
-            //$.get("/Group/GetGroupsByProjectId", { "projectId": projectId }, function (groups) {
-            //    if (groups && groups.length > 0) {
-            //        $('#assignTips').hide();
-            //        for (var i = 0; i < groups.length; i++) {
-            //            var option = '<option value="' + groups[i].id + '">' + groups[i].groupName + '</option>';
-            //            $('#assignSelectGroup').append(option);
-            //        }
-            //    }
-            //    else {
-            //        $('#assignTips').html('该项目没有业务组，请先创建业务组！');
-            //        $('#assignTips').show();
-            //    }
-            //});
+            if (customerId) {
+                $('#hidCurrentCustomerId').val(customerId);
+                $('#hidOperType').val('1');
+            }
+            else {
+                $('#hidOperType').val('2');
+            }
             modalShow($('#panelAssign'));
         }
+
+
+        function projectChange(e) {
+            var projectId = $(e).find("option:selected").val();
+            $("#bid option").not(":first").remove();
+            $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var option = '<option value="' + item.id + '">' + item.brandName + '</option>';
+                        $('#bid').append(option);
+                    }
+                }
+            });
+        }
+
+        function agentLevelChange() {
+            $('#citySelect,#districtSelect').show();
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "1") {
+                // 省
+                zoneInit.renderProvince('provinceSelect');
+
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                // 市
+                zoneInit.renderProvince('provinceSelect');
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#districtSelect').hide();
+            }
+            else if (agentLevel == "3") {
+                // 县/区
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                zoneInit.renderProvince('provinceSelect', true);
+            }
+            else if (agentLevel == "4") {
+                // 直辖市
+                zoneInit.renderMunicipality('provinceSelect');
+
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+        }
+
+        function provinceChange() {
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "4") return;
+            $('#citySelect,#districtSelect').show();
+
+
+            if (agentLevel == "1") {
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                // 生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                console.info(province);
+                zoneInit.renderCity(province, 'citySelect');
+                // 隐藏县/区下拉框
+                $('#districtSelect').hide();
+            }
+            else {
+                // 首先生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                zoneInit.renderCity(province, 'citySelect');
+
+                // 然后判断是否隐藏第3个区域框
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
+            }
+        }
+        function cityChange() {
+            $('#citySelect,#districtSelect').show();
+
+            var province = $('#provinceSelect').find("option:selected").val();
+            var city = $('#citySelect').find("option:selected").val();
+            zoneInit.renderDistrict(province, city, 'districtSelect');
+
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "1") {
+                $('#provinceSelect').show();
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                $('#citySelect').show();
+                $('#districtSelect').hide();
+            }
+            if (agentLevel == "3") {
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
+            }
+            else if (agentLevel == "4") {
+                $('#citySelect,#districtSelect').hide();
+            }
+        }
+
+        // 全部取消/全部选中
+        function checkToggle() {
+            $('input[name="ckCustomer"]').each(function () {
+                $(this).prop('checked', $('#ckAll').prop('checked'))
+            });
+
+
+            var customerIdArr = [];//资源所属项目
+            $("input[name='ckCustomer']:checked").each(function () {
+                var customerId = $(this).val();
+                customerIdArr.push(customerId);
+            });
+
+            if (customerIdArr.length > 0) {
+                $('#btnBatchAssign').show();
+            }
+            else {
+                $('#btnBatchAssign').hide();
+            }
+        }
+        function ckClick() {
+            var customerIdArr = [];//资源所属项目
+            $("input[name='ckCustomer']:checked").each(function () {
+                var customerId = $(this).val();
+                customerIdArr.push(customerId);
+            });
+
+            if (customerIdArr.length > 0) {
+                $('#btnBatchAssign').show();
+            }
+            else {
+                $('#btnBatchAssign').hide();
+            }
+        }
+
+        // 分配售后
+        function serviceAssign() {
+            var type = $('#hidOperType').val();
+            if (type == "1") {
+                // 单个分配
+                var customerId = $('#hidCurrentCustomerId').val();
+                var userId = $('#assignSelectGroup').find("option:selected").val();
+                if (userId > 0) {
+                    //closeModal($('#panelAssign'));
+                    $('#panelAssign').hide();
+                    $.get("/Customer/AssignServiceUser", { "customerIds": customerId, "userId": userId }, function (count) {
+                        if (count > 0) {
+                            $('#spanResult').attr("class", "panel-alert-info");
+                            $('#spanResult').html('操作已成功！');
+                        }
+                        else {
+                            $('#spanResult').attr("class", "panel-alert-error");
+                            $('#spanResult').html('抱歉，操作失败！请重试。');
+                        }
+                        modalShow($('#panelResult'));
+                    });
+                }
+                else {
+                    alert('请选择售后服务专员！');
+                }
+            }
+            else if (type == "2") {
+                // 批量分配
+                batchServiceAssign();
+            }
+        }
+
+        // 批量分配售后
+        function batchServiceAssign() {
+            var customerIdArr = [];//资源所属项目
+            $("input[name='ckCustomer']:checked").each(function () {
+                var customerId = $(this).val();
+                customerIdArr.push(customerId);
+            });
+
+            var userId = $('#assignSelectGroup').find("option:selected").val();
+            if (userId > 0) {
+                if (customerIdArr.length) {
+                    //closeModal($('#panelAssign'));
+                    $('#panelAssign').hide();
+                    var customerIds = customerIdArr.join(',');
+                    $.get("/Customer/AssignServiceUser", { "customerIds": customerIds, "userId": userId }, function (count) {
+                        if (count > 0) {
+                            $('#spanResult').attr("class", "panel-alert-info");
+                            $('#spanResult').html('操作已成功！');
+                        }
+                        else {
+                            $('#spanResult').attr("class", "panel-alert-error");
+                            $('#spanResult').html('抱歉，操作失败！请重试。');
+                        }
+                        modalShow($('#panelResult'));
+                    });
+                }
+                else {
+                    $('#spanResult').attr("class", "panel-alert-error");
+                    $('#spanResult').html('请先选择客户！');
+                    modalShow($('#panelResult'));
+                }
+            }
+            else {
+                alert('请选择售后服务专员！');
+            }
+
+        }
+
+        function reload() {
+            window.location.reload();
+        }
+
+        $(document).ready(function () {
+            // jquery-chosen下拉控件初始化
+            $(".chzn-select").chosen({
+                width: '190px', no_results_text: "没有业务员"
+            });
+            // 还原品牌
+            var projectId = $('#pid').find("option:selected").val();
+            var brandId = $('#hidBrandId').val();
+            $("#bid option").not(":first").remove();
+            $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var opt = '';
+                        if (item.id == brandId) {
+                            opt = '<option value="' + item.id + '" selected="selected">' + item.brandName + '</option>';
+                        }
+                        else {
+                            opt = '<option value="' + item.id + '">' + item.brandName + '</option>';
+                        }
+                        $('#bid').append(opt);
+                    }
+                }
+            });
+        });
+
+        agentLevelChange();
+        $('#provinceSelect').val($('#hidZone1').val());
+        provinceChange();
+        $('#citySelect').val($('#hidZone2').val());
+        cityChange();
+        $('#districtSelect').val($('#hidZone3').val());
     </script>
 }

@@ -25,7 +25,7 @@
     <SqlMapDetail>
       <SqlName>GetAllMenus</SqlName>
       <OriginalSqlString>
-        select * from SystemMenu order by Id,SortNo
+        select * from SystemMenu order by SortNo
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>

@@ -17,5 +17,22 @@ namespace Orion.CRM.Application
         {
             return adapter.UpdateCustomer(customer);
         }
+
+        public IEnumerable<Entity.Customer> GetCustomersByCondition(Entity.CustomerSearchParams param)
+        {
+            return adapter.GetCustomersByCondition(param);
+        }
+
+        public int GetCustomersCountByCondition(Entity.CustomerSearchParams param)
+        {
+            return adapter.GetCustomersCountByCondition(param);
+        }
+
+        public int AssignServiceUser(string customerIds, int userId)
+        {
+            if (string.IsNullOrEmpty(customerIds) || userId <= 0) return 0;
+
+            return adapter.AssignServiceUser(customerIds, userId);
+        }
     }
 }

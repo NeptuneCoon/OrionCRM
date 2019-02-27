@@ -25,7 +25,52 @@
       <Description>修改客户</Description>
     </SqlMapDetail>
 
+    <SqlMapDetail>
+      <SqlName>GetCustomersByCondition</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+          select top $PageSize * from(
+              select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from (
+			          select A.*,B.ProjectName,C.BrandName,D.RealName as ServiceUserName from Customer A
+			          inner join Project B on A.ProjectId=B.Id
+			          inner join Brand C on A.BrandId=C.Id
+			          left join AppUser D on A.ServiceUserId=D.Id
+					      where 1=1 $SqlWhere
+		          )as temp
+            )as t
+          where RowNumber > $PageSize*($PageIndex-1)
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取客户</Description>
+    </SqlMapDetail>
 
+    <SqlMapDetail>
+      <SqlName>GetCustomersCountByCondition</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+			      select count(1) from Customer A
+					  inner join Project B on A.ProjectId=B.Id
+            inner join Brand C on A.BrandId=C.Id
+            left join AppUser D on A.ServiceUserId=D.Id
+					  where 1=1 $SqlWhere
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取客户</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
+      <SqlName>AssignServiceUser</SqlName>
+      <OriginalSqlString>
+        update Customer set ServiceUserId=@UserId where Id in($CustomerIds)
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>批量为客户分配售后</Description>
+    </SqlMapDetail>
    
 	</SqlMapConfigurations>
 </SqlMap>

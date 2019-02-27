@@ -1,8 +1,388 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Customer.CustomerListViewModel
 @{
     ViewData["Title"] = "My";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section styles{
+    <link href="~/assets/pikaday/pikaday.css" rel="stylesheet" />
+    <style type="text/css">
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0 0 0;
+            line-height: normal;
+        }
 
-<h2>My</h2>
+        .search-input {
+            border: 1px solid gray;
+            border-radius: 1px !important;
+            padding: 3px 3px;
+            height: 18px !important;
+            width: 91px;
+            font-size: 12px !important;
+        }
 
+        .search-select {
+            width: 105px;
+            height: 28px !important;
+            border-radius: 1px !important;
+            padding: 0px 3px
+        }
+    </style>
+}
+
+<div class="panel panel-default span12">
+    <div class="panel-heading">
+        <h3 class="panel-title">所有客户</h3>
+    </div>
+
+    <div class="panel-body">
+
+        @if (TempData["result"] != null)
+        {
+            if ((bool)TempData["result"])
+            {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>恭喜您，添加成功！</span>
+                </div>
+            }
+            else
+            {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>抱歉，添加失败，请重试！</span>
+                </div>
+            }
+        }
+        <!--查询-->
+        <form action="/Customer/All" method="get">
+            <div style="background-color:#f5f5f5;padding:10px">
+                <div style="background-color:#fff;padding:5px">
+                    <div class="form-inline" style="margin-top:10px">
+                        <span>姓名</span>
+                        <input type="text" class="search-input" placeholder="客户姓名" name="name" value="@Model.Params.name" />
+                        <span style="margin-left:10px">手机</span>
+                        <input type="text" class="search-input" placeholder="手机号码" name="mobile" value="@Model.Params.mobile" />
+                    </div>
+                    <div class="form-inline" style="margin-top:10px">
+                        <span>项目</span>
+                        <select class="search-select" id="pid" name="pid" onchange="projectChange(this)">
+                            <option>请选择</option>
+                            @if (Model.ProjectList != null)
+                            {
+                                foreach (var project in Model.ProjectList)
+                                {
+                                    if (project.Id == Model.Params.pid)
+                                    {
+                                        <option value="@project.Id" selected="selected">@project.ProjectName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@project.Id">@project.ProjectName</option>
+                                    }
+                                }
+                            }
+                        </select>
+
+                        <span style="margin-left:10px">品牌</span>
+                        <select class="search-select" id="bid" name="bid"><option>请选择</option></select>
+                        <span style="margin-left:10px">代理级别</span>
+                        <select class="search-select" id="level" name="level" onchange="agentLevelChange()">
+                            <option>请选择</option>
+
+                            @if (Model.Params.level == 4)
+                            {
+                                <option value="4" selected="selected">直辖市</option>
+                            }
+                            else
+                            {
+                                <option value="4">直辖市</option>
+                            }
+
+                            @if (Model.Params.level == 1)
+                            {
+                                <option value="1" selected="selected">省</option>
+                            }
+                            else
+                            {
+                                <option value="1">省</option>
+                            }
+
+                            @if (Model.Params.level == 2)
+                            {
+                                <option value="2" selected="selected">市</option>
+                            }
+                            else
+                            {
+                                <option value="2">市</option>
+                            }
+
+                            @if (Model.Params.level == 3)
+                            {
+                                <option value="3" selected="selected">县/区</option>
+                            }
+                            else
+                            {
+                                <option value="3">县/区</option>
+                            }
+                        </select>
+                        <span style="margin-left:10px">区域</span>
+                        <select class="search-select" name="z1" id="provinceSelect" onchange="provinceChange()">
+                            <option value="">请选择...</option>
+                        </select>
+                        <select class="search-select" name="z2" id="citySelect" onchange="cityChange()">
+                            <option value="">请选择...</option>
+                        </select>
+                        <select class="search-select" name="z3" id="districtSelect">
+                            <option value="">请选择...</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary" style="margin-left:70px">
+                            查询
+                        </button>
+                        <a href="/Customer/All" class="btn btn-default">清空</a>
+                    </div>
+
+                    <div class="form-inline" style="margin-top:10px;display:none">
+                        <a href="/Customer/Add" class="btn btn-default">
+                            新 建 <i class="icon-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="hidBrandId" value="@Model.Params.bid" />
+            <input type="hidden" id="hidZone1" value="@Model.Params.z1" />
+            <input type="hidden" id="hidZone2" value="@Model.Params.z2" />
+            <input type="hidden" id="hidZone3" value="@Model.Params.z3" />
+
+            <!--当前操作的客户Id-->
+            <input type="hidden" id="hidCurrentCustomerId" />
+            <!--当前操作类型，1=单个分配，2=批量分配-->
+            <input type="hidden" id="hidOperType" />
+        </form>
+
+        <!--数据列表-->
+        <div style="background-color:#f5f5f5;padding:10px;">
+            <div style="background-color:#fff;padding:5px">
+                <table class="table table-bordered table-data">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>客户姓名</th>
+                            <th>联系方式</th>
+                            <th>创建时间</th>
+                            <th>项目</th>
+                            <th>品牌</th>
+                            <th>代理级别</th>
+                            <th>代理区域</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Customers != null && Model.Customers.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Customers.Count; i++)
+                            {
+                                var item = Model.Customers[i];
+                                <tr>
+                                    <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
+                                    <td><a href="">@item.RealName</a></td>
+                                    <td>@item.Mobile</td>
+                                    <td>@item.CreateTime.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.BrandName</td>
+                                    <td>
+                                        @if (item.AgentLevel == 4)
+                                        {
+                                            <span>直辖市</span>
+                                        }
+                                        else if (item.AgentLevel == 1)
+                                        {
+                                            <span>省</span>
+                                        }
+                                        else if (item.AgentLevel == 2)
+                                        {
+                                            <span>市</span>
+                                        }
+                                        else if (item.AgentLevel == 3)
+                                        {
+                                            <span>县/区</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.AgentZone1))
+                                        {
+                                            <span>@item.AgentZone1</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.AgentZone2))
+                                        {
+                                            <span>-@item.AgentZone2</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.AgentZone3))
+                                        {
+                                            <span>-@item.AgentZone3</span>
+                                        }
+                                    </td>
+                                    <td><a href="/Customer/Detail/@item.Id">详情</a></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="9" style="text-align:center">没有数据</td></tr>
+                        }
+                    </tbody>
+                </table>
+                <html-pager pager-option="ViewBag.PagerOption as PagerOption"></html-pager>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/assets/province.js"></script>
+    <script type="text/javascript">
+        function projectChange(e) {
+            var projectId = $(e).find("option:selected").val();
+            $("#bid option").not(":first").remove();
+            $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var option = '<option value="' + item.id + '">' + item.brandName + '</option>';
+                        $('#bid').append(option);
+                    }
+                }
+            });
+        }
+
+        function agentLevelChange() {
+            $('#citySelect,#districtSelect').show();
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "1") {
+                // 省
+                zoneInit.renderProvince('provinceSelect');
+
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                // 市
+                zoneInit.renderProvince('provinceSelect');
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#districtSelect').hide();
+            }
+            else if (agentLevel == "3") {
+                // 县/区
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                zoneInit.renderProvince('provinceSelect', true);
+            }
+            else if (agentLevel == "4") {
+                // 直辖市
+                zoneInit.renderMunicipality('provinceSelect');
+
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+        }
+
+        function provinceChange() {
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "4") return;
+            $('#citySelect,#districtSelect').show();
+
+
+            if (agentLevel == "1") {
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                // 生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                console.info(province);
+                zoneInit.renderCity(province, 'citySelect');
+                // 隐藏县/区下拉框
+                $('#districtSelect').hide();
+            }
+            else {
+                // 首先生成市级下拉框
+                var province = $('#provinceSelect').find("option:selected").val();
+                zoneInit.renderCity(province, 'citySelect');
+
+                // 然后判断是否隐藏第3个区域框
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
+            }
+        }
+        function cityChange() {
+            $('#citySelect,#districtSelect').show();
+
+            var province = $('#provinceSelect').find("option:selected").val();
+            var city = $('#citySelect').find("option:selected").val();
+            zoneInit.renderDistrict(province, city, 'districtSelect');
+
+            var agentLevel = $('#level').find("option:selected").val();
+            if (agentLevel == "1") {
+                $('#provinceSelect').show();
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                $('#citySelect').show();
+                $('#districtSelect').hide();
+            }
+            if (agentLevel == "3") {
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
+            }
+            else if (agentLevel == "4") {
+                $('#citySelect,#districtSelect').hide();
+            }
+        }
+
+
+        $(document).ready(function () {
+            // 还原品牌
+            var projectId = $('#pid').find("option:selected").val();
+            var brandId = $('#hidBrandId').val();
+            $("#bid option").not(":first").remove();
+            $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var opt = '';
+                        if (item.id == brandId) {
+                            opt = '<option value="' + item.id + '" selected="selected">' + item.brandName + '</option>';
+                        }
+                        else {
+                            opt = '<option value="' + item.id + '">' + item.brandName + '</option>';
+                        }
+                        $('#bid').append(opt);
+                    }
+                }
+            });
+        });
+
+        agentLevelChange();
+        $('#provinceSelect').val($('#hidZone1').val());
+        provinceChange();
+        $('#citySelect').val($('#hidZone2').val());
+        cityChange();
+        $('#districtSelect').val($('#hidZone3').val());
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Customer.CustomerModel
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,19 +18,19 @@
                     <div class="control-group" style="margin-top:10px">
                         <label class="control-label">客户姓名<span class="required">*</span></label>
                         <div class="controls">
-                            <input type="text" style="width:200px" placeholder="客户姓名" reg="regString" is-null="required" maxlength="200" autocomplete="off" />
-                            <p class="help-block">请输入客户的姓名，如不明确请填写"无"或"未知"</p>
+                            <input type="text" style="width:200px" asp-for="RealName" placeholder="客户姓名" reg="regString" is-null="required" maxlength="200" autocomplete="off" />
+                            <p class="help-block">请输入客户的真实姓名</p>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">性别</label>
                         <div class="controls" style="padding-top:4px">
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="Sex" value="1">
+                                <input class="nebula-radio" type="radio" name="Sex" value="1" asp-for="Sex">
                                 <span class="nebula-radioInput"></span>男
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="Sex" value="2">
+                                <input class="nebula-radio" type="radio" name="Sex" value="2" asp-for="Sex">
                                 <span class="nebula-radioInput"></span>女
                             </label>
                         </div>
@@ -57,19 +57,19 @@
                     <div class="control-group">
                         <label class="control-label">手机号码</label>
                         <div class="controls">
-                            <input type="text" style="width:200px" placeholder="手机号码" reg="regMobile" maxlength="11" autocomplete="off" />
+                            <input type="text" asp-for="Mobile" style="width:200px" placeholder="手机号码" reg="regMobile" maxlength="11" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">身份证号</label>
                         <div class="controls">
-                            <input type="text" style="width:200px" placeholder="身份证号" reg="regMobile" maxlength="11" autocomplete="off" />
+                            <input type="text" asp-for="IdentityNo" style="width:200px" placeholder="身份证号" reg="regString" maxlength="18" autocomplete="off" />
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label">代理品牌</label>
+                        <label class="control-label">代理品牌<span class="required">*</span></label>
                         <div class="controls">
-                            <select class="m-wrap" style="width:220px" name="BrandId" placeholder="项目" is-null="required" reg="regNum" id="brandSelect">
+                            <select class="m-wrap" style="width:220px" name="BrandId" placeholder="代理品牌" is-null="required" reg="regNum" id="brandSelect">
                                 <option value="">请选择...</option>
                             </select>
                         </div>
@@ -77,6 +77,10 @@
                     <div class="control-group">
                         <label class="control-label">代理级别</label>
                         <div class="controls" style="padding-top:4px">
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="4" onclick="agentLevelChange()" />
+                                <span class="nebula-radioInput"></span>直辖市
+                            </label>
                             <label class="nebula-label">
                                 <input class="nebula-radio" type="radio" name="AgentLevel" value="1" onclick="agentLevelChange()" />
                                 <span class="nebula-radioInput"></span>省
@@ -87,7 +91,7 @@
                             </label>
                             <label class="nebula-label">
                                 <input class="nebula-radio" type="radio" name="AgentLevel" value="3" onclick="agentLevelChange()" />
-                                <span class="nebula-radioInput"></span>县/行政区
+                                <span class="nebula-radioInput"></span>县/区
                             </label>
                         </div>
                     </div>
@@ -134,11 +138,46 @@
                 }
             });
         }
-        function provinceChange() {
-            $('#citySelect,#districtSelect').show();
 
+        function agentLevelChange() {
+            $('#citySelect,#districtSelect').show();
             var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            console.info(agentLevel);
+            if (agentLevel == "1") {
+                // 省
+                zoneInit.renderProvince('provinceSelect');
+
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+            else if (agentLevel == "2") {
+                // 市
+                zoneInit.renderProvince('provinceSelect');
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#districtSelect').hide();
+            }
+            else if (agentLevel == "3") {
+                // 县/区
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                zoneInit.renderProvince('provinceSelect', true);
+            }
+            else if (agentLevel == "4") {
+                // 直辖市
+                zoneInit.renderMunicipality('provinceSelect');
+                
+                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
+                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
+                $('#citySelect,#districtSelect').hide();
+            }
+        }
+
+        function provinceChange() {
+            var agentLevel = $('input[name="AgentLevel"]:checked').val();
+            if (agentLevel == "4") return; //代理级别是直辖市，直接return
+
+            $('#citySelect,#districtSelect').show();
             if (agentLevel == "1") {
                 $('#citySelect,#districtSelect').hide();  
             }
@@ -151,12 +190,22 @@
                 $('#districtSelect').hide();  
             }
             else {
-                // 生成市级下拉框
+                // 首先生成市级下拉框
                 var province = $('#provinceSelect').find("option:selected").val();
                 zoneInit.renderCity(province, 'citySelect');
 
-                $('#citySelect,#districtSelect').show();  
+                // 然后判断是否隐藏第3个区域框
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
             }
+
+
         }
         function cityChange() {
             $('#citySelect,#districtSelect').show();
@@ -166,28 +215,45 @@
             zoneInit.renderDistrict(province, city, 'districtSelect');
 
             var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            if (agentLevel == "2") {
+            if (agentLevel == "1") {
+                $('#provinceSelect').show();
+                $('#citySelect,#districtSelect').hide();  
+            }
+            else if (agentLevel == "2") {
+                $('#citySelect').show();
                 $('#districtSelect').hide();  
             }
-            else {
+            if (agentLevel == "3") {
+                var arr = ['北京', '上海', '天津', '重庆'];
+                var province = $('#provinceSelect').find("option:selected").val();
+                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
+                    $('#districtSelect').hide();
+                }
+                else {
+                    $('#citySelect,#districtSelect').show();
+                }
+            }
+            else if (agentLevel == "4") {
                 $('#citySelect,#districtSelect').hide();  
             }
         }
 
-        function agentLevelChange() {
-            $('#citySelect,#districtSelect').show();
-            var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            if (agentLevel == "1") {
-                $('#citySelect,#districtSelect').hide();
-            }
-            else if (agentLevel == "2") {
-                $('#districtSelect').hide();  
-            }
+        function checkForm() {
+            var result = true;
 
-            //var optionCount = $('#provinceSelect').find("option").length;
-            //if (optionCount <= 1) {
-            //    zoneInit.renderProvince('provinceSelect');
-            //}
+            try {
+                $('form').find("input,select").each(function () {
+                    var res = inputCheck($(this));
+                    if (!res) {
+                        result = res;
+                    }
+                });
+                return result;
+            }
+            catch (ex) {
+                result = false;
+                console.info('表单验证过程中发现异常：' + ex);
+            }
         }
 
         $(document).ready(function () {
