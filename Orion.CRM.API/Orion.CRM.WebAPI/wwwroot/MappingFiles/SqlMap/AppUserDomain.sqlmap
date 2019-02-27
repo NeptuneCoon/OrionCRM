@@ -32,7 +32,7 @@
       <Description>获取用户总数</Description>
     </SqlMapDetail>
 
-    <SqlMapDetail>
+    <!--<SqlMapDetail>
       <SqlName>GetUsersByOrgId</SqlName>
       <OriginalSqlString>
         <![CDATA[
@@ -46,6 +46,22 @@
 			          left join [Project] F on D.ProjectId=F.Id
 			          left join [UserGroup] H on A.Id=H.UserId
 			          left join [Group] I on H.GroupId=I.Id
+		          )as temp
+            )as t
+          where RowNumber > $PageSize*($PageIndex-1) and OrgId=@OrgId
+        ]]>
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>分页获取指定组织机构下的用户</Description>
+    </SqlMapDetail>-->
+    <SqlMapDetail>
+      <SqlName>GetUsersByOrgId</SqlName>
+      <OriginalSqlString>
+        <![CDATA[
+          select top $PageSize * from(
+              select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from (
+			          select * from [AppUser] where Enable=1
 		          )as temp
             )as t
           where RowNumber > $PageSize*($PageIndex-1) and OrgId=@OrgId
