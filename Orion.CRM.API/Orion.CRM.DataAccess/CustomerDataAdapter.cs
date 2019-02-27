@@ -55,6 +55,14 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        public Entity.Customer GetCustomerById(int id)
+        {
+            SqlParameter param = new SqlParameter("@Id", id);
+            Entity.Customer customer = SqlMapHelper.GetSqlMapSingleResult<Entity.Customer>("Customer", "GetCustomerById", param);
+
+            return customer;
+        }
+
         public IEnumerable<Entity.Customer> GetCustomersByCondition(Entity.CustomerSearchParams param)
         {
             SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("Customer", "GetCustomersByCondition").Clone();
@@ -86,6 +94,49 @@ namespace Orion.CRM.DataAccess
             SqlParameter parameter = new SqlParameter("@UserId", userId);
             int count = SqlMapHelper.ExecuteSqlMapNonQuery(mapDetail, parameter);
             return count;
+        }
+
+
+        // 以下3个方法是[客户服务记录CustomerServiceRecord表]有关操作
+        public int InsertServiceRecord(Entity.CustomerServiceRecord record)
+        {
+            if (record == null) return -1;
+
+            SqlParameter[] paramArr = {
+                new SqlParameter("@CustomerId", record.CustomerId),
+                new SqlParameter("@ServiceContent", record.ServiceContent),
+                new SqlParameter("@Images", CheckNull(record.Images)),
+                new SqlParameter("@AppendUserId",record.AppendUserId)
+            };
+
+            int id = SqlMapHelper.ExecuteSqlMapScalar<int>("CustomerServiceRecord", "InsertServiceRecord", paramArr);
+            return id;
+        }
+
+        public bool DeleteServiceRecord(int id)
+        {
+            if (id <= 0) return false;
+            SqlParameter param = new SqlParameter("@Id", id);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("CustomerServiceRecord", "DeleteServiceRecord", param);
+            return count > 0;
+        }
+
+
+        public IEnumerable<Entity.CustomerServiceRecord> GetServiceRecordsByCustomerId(int customerId)
+        {
+            SqlParameter param = new SqlParameter("@CustomerId", customerId);
+            var records = SqlMapHelper.GetSqlMapResult<Entity.CustomerServiceRecord>("CustomerServiceRecord", "GetServiceRecordsByCustomerId", param);
+
+            return records;
+        }
+
+
+        public Entity.CustomerServiceRecord CustomerServiceRecord(int id)
+        {
+            SqlParameter param = new SqlParameter("@Id", id);
+            Entity.CustomerServiceRecord record = SqlMapHelper.GetSqlMapSingleResult<Entity.CustomerServiceRecord>("CustomerServiceRecord", "GetServiceRecord", param);
+
+            return record;
         }
 
         #region 生成SQL查询where子句

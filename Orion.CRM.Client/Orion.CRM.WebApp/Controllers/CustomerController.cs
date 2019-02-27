@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Orion.CRM.WebApp.App_Data;
 using Orion.CRM.WebTools;
@@ -10,6 +13,11 @@ namespace Orion.CRM.WebApp.Controllers
 {
     public class CustomerController : BaseController
     {
+        private readonly IHostingEnvironment _hostingEnv;
+        public CustomerController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnv = hostingEnvironment;
+        }
         public IActionResult All(Models.Customer.CustomerSearchParams param)
         {
             if (param.pi <= 0) param.pi = 1;
@@ -100,9 +108,17 @@ namespace Orion.CRM.WebApp.Controllers
             return RedirectToAction("All","Customer");
         }
 
-        public IActionResult Detail()
+        public IActionResult Detail(int id)
         {
-            return View();
+            Models.Customer.CustomerDetailViewModel viewModel = new Models.Customer.CustomerDetailViewModel();
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/GetCustomerById?id=" + id;
+            Models.Customer.CustomerModel customer = APIInvoker.Get<Models.Customer.CustomerModel>(apiUrl);
+            viewModel.Customer = customer;
+
+            apiUrl = _AppConfig.WebApiHost + "/api/Customer/GetServiceRecordsByCustomerId?customerId=" + id;
+            viewModel.ServiceRecords = APIInvoker.Get<List<Models.Customer.CustomerServiceRecord>>(apiUrl);
+
+            return View(viewModel);
         }
 
         /// <summary>
@@ -119,5 +135,86 @@ namespace Orion.CRM.WebApp.Controllers
             return count;
         }
 
+        // id=Customer表主键
+        public IActionResult AddServiceRecord(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/GetCustomerById?id=" + id;//id=customerId
+            Models.Customer.CustomerModel customer = APIInvoker.Get<Models.Customer.CustomerModel>(apiUrl);
+
+            return View(customer);
+        }
+
+        [HttpPost]
+        public IActionResult AddServiceRecordHandler()
+        {
+            int customerId = Convert.ToInt32(Request.Form["CustomerId"]);
+            string content = Request.Form["ServiceContent"]; // 服务内容
+            List<string> imagePaths = new List<string>(); // 文件存储路径
+
+            // 将图片写入磁盘
+            if(Request.Form.Files.Count > 0)
+            {
+                foreach(var file in Request.Form.Files)
+                {
+                    if (file.Length <= 0) continue;
+                    var extension = Path.GetExtension(file.FileName);
+                    var guid = Guid.NewGuid().ToString();
+
+                    var root = _hostingEnv.WebRootPath;
+                    string filename = guid + extension;                           // 新的文件名称<guid>
+                    var relativePath = $@"\upload\service_record\{ filename}";
+                    var fullPath = $@"{root}{relativePath}";   // 新的存储路径
+                    if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                    }
+                    using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyToAsync(stream);
+                    }
+                    imagePaths.Add(relativePath);
+                }
+            }
+            // 将服务记录写入数据库
+            Models.Customer.CustomerServiceRecord serviceRecord = new Models.Customer.CustomerServiceRecord();
+            serviceRecord.CustomerId = customerId;
+            serviceRecord.ServiceContent = content;
+            if(imagePaths.Count > 0)
+            {
+                serviceRecord.Images = string.Join(",", imagePaths);
+            }
+            serviceRecord.AppendUserId = _AppUser.Id;
+
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/InsertServiceRecord";
+            int identityId = APIInvoker.Post<int>(apiUrl, serviceRecord);
+            TempData["result"] = identityId > 0;
+
+            return RedirectToAction("Detail", "Customer", new { id = customerId });
+        }
+
+
+        // id=CustomerServiceRecord表主键
+        public IActionResult RecordDetail(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/CustomerServiceRecord?id=" + id;
+            var serviceRecord = APIInvoker.Get<Models.Customer.CustomerServiceRecord>(apiUrl);
+
+            return View(serviceRecord);
+        }
+
+
+        /// <summary>
+        /// ajax:删除一条服务记录
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public bool DeleteServiceRecord(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/DeleteServiceRecord?id=" + id;
+            bool res = APIInvoker.Get<bool>(apiUrl);
+
+            return res;
+        }
     }
 }

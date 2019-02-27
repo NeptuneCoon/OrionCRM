@@ -38,7 +38,6 @@ namespace Orion.CRM.WebApp.Controllers
 
             string filename = guid + extension;            // 新的文件名称
             var fullPath = $@"{root}\upload\{filename}";   // 新的存储路径
-            string str = Path.GetDirectoryName(fullPath);
             if (!System.IO.Directory.Exists(Path.GetDirectoryName(fullPath))) {
                 System.IO.Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
             }

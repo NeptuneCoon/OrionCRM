@@ -63,5 +63,17 @@ namespace Orion.CRM.WebApp.Controllers
             List<Models.Brand.Brand> list = APIInvoker.Get<List<Models.Brand.Brand>>(url);
             return list;
         }
+
+        [HttpGet]
+        public bool Delete(int id)
+        {
+            if (id > 0)
+            {
+                string url = _AppConfig.WebApiHost + "/api/Brand/DeleteBrand?id=" + id;
+                bool result = APIInvoker.Get<bool>(url);
+                return result;
+            }
+            return false;
+        }
     }
 }

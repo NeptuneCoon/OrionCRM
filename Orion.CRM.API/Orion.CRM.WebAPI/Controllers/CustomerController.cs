@@ -42,6 +42,22 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public APIDataResult GetCustomerById(int id)
+        {
+            try
+            {
+                Entity.Customer res = service.GetCustomerById(id);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
 
         /// <summary>
         /// 根据筛选条件查询客户
@@ -93,6 +109,71 @@ namespace Orion.CRM.WebAPI.Controllers
             {
                 int count = service.AssignServiceUser(customerIds, userId);
                 APIDataResult dataResult = new APIDataResult(200, count);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+
+        [HttpPost]
+        public APIDataResult InsertServiceRecord([FromBody]Entity.CustomerServiceRecord record)
+        {
+            try
+            {
+                int identityId = service.InsertServiceRecord(record);
+                APIDataResult dataResult = new APIDataResult(200, identityId);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
+        public APIDataResult DeleteServiceRecord(int id)
+        {
+            try
+            {
+                bool res = service.DeleteServiceRecord(id);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
+        public APIDataResult GetServiceRecordsByCustomerId(int customerId)
+        {
+            try
+            {
+                var result = service.GetServiceRecordsByCustomerId(customerId);
+                APIDataResult dataResult = new APIDataResult(200, result);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
+        public APIDataResult CustomerServiceRecord(int id)
+        {
+            try
+            {
+                var result = service.CustomerServiceRecord(id);
+                APIDataResult dataResult = new APIDataResult(200, result);
                 return dataResult;
             }
             catch (Exception ex)

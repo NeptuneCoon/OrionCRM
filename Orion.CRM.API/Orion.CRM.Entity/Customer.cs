@@ -27,7 +27,7 @@ namespace Orion.CRM.Entity
         // 扩展属性
         public string ProjectName { get; set; }
         public string BrandName { get; set; }
-        public string ServiceUserName { get; set; }//售后服务专员姓名
+        public string ServiceRealName { get; set; }//售后服务专员姓名
     }
 
     public class CustomerSearchParams

@@ -35,7 +35,7 @@
     <SqlMapDetail>
       <SqlName>GetAllBrands</SqlName>
       <OriginalSqlString>
-        select A.*,B.ProjectName from Brand A
+        select A.*,B.ProjectName,(select count(1) from Customer where BrandId=A.Id) as CustomerCount from Brand A
         inner join Project B on A.ProjectId=B.Id
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

@@ -18,6 +18,11 @@ namespace Orion.CRM.Application
             return adapter.UpdateCustomer(customer);
         }
 
+        public Entity.Customer GetCustomerById(int id)
+        {
+            return adapter.GetCustomerById(id);
+        }
+
         public IEnumerable<Entity.Customer> GetCustomersByCondition(Entity.CustomerSearchParams param)
         {
             return adapter.GetCustomersByCondition(param);
@@ -33,6 +38,31 @@ namespace Orion.CRM.Application
             if (string.IsNullOrEmpty(customerIds) || userId <= 0) return 0;
 
             return adapter.AssignServiceUser(customerIds, userId);
+        }
+
+
+        public int InsertServiceRecord(Entity.CustomerServiceRecord record)
+        {
+            return adapter.InsertServiceRecord(record);
+        }
+
+        public bool DeleteServiceRecord(int id)
+        {
+            if (id <= 0) return false;
+            return adapter.DeleteServiceRecord(id);
+        }
+
+
+        public IEnumerable<Entity.CustomerServiceRecord> GetServiceRecordsByCustomerId(int customerId)
+        {
+            if (customerId <= 0) return null;
+            return adapter.GetServiceRecordsByCustomerId(customerId);
+        }
+
+        public Entity.CustomerServiceRecord CustomerServiceRecord(int id)
+        {
+            if (id <= 0) return null;
+            return adapter.CustomerServiceRecord(id);
         }
     }
 }

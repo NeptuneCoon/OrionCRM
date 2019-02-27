@@ -353,6 +353,7 @@
         delete from [UserProject] where UserId=@UserId;
         delete from [UserRole] where UserId=@UserId;
         delete from [MessageReminder] where UserId=@UserId;
+        delete from [CustomerServiceRecord] where UserId=@UserId;
         delete from [AppUser] where Id=@UserId;
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>

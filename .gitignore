@@ -28,6 +28,10 @@ bld/
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
+wwwroot/upload/
+/wwwroot/upload/*
+wwwroot/upload/*
+/wwwroot/upload
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

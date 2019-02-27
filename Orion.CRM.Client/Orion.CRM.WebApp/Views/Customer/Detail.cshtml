@@ -1,4 +1,4 @@
-﻿
+﻿@model Orion.CRM.WebApp.Models.Customer.CustomerDetailViewModel
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,6 +10,25 @@
     </div>
 
     <div class="panel-body">
+        @if (TempData["result"] != null)
+        {
+            if ((bool)TempData["result"])
+            {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>恭喜您，添加成功！</span>
+                </div>
+            }
+            else
+            {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>抱歉，添加失败，请重试！</span>
+                </div>
+            }
+        }
         <!--查询-->
         <form action="" method="get">
             <div style="background-color:#f5f5f5;padding:10px">
@@ -19,21 +38,34 @@
                         <table class="table table-bordered" style="width:700px">
                             <tbody>
                                 <tr>
-                                    <td style="width:90px">姓名</td>
-                                    <td style="width:200px">张雨绮</td>
-                                    <td style="width:90px">性别</td>
-                                    <td>女</td>
+                                    <td style="width:90px;font-weight:bold">姓名</td>
+                                    <td style="width:200px">@Model.Customer.RealName</td>
+                                    <td style="width:90px;font-weight:bold">性别</td>
+                                    <td>
+                                        @if (Model.Customer.Sex == 1)
+                                        {
+                                            <span>男</span>
+                                        }
+                                        else if (Model.Customer.Sex == 2)
+                                        {
+                                            <span>女</span>
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>手机</td>
-                                    <td>15623568512</td>
-                                    <td>身份证</td>
-                                    <td>412827199108214514</td>
+                                    <td style="font-weight:bold">手机</td>
+                                    <td>@Model.Customer.Mobile</td>
+                                    <td style="font-weight:bold">身份证</td>
+                                    <td>@Model.Customer.IdentityNo</td>
                                 </tr>
-                                <tr>
+                                @*<tr>
                                     <td>地址</td>
                                     <td colspan="3">湖北省，孝感市</td>
-                                </tr>
+                                </tr>*@
                             </tbody>
                         </table>
                     </div>
@@ -44,16 +76,46 @@
                         <table class="table table-bordered" style="width:700px">
                             <tbody>
                                 <tr>
-                                    <td>项目</td>
-                                    <td>铝时蔓</td>
-                                    <td>代理品牌</td>
-                                    <td></td>
+                                    <td style="font-weight:bold">项目</td>
+                                    <td>@Model.Customer.ProjectName</td>
+                                    <td style="font-weight:bold">代理品牌</td>
+                                    <td>@Model.Customer.BrandName</td>
                                 </tr>
                                 <tr>
-                                    <td>代理级别</td>
-                                    <td>省</td>
-                                    <td>代理区域</td>
-                                    <td>湖北省</td>
+                                    <td style="font-weight:bold">代理级别</td>
+                                    <td>
+                                        @if (Model.Customer.AgentLevel == 4)
+                                        {
+                                            <span>直辖市</span>
+                                        }
+                                        else if (Model.Customer.AgentLevel == 1)
+                                        {
+                                            <span>省</span>
+                                        }
+                                        else if (Model.Customer.AgentLevel == 2)
+                                        {
+                                            <span>市</span>
+                                        }
+                                        else if (Model.Customer.AgentLevel == 3)
+                                        {
+                                            <span>县/区</span>
+                                        }
+                                    </td>
+                                    <td style="font-weight:bold">代理区域</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.Customer.AgentZone1))
+                                        {
+                                            <span>@Model.Customer.AgentZone1</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Customer.AgentZone2))
+                                        {
+                                            <span>-@Model.Customer.AgentZone2</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Customer.AgentZone3))
+                                        {
+                                            <span>-@Model.Customer.AgentZone3</span>
+                                        }
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -71,25 +133,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td style="width:200px">2019-1-7</td>
-                                    <td>文字描述文字描述文字描述文字描述</td>
-                                    <td>李易峰</td>
-                                    <td><a href="javascript:;" style="text-decoration:underline">删除</a></td>
-                                </tr>
-                                <tr>
-                                    <td style="width:200px">2018-12-22</td>
-                                    <td>文字描述文字描述文字描述文字描述</td>
-                                    <td>售后专员2</td>
-                                    <td><a href="javascript:;" style="text-decoration:underline">删除</a></td>
-                                </tr>
+                                @if (Model.ServiceRecords != null && Model.ServiceRecords.Count > 0)
+                                {
+                                    foreach (var item in Model.ServiceRecords)
+                                    {
+                                        <tr>
+                                            <td style="width:200px">@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@item.ServiceContent</td>
+                                            <td>@item.AppendUserRealName</td>
+                                            <td>
+                                                <a href="/Customer/RecordDetail/@item.Id" style="text-decoration:underline">查看详细</a>
+                                                <a href="javascript:;" style="text-decoration:underline" onclick="deleteServiceRecord(@item.Id)">删除</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4">没有服务记录</td></tr>
+                                }
                             </tbody>
                         </table>
-                        <a href="javascript:;" style="margin-left:6px;text-decoration:underline">添加记录</a>
+                        <a href="/Customer/AddServiceRecord/@Model.Customer.Id" style="margin-left:6px;text-decoration:underline">添加记录</a>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+@section scripts{ 
+    <script type="text/javascript">
+        function deleteServiceRecord(id) {
+            $.get("/Customer/DeleteServiceRecord", { "id": id }, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    alert('抱歉，删除失败！请重试或联系管理员。');
+                }
+            });
+        }
+    </script>
+}
 

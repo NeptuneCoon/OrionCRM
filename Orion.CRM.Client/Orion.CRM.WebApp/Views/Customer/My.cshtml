@@ -187,7 +187,7 @@
                                 var item = Model.Customers[i];
                                 <tr>
                                     <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
-                                    <td><a href="">@item.RealName</a></td>
+                                    <td><a href="/Customer/Detail/@item.Id">@item.RealName</a></td>
                                     <td>@item.Mobile</td>
                                     <td>@item.CreateTime.ToString("yyyy-MM-dd")</td>
                                     <td>@item.ProjectName</td>

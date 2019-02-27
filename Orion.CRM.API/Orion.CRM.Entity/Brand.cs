@@ -13,5 +13,6 @@ namespace Orion.CRM.Entity
 
         // 扩展属性
         public string ProjectName { get; set; }
+        public int CustomerCount { get; set; }//该品牌的客户数
     }
 }

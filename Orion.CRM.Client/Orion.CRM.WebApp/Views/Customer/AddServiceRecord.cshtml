@@ -1,0 +1,96 @@
+﻿@model Orion.CRM.WebApp.Models.Customer.CustomerModel
+@{
+    ViewData["Title"] = "AddServiceRecord";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default span10">
+    <div class="panel-heading">
+        <h3 class="panel-title">添加服务记录-@Model.RealName</h3>
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal" enctype="multipart/form-data" action="/Customer/AddServiceRecordHandler" method="post">
+            <div style="background-color:#f5f5f5;padding:10px;width:680px">
+                <div style="background-color:#fff;padding:5px">
+                    <div class="control-group" style="margin-top:10px">
+                        <label class="control-label">服务内容<span class="required">*</span></label>
+                        <div class="controls">
+                            <textarea style="width:300px;height:60px" id="ServiceContent" name="ServiceContent"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">图片</label>
+                        <div class="controls">
+                            <input type="file" name="files" multiple value="点击上传图片..." onchange="fileChange(this)" />
+                        </div>
+
+                    </div>
+                    <div class="control-group">
+                        <div class="controls" id="result">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions" style="padding-left:140px">
+                    <button type="submit" class="btn btn-primary" id="btnSubmit" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
+                    <a href="/Customer/All" class="btn">返回</a>
+                </div>
+            </div>
+            <input type="hidden" name="CustomerId" value="@Model.Id" />
+        </form>
+    </div>
+</div>
+
+@section scripts{ 
+    <script type="text/javascript">
+        function fileChange(e) {
+            var path = e.value;
+            if (path) {
+                var filename = getFileName(path);
+                $('#spanFileName').html(filename);
+
+                var extension = getFileExtension(path);
+                var types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                if (types.indexOf(extension)<0) {
+                    $('#btnSubmit').attr("disabled", "disabled");
+                    $('#result').html('<span style="color:red">文件名后缀必须是jpg,jpeg,png,gif,webp中的一种。</span>');
+                }
+                else {
+                    $('#btnSubmit').removeAttr("disabled");
+                    $('#result').html('');
+                }
+            }
+        }
+
+        function getFileName(path) {
+            var arr = path.split('\\');
+            if (arr != null && arr.length > 0) {
+                var filename = arr[arr.length - 1];
+                return filename;
+            }
+            return "";
+        }
+        function getFileExtension(path) {
+
+            var arr = path.split('.');
+            if (arr != null && arr.length > 0) {
+                var extension = arr[arr.length - 1];
+                return extension;
+            }
+            return "";
+        }
+
+        function checkForm() {
+            var result = true;
+            var content = $('#ServiceContent').val();
+            if (content.trim().length <= 0) {
+                $('#result').html('<span style="color:red">服务内容不能为空。</span>');
+                $('#ServiceContent').focus();
+                result = false;
+            }
+
+            return result;
+        }
+    </script>
+}
+
