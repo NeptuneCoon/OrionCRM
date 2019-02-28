@@ -40,7 +40,16 @@ namespace Orion.CRM.Application
             return adapter.AssignServiceUser(customerIds, userId);
         }
 
+        public IEnumerable<Entity.Customer> GetCustomersByZone1(string agentZone1)
+        {
+            if (string.IsNullOrEmpty(agentZone1)) return null;
+            return adapter.GetCustomersByZone1(agentZone1);
+        }
 
+
+
+
+        // 以下3个方法是[客户服务记录CustomerServiceRecord表]有关操作
         public int InsertServiceRecord(Entity.CustomerServiceRecord record)
         {
             return adapter.InsertServiceRecord(record);

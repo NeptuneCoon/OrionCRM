@@ -64,4 +64,8 @@
     <ProjectReference Include="..\Orion.CRM.WebTools\Orion.CRM.WebTools.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\service_record\" />
+  </ItemGroup>
+
 </Project>

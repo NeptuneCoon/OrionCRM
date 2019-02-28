@@ -118,6 +118,23 @@ namespace Orion.CRM.WebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public APIDataResult GetCustomersByZone1(string agentZone1)
+        {
+            try
+            {
+                IEnumerable<Entity.Customer> resources = service.GetCustomersByZone1(agentZone1);
+                APIDataResult dataResult = new APIDataResult(200, resources);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+
 
         [HttpPost]
         public APIDataResult InsertServiceRecord([FromBody]Entity.CustomerServiceRecord record)

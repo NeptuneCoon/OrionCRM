@@ -96,6 +96,15 @@ namespace Orion.CRM.DataAccess
             return count;
         }
 
+        public IEnumerable<Entity.Customer> GetCustomersByZone1(string agentZone1)
+        {
+            SqlParameter param = new SqlParameter("@AgentZone1", agentZone1);
+            IEnumerable<Entity.Customer> customers = SqlMapHelper.GetSqlMapResult<Entity.Customer>("Customer", "GetCustomersByZone1", param);
+            return customers;
+        }
+
+
+
 
         // 以下3个方法是[客户服务记录CustomerServiceRecord表]有关操作
         public int InsertServiceRecord(Entity.CustomerServiceRecord record)

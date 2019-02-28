@@ -85,6 +85,17 @@
       <CommandType>Text</CommandType>
       <Description>批量为客户分配售后</Description>
     </SqlMapDetail>
+
+
+    <SqlMapDetail>
+      <SqlName>GetCustomersByZone1</SqlName>
+      <OriginalSqlString>
+        select * from Customer where AgentZone1=@AgentZone1
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>按省或直辖市查询客户</Description>
+    </SqlMapDetail>
    
 	</SqlMapConfigurations>
 </SqlMap>
