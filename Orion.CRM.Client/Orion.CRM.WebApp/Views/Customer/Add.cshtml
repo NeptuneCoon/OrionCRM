@@ -78,20 +78,32 @@
                         <label class="control-label">代理级别</label>
                         <div class="controls" style="padding-top:4px">
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="AgentLevel" value="4" onclick="agentLevelChange()" />
-                                <span class="nebula-radioInput"></span>直辖市
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="1" />
+                                <span class="nebula-radioInput"></span>省代理
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="AgentLevel" value="1" onclick="agentLevelChange()" />
-                                <span class="nebula-radioInput"></span>省
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="2" />
+                                <span class="nebula-radioInput"></span>直辖市代理
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="AgentLevel" value="2" onclick="agentLevelChange()" />
-                                <span class="nebula-radioInput"></span>市
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="3" />
+                                <span class="nebula-radioInput"></span>省会城市代理
                             </label>
                             <label class="nebula-label">
-                                <input class="nebula-radio" type="radio" name="AgentLevel" value="3" onclick="agentLevelChange()" />
-                                <span class="nebula-radioInput"></span>县/区
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="4" />
+                                <span class="nebula-radioInput"></span>地区代理
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="5" />
+                                <span class="nebula-radioInput"></span>地市代理
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="6" />
+                                <span class="nebula-radioInput"></span>县代理
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" name="AgentLevel" value="7" />
+                                <span class="nebula-radioInput"></span>经销商
                             </label>
                         </div>
                     </div>
@@ -139,103 +151,15 @@
             });
         }
 
-        function agentLevelChange() {
-            $('#citySelect,#districtSelect').show();
-            var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            if (agentLevel == "1") {
-                // 省
-                zoneInit.renderProvince('provinceSelect');
-
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#citySelect,#districtSelect').hide();
-            }
-            else if (agentLevel == "2") {
-                // 市
-                zoneInit.renderProvince('provinceSelect');
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#districtSelect').hide();
-            }
-            else if (agentLevel == "3") {
-                // 县/区
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                zoneInit.renderProvince('provinceSelect', true);
-            }
-            else if (agentLevel == "4") {
-                // 直辖市
-                zoneInit.renderMunicipality('provinceSelect');
-                
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#citySelect,#districtSelect').hide();
-            }
-        }
-
         function provinceChange() {
-            var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            if (agentLevel == "4") return; //代理级别是直辖市，直接return
-
-            $('#citySelect,#districtSelect').show();
-            if (agentLevel == "1") {
-                $('#citySelect,#districtSelect').hide();  
-            }
-            else if (agentLevel == "2") {
-                // 生成市级下拉框
-                var province = $('#provinceSelect').find("option:selected").val();
-                console.info(province);
-                zoneInit.renderCity(province, 'citySelect');
-                // 隐藏县/区下拉框
-                $('#districtSelect').hide();  
-            }
-            else {
-                // 首先生成市级下拉框
-                var province = $('#provinceSelect').find("option:selected").val();
-                zoneInit.renderCity(province, 'citySelect');
-
-                // 然后判断是否隐藏第3个区域框
-                var arr = ['北京', '上海', '天津', '重庆'];
-                var province = $('#provinceSelect').find("option:selected").val();
-                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
-                    $('#districtSelect').hide();
-                }
-                else {
-                    $('#citySelect,#districtSelect').show();
-                }
-            }
-
-
+            // 生成市级下拉框
+            var province = $('#provinceSelect').find("option:selected").val();
+            zoneInit.renderCity(province, 'citySelect');
         }
         function cityChange() {
-            $('#citySelect,#districtSelect').show();
-
             var province = $('#provinceSelect').find("option:selected").val();
             var city = $('#citySelect').find("option:selected").val();
             zoneInit.renderDistrict(province, city, 'districtSelect');
-
-            var agentLevel = $('input[name="AgentLevel"]:checked').val();
-            if (agentLevel == "1") {
-                $('#provinceSelect').show();
-                $('#citySelect,#districtSelect').hide();  
-            }
-            else if (agentLevel == "2") {
-                $('#citySelect').show();
-                $('#districtSelect').hide();  
-            }
-            if (agentLevel == "3") {
-                var arr = ['北京', '上海', '天津', '重庆'];
-                var province = $('#provinceSelect').find("option:selected").val();
-                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
-                    $('#districtSelect').hide();
-                }
-                else {
-                    $('#citySelect,#districtSelect').show();
-                }
-            }
-            else if (agentLevel == "4") {
-                $('#citySelect,#districtSelect').hide();  
-            }
         }
 
         function checkForm() {

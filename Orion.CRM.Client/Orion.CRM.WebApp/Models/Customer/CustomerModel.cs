@@ -15,7 +15,7 @@ namespace Orion.CRM.WebApp.Models.Customer
         public string IdentityNo { get; set; }
         public int BrandId { get; set; }
         /// <summary>
-        /// 代理级别：1=省，2=市，3=县/区，4=直辖市
+        /// 代理级别：1=省代理,2=直辖市代理,3=省会城市代理,4=地区代理,5=地市代理,6=县代理,7=经销商
         /// </summary>
         public int AgentLevel { get; set; }
         public string AgentZone1 { get; set; }

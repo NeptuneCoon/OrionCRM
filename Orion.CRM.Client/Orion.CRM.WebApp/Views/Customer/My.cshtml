@@ -88,43 +88,74 @@
                         <span style="margin-left:10px">品牌</span>
                         <select class="search-select" id="bid" name="bid"><option>请选择</option></select>
                         <span style="margin-left:10px">代理级别</span>
-                        <select class="search-select" id="level" name="level" onchange="agentLevelChange()">
+                        <select class="search-select" id="level" name="level">
                             <option>请选择</option>
-
-                            @if (Model.Params.level == 4)
-                            {
-                                <option value="4" selected="selected">直辖市</option>
-                            }
-                            else
-                            {
-                                <option value="4">直辖市</option>
-                            }
-
                             @if (Model.Params.level == 1)
                             {
-                                <option value="1" selected="selected">省</option>
+                                <option value="1" selected="selected">省代理</option>
                             }
                             else
                             {
-                                <option value="1">省</option>
+                                <option value="1">省代理</option>
                             }
 
                             @if (Model.Params.level == 2)
                             {
-                                <option value="2" selected="selected">市</option>
+                                <option value="2" selected="selected">直辖市代理</option>
                             }
                             else
                             {
-                                <option value="2">市</option>
+                                <option value="2">直辖市代理</option>
                             }
+
 
                             @if (Model.Params.level == 3)
                             {
-                                <option value="3" selected="selected">县/区</option>
+                                <option value="3" selected="selected">省会城市代理</option>
                             }
                             else
                             {
-                                <option value="3">县/区</option>
+                                <option value="3">省会城市代理</option>
+                            }
+
+
+                            @if (Model.Params.level == 4)
+                            {
+                                <option value="4" selected="selected">地区代理</option>
+                            }
+                            else
+                            {
+                                <option value="4">地区代理</option>
+                            }
+
+
+                            @if (Model.Params.level == 5)
+                            {
+                                <option value="5" selected="selected">地市代理</option>
+                            }
+                            else
+                            {
+                                <option value="5">地市代理</option>
+                            }
+
+
+                            @if (Model.Params.level == 6)
+                            {
+                                <option value="6" selected="selected">县代理</option>
+                            }
+                            else
+                            {
+                                <option value="6">县代理</option>
+                            }
+
+
+                            @if (Model.Params.level == 7)
+                            {
+                                <option value="7" selected="selected">经销商</option>
+                            }
+                            else
+                            {
+                                <option value="7">经销商</option>
                             }
                         </select>
                         <span style="margin-left:10px">区域</span>
@@ -257,102 +288,16 @@
             });
         }
 
-        function agentLevelChange() {
-            $('#citySelect,#districtSelect').show();
-            var agentLevel = $('#level').find("option:selected").val();
-            if (agentLevel == "1") {
-                // 省
-                zoneInit.renderProvince('provinceSelect');
-
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#citySelect,#districtSelect').hide();
-            }
-            else if (agentLevel == "2") {
-                // 市
-                zoneInit.renderProvince('provinceSelect');
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#districtSelect').hide();
-            }
-            else if (agentLevel == "3") {
-                // 县/区
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                zoneInit.renderProvince('provinceSelect', true);
-            }
-            else if (agentLevel == "4") {
-                // 直辖市
-                zoneInit.renderMunicipality('provinceSelect');
-
-                $('#citySelect').find('option').not(":first").remove();//清空市下拉框
-                $('#districtSelect').find('option').not(":first").remove();//清空县/区下拉框
-                $('#citySelect,#districtSelect').hide();
-            }
-        }
-
         function provinceChange() {
-            var agentLevel = $('#level').find("option:selected").val();
-            if (agentLevel == "4") return;
-            $('#citySelect,#districtSelect').show();
-
-
-            if (agentLevel == "1") {
-                $('#citySelect,#districtSelect').hide();
-            }
-            else if (agentLevel == "2") {
-                // 生成市级下拉框
-                var province = $('#provinceSelect').find("option:selected").val();
-                console.info(province);
-                zoneInit.renderCity(province, 'citySelect');
-                // 隐藏县/区下拉框
-                $('#districtSelect').hide();
-            }
-            else {
-                // 首先生成市级下拉框
-                var province = $('#provinceSelect').find("option:selected").val();
-                zoneInit.renderCity(province, 'citySelect');
-
-                // 然后判断是否隐藏第3个区域框
-                var arr = ['北京', '上海', '天津', '重庆'];
-                var province = $('#provinceSelect').find("option:selected").val();
-                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
-                    $('#districtSelect').hide();
-                }
-                else {
-                    $('#citySelect,#districtSelect').show();
-                }
-            }
+            // 生成市级下拉框
+            var province = $('#provinceSelect').find("option:selected").val();
+            console.info(province);
+            zoneInit.renderCity(province, 'citySelect');
         }
         function cityChange() {
-            $('#citySelect,#districtSelect').show();
-
             var province = $('#provinceSelect').find("option:selected").val();
             var city = $('#citySelect').find("option:selected").val();
             zoneInit.renderDistrict(province, city, 'districtSelect');
-
-            var agentLevel = $('#level').find("option:selected").val();
-            if (agentLevel == "1") {
-                $('#provinceSelect').show();
-                $('#citySelect,#districtSelect').hide();
-            }
-            else if (agentLevel == "2") {
-                $('#citySelect').show();
-                $('#districtSelect').hide();
-            }
-            if (agentLevel == "3") {
-                var arr = ['北京', '上海', '天津', '重庆'];
-                var province = $('#provinceSelect').find("option:selected").val();
-                if (agentLevel == "3" && arr.indexOf(province) >= 0) { //县/区代理级别，且城市选的直辖市，隐藏第3个区域下拉框
-                    $('#districtSelect').hide();
-                }
-                else {
-                    $('#citySelect,#districtSelect').show();
-                }
-            }
-            else if (agentLevel == "4") {
-                $('#citySelect,#districtSelect').hide();
-            }
         }
 
 
@@ -378,7 +323,9 @@
             });
         });
 
-        agentLevelChange();
+        // 生成省下拉框
+        zoneInit.renderProvince('provinceSelect');
+
         $('#provinceSelect').val($('#hidZone1').val());
         provinceChange();
         $('#citySelect').val($('#hidZone2').val());

@@ -65,24 +65,16 @@ var zoneInit = {
         $('#' + provinceId).find('option').not(":first").remove();
         for (var i = 1; i < provinceList.length; i++) {
             var province = provinceList[i];
-            if (contain === true) {
-                var opt1 = '<option value=' + province.name + '>' + province.name + '</option>';
-                $('#' + provinceId).append(opt1);
-            }
-            else {
-                var arr = ['北京', '上海', '天津', '重庆'];
-                if (arr.indexOf(province.name) < 0) {
-                    var opt2 = '<option value=' + province.name + '>' + province.name + '</option>';
-                    $('#' + provinceId).append(opt2);
-                }
-            }
+            
+            var opt1 = '<option value=' + province.name + '>' + province.name + '</option>';
+            $('#' + provinceId).append(opt1);
         }
     },
     renderCity: function (provinceText, cityId) {
         $('#' + cityId).find('option').not(":first").remove();
         for (var i = 1; i < provinceList.length; i++) {
             var province = provinceList[i];
-            if (province.name == provinceText) {
+            if (province.name === provinceText) {
                 for (var j = 0; j < province.cityList.length; j++) {
                     var city = province.cityList[j];
                     var opt = '<option value=' + city.name + '>' + city.name + '</option>';
@@ -95,10 +87,10 @@ var zoneInit = {
         $('#' + districtId).find('option').not(":first").remove();
         for (var i = 1; i < provinceList.length; i++) {
             var province = provinceList[i];
-            if (province.name == provinceText) {
+            if (province.name === provinceText) {
                 for (var j = 0; j < province.cityList.length; j++) {
                     var city = province.cityList[j];
-                    if (city.name == cityText) {
+                    if (city.name === cityText) {
                         if (city.areaList) {
                             for (var k = 0; k < city.areaList.length; k++) {
                                 var district = city.areaList[k];
