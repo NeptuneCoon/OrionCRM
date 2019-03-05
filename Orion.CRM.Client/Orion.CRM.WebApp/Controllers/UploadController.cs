@@ -38,6 +38,7 @@ namespace Orion.CRM.WebApp.Controllers
 
             string filename = guid + extension;            // 新的文件名称
             var fullPath = $@"{root}\upload\{filename}";   // 新的存储路径
+            Logger.Write("上传路径<fullPath>：" + fullPath);
             if (!System.IO.Directory.Exists(Path.GetDirectoryName(fullPath))) {
                 System.IO.Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
             }
@@ -61,6 +62,13 @@ namespace Orion.CRM.WebApp.Controllers
                 System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filepath));
             }
             FileInfo file = new FileInfo(filepath);
+            Logger.Write("filepath=" + filepath + "\r\n");
+            Logger.Write("file.length=" + file.Length);
+            //if (file.Length <= 0)
+            //{
+            //    result.ErrorMsgs.Add("抱歉，文件上传失败！请重新选择文件上传，并等待10秒后再点击「开始导入」。");
+            //    return result;
+            //}
             try {
                 using (ExcelPackage package = new ExcelPackage(file)) {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
@@ -85,6 +93,8 @@ namespace Orion.CRM.WebApp.Controllers
                                     if (string.IsNullOrEmpty(errorInfo)) {
                                         // 清洗数据
                                         List<Models.Resource.ResourceEntity> datas = DataHandling(resources);
+
+
 
                                         string projectName = resources.FirstOrDefault().ProjectName;
                                         int projectId = _projects.FirstOrDefault(x => x.ProjectName == projectName).Id;
@@ -159,7 +169,12 @@ namespace Orion.CRM.WebApp.Controllers
                 // 项目
                 resource.ProjectName = worksheet.Cells[row, 6]?.Value?.ToString();
 
-                resources.Add(resource);
+                // 重复性检测后再放入集合resources中（Excel文件中可能有重复记录）
+                var query = resources.FirstOrDefault(x => x.Mobile == resource.Mobile && x.ProjectName == resource.ProjectName);
+                if (query == null)
+                {
+                    resources.Add(resource);
+                }
             }
 
             return resources;

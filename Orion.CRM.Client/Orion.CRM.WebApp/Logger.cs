@@ -20,7 +20,7 @@ namespace Orion.CRM.WebApp
             try {
                 string path = System.IO.Directory.GetCurrentDirectory();
                 content = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]" + content + "\r\n";
-                System.IO.File.AppendAllText(@"E:\website\crm_site\site_log.txt", content, System.Text.Encoding.UTF8);
+                System.IO.File.AppendAllText(@"C:\data\website\crm_product\crm_site\site_log.txt", content, System.Text.Encoding.UTF8);
             }
             catch {
                 // ...
