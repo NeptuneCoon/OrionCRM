@@ -96,10 +96,40 @@ namespace Orion.CRM.DataAccess
             return count;
         }
 
-        public IEnumerable<Entity.Customer> GetCustomersByZone1(string agentZone1)
+        public IEnumerable<Entity.Customer> GetCustomersByZone(int pid, int bid, string z1)
         {
-            SqlParameter param = new SqlParameter("@AgentZone1", agentZone1);
-            IEnumerable<Entity.Customer> customers = SqlMapHelper.GetSqlMapResult<Entity.Customer>("Customer", "GetCustomersByZone1", param);
+            SqlMapDetail mapDetail = (SqlMapDetail)SqlMapFactory.GetSqlMapDetail("Customer", "GetCustomersByZone").Clone();
+
+            string sqlWhere = "";
+            if (pid > 0)
+            {
+                sqlWhere += $" and A.ProjectId={pid}";
+            }
+            if (bid > 0)
+            {
+                sqlWhere += $" and A.BrandId={bid}";
+            }
+            //if (param.AgentLevel != null && param.AgentLevel > 0)
+            //{
+            //    sqlWhere += $" and A.AgentLevel={param.AgentLevel}";
+            //}
+            if (!string.IsNullOrEmpty(z1))
+            {
+                sqlWhere += $" and A.AgentZone1='{z1}'";
+            }
+            // 区域视图是按省查询的，用不到下面两级城市
+            //if (!string.IsNullOrEmpty(param.AgentZone2))
+            //{
+            //    sqlWhere += $" and A.AgentZone2='{param.AgentZone2}'";
+            //}
+            //if (!string.IsNullOrEmpty(param.AgentZone3))
+            //{
+            //    sqlWhere += $" and A.AgentZone3='{param.AgentZone3}'";
+            //}
+
+            mapDetail.OriginalSqlString = mapDetail.OriginalSqlString.Replace("$SqlWhere", sqlWhere);
+
+            IEnumerable<Entity.Customer> customers = SqlMapHelper.GetSqlMapResult<Entity.Customer>(mapDetail);
             return customers;
         }
 

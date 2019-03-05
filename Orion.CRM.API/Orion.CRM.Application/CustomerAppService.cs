@@ -40,10 +40,10 @@ namespace Orion.CRM.Application
             return adapter.AssignServiceUser(customerIds, userId);
         }
 
-        public IEnumerable<Entity.Customer> GetCustomersByZone1(string agentZone1)
+        public IEnumerable<Entity.Customer> GetCustomersByZone(int pid, int bid, string z1)
         {
-            if (string.IsNullOrEmpty(agentZone1)) return null;
-            return adapter.GetCustomersByZone1(agentZone1);
+            if (pid <= 0 || bid <= 0) return null;
+            return adapter.GetCustomersByZone(pid, bid, z1);
         }
 
 

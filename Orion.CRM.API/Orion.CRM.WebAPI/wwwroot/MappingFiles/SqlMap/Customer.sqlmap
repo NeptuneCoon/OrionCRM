@@ -88,13 +88,18 @@
 
 
     <SqlMapDetail>
-      <SqlName>GetCustomersByZone1</SqlName>
+      <SqlName>GetCustomersByZone</SqlName>
       <OriginalSqlString>
-        select * from Customer where AgentZone1=@AgentZone1
+        <![CDATA[
+			      select A.*,B.ProjectName,C.BrandName from Customer A
+					  inner join Project B on A.ProjectId=B.Id
+            inner join Brand C on A.BrandId=C.Id
+					  where 1=1 $SqlWhere
+        ]]>
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
       <CommandType>Text</CommandType>
-      <Description>按省或直辖市查询客户</Description>
+      <Description>按区域查询客户</Description>
     </SqlMapDetail>
    
 	</SqlMapConfigurations>

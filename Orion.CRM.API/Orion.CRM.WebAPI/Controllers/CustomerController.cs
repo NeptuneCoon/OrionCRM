@@ -69,8 +69,8 @@ namespace Orion.CRM.WebAPI.Controllers
         {
             try
             {
-                IEnumerable<Entity.Customer> resources = service.GetCustomersByCondition(param);
-                APIDataResult dataResult = new APIDataResult(200, resources);
+                IEnumerable<Entity.Customer> customers = service.GetCustomersByCondition(param);
+                APIDataResult dataResult = new APIDataResult(200, customers);
                 return dataResult;
             }
             catch (Exception ex)
@@ -119,12 +119,12 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
         [HttpGet]
-        public APIDataResult GetCustomersByZone1(string agentZone1)
+        public APIDataResult GetCustomersByZone(int pid, int bid, string z1)
         {
             try
             {
-                IEnumerable<Entity.Customer> resources = service.GetCustomersByZone1(agentZone1);
-                APIDataResult dataResult = new APIDataResult(200, resources);
+                IEnumerable<Entity.Customer> customers = service.GetCustomersByZone(pid, bid, z1);
+                APIDataResult dataResult = new APIDataResult(200, customers);
                 return dataResult;
             }
             catch (Exception ex)
