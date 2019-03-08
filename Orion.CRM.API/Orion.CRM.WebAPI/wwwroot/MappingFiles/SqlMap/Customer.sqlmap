@@ -26,6 +26,17 @@
     </SqlMapDetail>
 
     <SqlMapDetail>
+      <SqlName>DeleteCustomer</SqlName>
+      <OriginalSqlString>
+        delete from CustomerServiceRecord where CustomerId=@Id;
+        delete from Customer where Id=@Id
+      </OriginalSqlString>
+      <DBConnectionName>OrionCRM</DBConnectionName>
+      <CommandType>Text</CommandType>
+      <Description>删除客户</Description>
+    </SqlMapDetail>
+
+    <SqlMapDetail>
       <SqlName>GetCustomerById</SqlName>
       <OriginalSqlString>
         select A.*,B.ProjectName,C.BrandName,D.RealName as ServiceRealName,D.UserName as ServiceUserName from Customer A

@@ -1,4 +1,7 @@
 ﻿@model Orion.CRM.WebApp.Models.Customer.CustomerListViewModel
+@using Orion.CRM.WebApp.App_Data;
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
+
 @{
     ViewData["Title"] = "My";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -224,21 +227,33 @@
                                     <td>@item.ProjectName</td>
                                     <td>@item.BrandName</td>
                                     <td>
-                                        @if (item.AgentLevel == 4)
+                                        @if (item.AgentLevel == 1)
                                         {
-                                            <span>直辖市</span>
-                                        }
-                                        else if (item.AgentLevel == 1)
-                                        {
-                                            <span>省</span>
+                                            <span>省代理</span>
                                         }
                                         else if (item.AgentLevel == 2)
                                         {
-                                            <span>市</span>
+                                            <span>直辖市代理</span>
                                         }
                                         else if (item.AgentLevel == 3)
                                         {
-                                            <span>县/区</span>
+                                            <span>省会城市代理</span>
+                                        }
+                                        else if (item.AgentLevel == 4)
+                                        {
+                                            <span>地区代理</span>
+                                        }
+                                        else if (item.AgentLevel == 5)
+                                        {
+                                            <span>地市代理</span>
+                                        }
+                                        else if (item.AgentLevel == 6)
+                                        {
+                                            <span>县代理</span>
+                                        }
+                                        else if (item.AgentLevel == 7)
+                                        {
+                                            <span>经销商</span>
                                         }
                                     </td>
                                     <td>

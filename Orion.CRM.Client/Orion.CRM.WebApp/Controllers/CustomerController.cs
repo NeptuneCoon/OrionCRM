@@ -32,11 +32,11 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Customer/All",
                 QueryString = Request.QueryString.Value
             };
-            ViewBag.PagerOption = pageOption;
-
+            
             // 查询到的数据
             int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "/api/Customer/GetCustomersCountByCondition", param);
             pageOption.TotalCount = totalCount;
+            ViewBag.PagerOption = pageOption;
 
             string searchUrl = _AppConfig.WebApiHost + "/api/Customer/GetCustomersByCondition";
             List<Models.Customer.CustomerModel> customers = APIInvoker.Post<List<Models.Customer.CustomerModel>>(searchUrl, param);
@@ -68,12 +68,12 @@ namespace Orion.CRM.WebApp.Controllers
                 RouteUrl = "/Customer/My",
                 QueryString = Request.QueryString.Value
             };
-            ViewBag.PagerOption = pageOption;
 
             // 查询到的数据
             param.suid = _AppUser.Id;
             int totalCount = APIInvoker.Post<int>(_AppConfig.WebApiHost + "/api/Customer/GetCustomersCountByCondition", param);
             pageOption.TotalCount = totalCount;
+            ViewBag.PagerOption = pageOption;
 
             string searchUrl = _AppConfig.WebApiHost + "/api/Customer/GetCustomersByCondition";
             List<Models.Customer.CustomerModel> customers = APIInvoker.Post<List<Models.Customer.CustomerModel>>(searchUrl, param);
@@ -206,7 +206,7 @@ namespace Orion.CRM.WebApp.Controllers
         /// <summary>
         /// ajax:删除一条服务记录
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">服务记录Id</param>
         /// <returns></returns>
         [HttpGet]
         public bool DeleteServiceRecord(int id)
@@ -214,6 +214,22 @@ namespace Orion.CRM.WebApp.Controllers
             string apiUrl = _AppConfig.WebApiHost + "/api/Customer/DeleteServiceRecord?id=" + id;
             bool res = APIInvoker.Get<bool>(apiUrl);
 
+            return res;
+        }
+
+
+        /// <summary>
+        /// ajax:删除客户
+        /// </summary>
+        /// <param name="id">客户Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public bool DeleteCustomer(int id)
+        {
+            string apiUrl = _AppConfig.WebApiHost + "/api/Customer/DeleteCustomer?id=" + id + "&webRootPath=" + _hostingEnv.WebRootPath;
+            bool res = APIInvoker.Get<bool>(apiUrl);
+
+            TempData["deleteResult"] = res;
             return res;
         }
     }

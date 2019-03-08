@@ -55,6 +55,15 @@ namespace Orion.CRM.DataAccess
             return count > 0;
         }
 
+        public bool DeleteCustomer(int id)
+        {
+            if (id <= 0) return false;
+
+            SqlParameter param = new SqlParameter("@Id", id);
+            int count = SqlMapHelper.ExecuteSqlMapNonQuery("Customer", "DeleteCustomer", param);
+            return count > 0;
+        }
+
         public Entity.Customer GetCustomerById(int id)
         {
             SqlParameter param = new SqlParameter("@Id", id);

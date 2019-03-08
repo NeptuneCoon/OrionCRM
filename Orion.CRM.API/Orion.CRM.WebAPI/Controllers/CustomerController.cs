@@ -43,6 +43,22 @@ namespace Orion.CRM.WebAPI.Controllers
         }
 
         [HttpGet]
+        public APIDataResult DeleteCustomer(int id, string webRootPath)
+        {
+            try
+            {
+                bool res = service.DeleteCustomer(id, webRootPath);
+                APIDataResult dataResult = new APIDataResult(200, res);
+                return dataResult;
+            }
+            catch (Exception ex)
+            {
+                APIDataResult dataResult = new APIDataResult(-1, null, ex.Message);
+                return dataResult;
+            }
+        }
+
+        [HttpGet]
         public APIDataResult GetCustomerById(int id)
         {
             try

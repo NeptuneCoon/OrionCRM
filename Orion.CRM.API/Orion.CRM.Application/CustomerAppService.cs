@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Orion.CRM.Application
 {
@@ -16,6 +17,49 @@ namespace Orion.CRM.Application
         public bool UpdateCustomer(Entity.Customer customer)
         {
             return adapter.UpdateCustomer(customer);
+        }
+
+        public bool DeleteCustomer(int id, string webRootPath)
+        {
+            if (id <= 0) return false;
+            if (string.IsNullOrEmpty(webRootPath)) return false;
+
+            bool res = true;
+
+            // step0.在删除客户之前，先查询出服务记录<准备工作>
+            List<Entity.CustomerServiceRecord> records = GetServiceRecordsByCustomerId(id)?.ToList();
+
+            // step1.先删除客户Customer
+            res = adapter.DeleteCustomer(id);
+
+            // step2.如果客户删除成功，则删除其服务记录中的图片资源
+            try
+            {
+                if (records != null && records.Count > 0)
+                {
+                    foreach (var record in records)
+                    {
+                        if (!string.IsNullOrEmpty(record.Images))
+                        {
+                            string[] imageArr = record.Images.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (imageArr.Length > 0)
+                            {
+                                foreach (var relative_path in imageArr)
+                                {
+                                    string fullPath = $@"{webRootPath}{relative_path}";
+                                    System.IO.File.Delete(fullPath);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // log...
+            }
+
+            return res;
         }
 
         public Entity.Customer GetCustomerById(int id)

@@ -1,4 +1,7 @@
 ﻿@model Orion.CRM.WebApp.Models.Customer.CustomerListViewModel
+@using Orion.CRM.WebApp.App_Data;
+@addTagHelper "Orion.CRM.WebApp.App_Data.HtmlPagerTagHelper,Orion.CRM.WebApp"
+
 @{
     ViewData["Title"] = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -54,6 +57,25 @@
                 <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
                     <button class="close" data-dismiss="alert">×</button>
                     <span>抱歉，添加失败，请重试！</span>
+                </div>
+            }
+        }
+        @if (TempData["deleteResult"] != null)
+        {
+            if ((bool)TempData["deleteResult"])
+            {
+                <!--操作成功通知-->
+                <div class="alert alert-success" id="successAlert" style="max-width:540px;margin:10px 0px 20px 0px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>删除成功！</span>
+                </div>
+            }
+            else
+            {
+                <!--操作失败通知-->
+                <div class="alert alert-error" id="errorAlert" style="max-width:540px;margin:10px 0px 20px 55px">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <span>抱歉，删除失败，请重试！</span>
                 </div>
             }
         }
@@ -182,7 +204,7 @@
                             新 建 <i class="icon-plus"></i>
                         </a>
 
-                        <button type="button" class="btn btn-default" style="margin-left:8px;display:none" id="btnBatchAssign" onclick="showAssignPanel()" >
+                        <button type="button" class="btn btn-default" style="margin-left:8px;display:none" id="btnBatchAssign" onclick="showAssignPanel()">
                             批量分配售后
                         </button>
                     </div>
@@ -233,21 +255,33 @@
                                     <td>@item.ProjectName</td>
                                     <td>@item.BrandName</td>
                                     <td>
-                                        @if (item.AgentLevel == 4)
+                                        @if (item.AgentLevel == 1)
                                         {
-                                            <span>直辖市</span>
-                                        }
-                                        else if (item.AgentLevel == 1)
-                                        {
-                                            <span>省</span>
+                                            <span>省代理</span>
                                         }
                                         else if (item.AgentLevel == 2)
                                         {
-                                            <span>市</span>
+                                            <span>直辖市代理</span>
                                         }
                                         else if (item.AgentLevel == 3)
                                         {
-                                            <span>县/区</span>
+                                            <span>省会城市代理</span>
+                                        }
+                                        else if (item.AgentLevel == 4)
+                                        {
+                                            <span>地区代理</span>
+                                        }
+                                        else if (item.AgentLevel == 5)
+                                        {
+                                            <span>地市代理</span>
+                                        }
+                                        else if (item.AgentLevel == 6)
+                                        {
+                                            <span>县代理</span>
+                                        }
+                                        else if (item.AgentLevel == 7)
+                                        {
+                                            <span>经销商</span>
                                         }
                                     </td>
                                     <td>
@@ -264,7 +298,11 @@
                                             <span>-@item.AgentZone3</span>
                                         }
                                     </td>
-                                    <td><a href="javascript:;" onclick="showAssignPanel(@item.Id)">分配售后</a> | <a href="/Customer/Detail/@item.Id">详情</a></td>
+                                    <td>
+                                        <a href="javascript:;" onclick="showAssignPanel(@item.Id)">分配售后</a> |
+                                        <a href="/Customer/Detail/@item.Id">详情</a> |
+                                        <a href="javascript:;" onclick="deleteConfirm(@item.Id)">删除</a>
+                                    </td>
                                 </tr>
                             }
                         }
@@ -309,6 +347,24 @@
                 <div id="assignTips" style="padding:3px;color:red;display:none">请选择你要分配的业务人员。</div>
                 <div style="margin-top:20px">
                     <input type="button" value="确定" class="btn btn-inverse" onclick="serviceAssign()" />
+                    <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--客户删除确认-->
+<div class="modal modal-webpi" id="panelAlert" style="width:300px;display:none" param-id="">
+    <a href="javascript:;" class="modal-close" data-s-object-id="webpi(close)" onclick="closeModal(this)">✖</a>
+    <div class="modal-contents">
+        <h2>提示</h2>
+        <div style="border:1px solid #e1e2e2;padding:15px;">
+            <div>
+                <h4>确定要删除吗？</h4>
+
+                <div style="margin-top:20px">
+                    <input type="button" value="删除" class="btn btn-danger" onclick="deleteInvoker(this)" />
                     <input type="button" value="取消" class="btn btn-default" onclick="closeModal(this)" />
                 </div>
             </div>
@@ -476,8 +532,37 @@
             else {
                 alert('请选择售后服务专员！');
             }
-
         }
+
+
+        // 删除资源确认
+        function deleteConfirm(id) {
+            var panel = $('#panelAlert');
+            panel.attr("param-id", id);
+            modalShow(panel);
+        }
+        // 删除调用器
+        function deleteInvoker(e) {
+            var id = $(e).parents(".modal").attr("param-id");
+            if (id) {
+                deleteCustomer(id);
+            }
+        }
+        function deleteCustomer(id) {
+            $.get("/Customer/DeleteCustomer", { "id": id }, function (result) {
+                if (result) {
+                    $('#successAlert').find("strong").html('删除成功！');
+                    $('#successAlert').show();
+                    reload();
+                }
+                else {
+                    $('#errorAlert').find("strong").html('抱歉，删除失败！');
+                    $('#errorAlert').show();
+                }
+                modalClose($('#panelAlert'));
+            });
+        }
+
 
         function reload() {
             window.location.reload();
