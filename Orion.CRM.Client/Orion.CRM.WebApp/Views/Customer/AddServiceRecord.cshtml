@@ -22,7 +22,8 @@
                     <div class="control-group">
                         <label class="control-label">图片</label>
                         <div class="controls">
-                            <input type="file" name="files" multiple value="点击上传图片..." onchange="fileChange(this)" />
+                            <input type="file" name="files" multiple value="点击上传图片..." onchange="fileChange(this)" /><br/>
+                            <span style="font-style:initial;color:darkgray;font-size:12px">按住CTRL选择多个图片</span>
                         </div>
 
                     </div>
@@ -33,7 +34,7 @@
                 </div>
                 <div class="form-actions" style="padding-left:140px">
                     <button type="submit" class="btn btn-primary" id="btnSubmit" onclick="return checkForm()">保&nbsp;&nbsp;存</button>
-                    <a href="/Customer/All" class="btn">返回</a>
+                    <a href="/Customer/Detail/@Model.Id" class="btn">返回</a>
                 </div>
             </div>
             <input type="hidden" name="CustomerId" value="@Model.Id" />

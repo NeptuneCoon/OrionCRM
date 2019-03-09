@@ -170,7 +170,8 @@
                                 }
                             </tbody>
                         </table>
-                        <a href="/Customer/AddServiceRecord/@Model.Customer.Id" style="margin-left:6px;text-decoration:underline">添加记录</a>
+                        <a href="/Customer/AddServiceRecord/@Model.Customer.Id" style="margin-left:6px;text-decoration:underline;display:block">添加记录</a>
+                        <a href="javascript:;" onclick="back()" style="margin-left:6px;margin-top:5px;text-decoration:underline;display:block">返回</a>
                     </div>
                 </div>
             </div>
@@ -189,6 +190,10 @@
                     alert('抱歉，删除失败！请重试或联系管理员。');
                 }
             });
+        }
+
+        function back() {
+            window.history.go(-1);
         }
     </script>
 }
