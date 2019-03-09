@@ -24,29 +24,58 @@ namespace Orion.CRM.WebApp.Controllers
             _hostingEnv = hostingEnvironment;
         }
 
+
+
         /// <summary>
-        /// 上传文件
+        /// 上传文件(该上传方法存在缺陷，本地测试通过，发布至服务器后有时会上传失败，不稳定)
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        public string uploadFile()
-        {
-            var file = Request.Form.Files[0];
-            var root = _hostingEnv.WebRootPath;
-            var extension = Path.GetExtension(file.FileName);
-            var guid = Guid.NewGuid().ToString();
+        //[HttpPost]
+        //public string uploadFile()
+        //{
+        //    var file = Request.Form.Files[0];
+        //    var root = _hostingEnv.WebRootPath;
+        //    var extension = Path.GetExtension(file.FileName);
+        //    var guid = Guid.NewGuid().ToString();
 
-            string filename = guid + extension;            // 新的文件名称
-            var fullPath = $@"{root}\upload\{filename}";   // 新的存储路径
-            Logger.Write("上传路径<fullPath>：" + fullPath);
-            if (!System.IO.Directory.Exists(Path.GetDirectoryName(fullPath))) {
-                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+        //    string filename = guid + extension;            // 新的文件名称
+        //    var fullPath = $@"{root}\upload\{filename}";   // 新的存储路径
+        //    Logger.Write("上传路径<fullPath>：" + fullPath);
+        //    if (!System.IO.Directory.Exists(Path.GetDirectoryName(fullPath))) {
+        //        System.IO.Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+        //    }
+        //    using (FileStream stream = new FileStream(fullPath, FileMode.Create)) {
+        //        file.CopyToAsync(stream);
+        //    }
+        //    return filename;
+        //}
+
+
+        [HttpPost]
+        public async Task<IActionResult> OnPostUpload([FromServices]IHostingEnvironment environment)
+        {
+            List<string> list = new List<string>();
+            var files = Request.Form.Files;
+            string webRootPath = environment.WebRootPath;
+            string contentRootPath = environment.ContentRootPath;
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    var extension = Path.GetExtension(formFile.FileName);
+                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var path = Path.Combine(environment.WebRootPath + @"\upload", fileName);
+                    using (var stream = new FileStream(path, FileMode.CreateNew))
+                    {
+                        await formFile.CopyToAsync(stream);
+                        list.Add(fileName);
+                    }
+                }
             }
-            using (FileStream stream = new FileStream(fullPath, FileMode.Create)) {
-                file.CopyToAsync(stream);
-            }
-            return filename;
+
+            return new JsonResult(list);
         }
+
 
         [HttpGet]
         public Models.Upload.InsertResult ImportData(string filename)
