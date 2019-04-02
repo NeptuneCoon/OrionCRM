@@ -10,6 +10,10 @@ namespace Orion.CRM.WebApp.Models.Customer
 
         public int Id { get; set; }
         public string RealName { get; set; }
+        /// <summary>
+        /// 客户类型（1=名额预定，2=签约合作）
+        /// </summary>
+        public int? Type { get; set; }
         public int? Sex { get; set; }
         public string Mobile { get; set; }
         public string IdentityNo { get; set; }

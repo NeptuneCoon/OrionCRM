@@ -225,7 +225,7 @@
         // 删除弹窗确认
         function deleteConfirm(id, count) {
             if (count > 0) {
-                $('#spanResult').html('该品牌已与' + count + '个客户关联。禁止删除！');
+                $('#spanResult').html('禁止删除！该品牌已与' + count + '个客户关联！');
                 modalShow($('#panelResult'));
             }
             else {

@@ -8,6 +8,10 @@ namespace Orion.CRM.Entity
     {
         public int Id { get; set; }
         public string RealName { get; set; }
+        /// <summary>
+        /// 客户类型（1=名额预定，2=签约合作）
+        /// </summary>
+        public int? Type { get; set; }
         public int? Sex { get; set; }
         public string Mobile { get; set; }
         public string IdentityNo { get; set; }
@@ -34,6 +38,10 @@ namespace Orion.CRM.Entity
     {
         public string name { get; set; }
         public string mobile { get; set; }
+        /// <summary>
+        /// 客户类型（1=名额预定，2=签约合作）
+        /// </summary>
+        public int? type { get; set; }
         /// <summary>
         /// 项目
         /// </summary>

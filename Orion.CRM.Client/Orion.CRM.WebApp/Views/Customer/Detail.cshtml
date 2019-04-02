@@ -133,6 +133,22 @@
                                         }
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="font-weight:bold">类型</td>
+                                    <td colspan="3">
+                                        @if (Model.Customer.Type == 1)
+                                        {
+                                            <span style="color:red">名额预定</span>
+                                        }
+                                        else if (Model.Customer.Type == 2)
+                                        {
+                                            <span>签约合作</span>
+                                        }
+                                        else {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

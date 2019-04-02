@@ -14,6 +14,7 @@ namespace Orion.CRM.DataAccess
 
             SqlParameter[] paramArr = {
                 new SqlParameter("@RealName", customer.RealName),
+                new SqlParameter("@Type", CheckNull(customer.Type)),
                 new SqlParameter("@Sex", CheckNull(customer.Sex)),
                 new SqlParameter("@Mobile", CheckNull(customer.Mobile)),
                 new SqlParameter("@IdentityNo", CheckNull(customer.IdentityNo)),
@@ -38,6 +39,7 @@ namespace Orion.CRM.DataAccess
             SqlParameter[] paramArr = {
                 new SqlParameter("@Id", customer.Id),
                 new SqlParameter("@RealName", customer.RealName),
+                new SqlParameter("@Type", CheckNull(customer.Type)),
                 new SqlParameter("@Sex", CheckNull(customer.Sex)),
                 new SqlParameter("@Mobile", CheckNull(customer.Mobile)),
                 new SqlParameter("@IdentityNo", CheckNull(customer.IdentityNo)),
@@ -198,6 +200,10 @@ namespace Orion.CRM.DataAccess
             if (!string.IsNullOrEmpty(param.mobile))
             {
                 sqlWhere += $" and A.Mobile='{param.mobile}'";
+            }
+            if (param.type != null && param.type > 0)
+            {
+                sqlWhere += $" and A.Type={param.type}";
             }
             if (param.pid != null && param.pid > 0)
             {

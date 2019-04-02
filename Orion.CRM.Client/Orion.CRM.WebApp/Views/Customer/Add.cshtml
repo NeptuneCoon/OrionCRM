@@ -23,6 +23,20 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label"><span class="required">*</span>类型</label>
+                        <div class="controls" style="padding-top:4px">
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" value="1" asp-for="Type">
+                                <span class="nebula-radioInput"></span>名额预定
+                            </label>
+                            <label class="nebula-label">
+                                <input class="nebula-radio" type="radio" value="2" asp-for="Type">
+                                <span class="nebula-radioInput"></span>签约合作
+                            </label>
+                        </div>
+                        <span class="tip" style="margin-left:21px;display:none" id="customerTypeTips">请选择客户类型。</span>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">性别</label>
                         <div class="controls" style="padding-top:4px">
                             <label class="nebula-label">
@@ -176,6 +190,16 @@
                         result = res;
                     }
                 });
+                var type = $("input[type='radio'][name='Type']:checked").val();
+                if (!type) {
+                    $("input[type='radio'][name='Type']").focus();
+                    result = false;
+                    $('#customerTypeTips').show();
+                }
+                else {
+                    $('#customerTypeTips').hide();
+                }
+
                 return result;
             }
             catch (ex) {

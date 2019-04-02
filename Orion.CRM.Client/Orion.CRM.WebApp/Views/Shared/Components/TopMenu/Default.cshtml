@@ -4,12 +4,12 @@
     <ul class="nav">
         @foreach (var menu in Model) {
             if (menu.MenuId == ViewBag.TopMenuId) {
-                <li class="active" onclick="topMenuClick(@menu.MenuId)">
+                <li class="active">
                     <a href="@menu.URL">@menu.MenuName</a>
                 </li>
             }
             else {
-                <li onclick="topMenuClick(@menu.MenuId)">
+                <li>
                     <a href="@menu.URL">@menu.MenuName</a>
                 </li>
             }

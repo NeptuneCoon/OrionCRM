@@ -10,6 +10,10 @@ namespace Orion.CRM.WebApp.Models.Customer
         public string name { get; set; }
         public string mobile { get; set; }
         /// <summary>
+        /// 客户类型（1=名额预定，2=签约合作）
+        /// </summary>
+        public int? type { get; set; }
+        /// <summary>
         /// 项目
         /// </summary>
         public int? pid { get; set; }

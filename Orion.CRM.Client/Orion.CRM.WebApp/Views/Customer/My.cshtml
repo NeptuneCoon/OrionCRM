@@ -67,6 +67,26 @@
                         <input type="text" class="search-input" placeholder="客户姓名" name="name" value="@Model.Params.name" />
                         <span style="margin-left:10px">手机</span>
                         <input type="text" class="search-input" placeholder="手机号码" name="mobile" value="@Model.Params.mobile" />
+                        <span style="margin-left:10px">类型</span>
+                        <select class="search-select" name="type">
+                            <option value="">全部</option>
+                            @if (Model.Params.type == 1)
+                            {
+                                <option value="1" selected="selected">名额预定</option>
+                            }
+                            else
+                            {
+                                <option value="1">名额预定</option>
+                            }
+                            @if (Model.Params.type == 2)
+                            {
+                                <option value="2" selected="selected">签约合作</option>
+                            }
+                            else
+                            {
+                                <option value="2">签约合作</option>
+                            }
+                        </select>
                     </div>
                     <div class="form-inline" style="margin-top:10px">
                         <span>项目</span>
@@ -205,6 +225,7 @@
                             <th>序号</th>
                             <th>客户姓名</th>
                             <th>联系方式</th>
+                            <th>类型</th>
                             <th>创建时间</th>
                             <th>项目</th>
                             <th>品牌</th>
@@ -219,10 +240,24 @@
                             for (int i = 0; i < Model.Customers.Count; i++)
                             {
                                 var item = Model.Customers[i];
-                                <tr>
+                                <tr @(item.Type==1?"style=background-color:#EE2C2C":"")>
                                     <td>@((ViewBag.PagerOption.PageIndex - 1) * ViewBag.PagerOption.PageSize + i + 1)</td>
                                     <td><a href="/Customer/Detail/@item.Id">@item.RealName</a></td>
                                     <td>@item.Mobile</td>
+                                    <td>
+                                        @if (item.Type == 1)
+                                        {
+                                            <span>名额预定</span>
+                                        }
+                                        else if (item.Type == 2)
+                                        {
+                                            <span>签约合作</span>
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
                                     <td>@item.CreateTime.ToString("yyyy-MM-dd")</td>
                                     <td>@item.ProjectName</td>
                                     <td>@item.BrandName</td>
@@ -276,7 +311,7 @@
                         }
                         else
                         {
-                            <tr><td colspan="9" style="text-align:center">没有数据</td></tr>
+                            <tr><td colspan="10" style="text-align:center">没有数据</td></tr>
                         }
                     </tbody>
                 </table>

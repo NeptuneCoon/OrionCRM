@@ -4,8 +4,8 @@
     <SqlMapDetail>
       <SqlName>InsertCustomer</SqlName>
       <OriginalSqlString>
-        insert into Customer(RealName,Sex,Mobile,IdentityNo,BrandId,AgentLevel,AgentZone1,AgentZone2,AgentZone3,ProjectId,ServiceUserId)
-        values(@RealName,@Sex,@Mobile,@IdentityNo,@BrandId,@AgentLevel,@AgentZone1,@AgentZone2,@AgentZone3,@ProjectId,@ServiceUserId);
+        insert into Customer(RealName,Type,Sex,Mobile,IdentityNo,BrandId,AgentLevel,AgentZone1,AgentZone2,AgentZone3,ProjectId,ServiceUserId)
+        values(@RealName,@Type,@Sex,@Mobile,@IdentityNo,@BrandId,@AgentLevel,@AgentZone1,@AgentZone2,@AgentZone3,@ProjectId,@ServiceUserId);
         select cast(@@identity as int);
       </OriginalSqlString>
       <DBConnectionName>OrionCRM</DBConnectionName>
@@ -16,7 +16,7 @@
     <SqlMapDetail>
       <SqlName>UpdateCustomer</SqlName>
       <OriginalSqlString>
-        update [Customer] set RealName=@RealName,Sex=@Sex,Mobile=@Mobile,IdentityNo=@IdentityNo,BrandId=@BrandId,AgentLevel=@AgentLevel,
+        update [Customer] set RealName=@RealName,Type=@Type,Sex=@Sex,Mobile=@Mobile,IdentityNo=@IdentityNo,BrandId=@BrandId,AgentLevel=@AgentLevel,
         AgentZone1=@AgentZone1,AgentZone2=@AgentZone2,AgentZone3=@AgentZone3,ProjectId=@ProjectId,UpdateTime=@UpdateTime
         where Id=@Id
       </OriginalSqlString>
@@ -55,7 +55,7 @@
       <OriginalSqlString>
         <![CDATA[
           select top $PageSize * from(
-              select ROW_NUMBER() OVER (ORDER BY id) as RowNumber,* from (
+              select ROW_NUMBER() OVER (ORDER BY id desc) as RowNumber,* from (
 			          select A.*,B.ProjectName,C.BrandName,D.RealName as ServiceRealName from Customer A
 			          inner join Project B on A.ProjectId=B.Id
 			          inner join Brand C on A.BrandId=C.Id

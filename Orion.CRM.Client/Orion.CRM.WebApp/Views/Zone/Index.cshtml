@@ -46,7 +46,7 @@
                 <div style="background-color:#fff;padding:5px">
                     <div class="form-inline" style="margin-top:10px">
                         <span>项目</span>
-                        <select class="search-select" onchange="projectChange(this)" id="projectSelect">
+                        <select class="search-select" onchange="projectChange()" id="projectSelect">
                             <option value="">请选择</option>
                             @if (ViewBag.Projects != null)
                             {
@@ -65,7 +65,7 @@
                         </select>
 
                         <span style="margin-left:10px">品牌</span>
-                        <select class="search-select" id="brandSelect"><option value="">请选择</option></select>
+                        <select class="search-select" id="brandSelect" onchange="brandChange()"><option value="">请选择</option></select>
                     </div>
                 </div>
             </div>
@@ -168,8 +168,23 @@
     <script src="http://www.jq22.com/jquery/jquery-migrate-1.2.1.min.js"></script>
     <script src="~/assets/jquery-maphilight.min.js"></script>
     <script type="text/javascript">
-        function projectChange(e) {
-            var projectId = $(e).find("option:selected").val();
+        //写cookies
+        function setCookie(c_name, value, expiredays) {
+            var exdate = new Date();
+            exdate.setTime(exdate.getTime() + expiredays * 24 * 60 * 60 * 1000);
+            document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+        }
+        //读取cookies
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return (arr[2]);
+            else
+                return null;
+        }
+
+        function projectChange(callback) {
+            var projectId = $('#projectSelect').find("option:selected").val();
             $("#brandSelect option").not(":first").remove();
             $.get("/Brand/GetBrandsByProjectId", { "projectId": projectId }, function (data) {
                 if (data) {
@@ -178,12 +193,35 @@
                         var option = '<option value="' + item.id + '">' + item.brandName + '</option>';
                         $('#brandSelect').append(option);
                     }
+                    if (callback) {
+                        callback();
+                    }
                 }
             });
+        }
+        function brandChange() {
+            var projectId = $('#projectSelect').find("option:selected").val();
+            var brandId = $('#brandSelect').find("option:selected").val();
+            // 将用户选择的项目和品牌写入cookie
+            setCookie("zone_pid", projectId, 30);
+            setCookie("zone_bid", brandId, 30);
         }
 
 
         $(document).ready(function () {
+            // 项目和品牌状态还原
+            var pid = getCookie('zone_pid');
+            var bid = getCookie('zone_bid');
+            if (pid) {
+                $('#projectSelect').val(pid);
+            }
+            if (bid) {
+                projectChange(function () {
+                    $('#brandSelect').val(bid);
+                });
+            }
+
+            // 地图插件
             $.fn.maphilight.defaults = {
                 fill: true,
                 fillColor: 'ff8c19',
@@ -192,7 +230,7 @@
                 strokeColor: 'ff8b19',
                 strokeOpacity: 1,
                 strokeWidth: 3,
-                fade: true,
+                fade: false,
                 alwaysOn: false,
                 neverOn: false,
                 groupBy: false
@@ -224,8 +262,7 @@
                     var area = $(this).attr("alt");
                     $('#selectedZone').html(area);
                     $.get("/Zone/GetCustomersByZone", { "pid": projectId, "bid": brandId, "z1": area }, function (data) {
-                        console.info(data);
-                        if (data == undefined || data == null) data = [];
+                        if (data == undefined || data == null || data == "") data = [];
                         var html = renderAgents(data);
                         $('#agents').html(html);
                         $('#agents').slideDown();
@@ -251,7 +288,17 @@
                     if (levelCustomers.length > 0) {
                         for (var k = 0; k < levelCustomers.length; k++) {
                             var item = levelCustomers[k];
-                            html += '<div style="margin-top:8px"><a href="/Customer/Detail/' + item.id + '" target="_blank"  style="text-decoration:underline">' + item.realName +  '</a></div>';
+                            html += '<div style="margin-top:8px">';
+                            html += '<a href="/Customer/Detail/' + item.id + '" target="_blank" style="text-decoration:underline">' + item.realName + '</a>';
+                            if (item.type != null && item.type > 0) {
+                                if (item.type == 1) {
+                                    html += '<span style="color:red"><' + typeConvert(item.type) + '></span>';
+                                }
+                                else {
+                                    html += '<span><' + typeConvert(item.type) + '></span>';
+                                }
+                            }
+                            html += '</div > ';
                         }
                     }
                     else {
@@ -281,6 +328,15 @@
                     default:
                         return "未知";
                 }
+            }
+            function typeConvert(type) {
+                if (type == 1) {
+                    return '名额预定';
+                }
+                else if (type == 2) {
+                    return '签约合作';
+                }
+                else return '-';
             }
         });
 
