@@ -194,6 +194,7 @@
                     $.get("/Resource/GetGroupUnAssignedResourceCount", { "projectId": projectId }, function (count) {
                         $('#unassignedCount').html(count);
                         $('#divUnassignTip').show();
+                        var tatoalResourceCount = count;
                         if (count > 0) {
                             // 存储每组分配个数，形如{groupId:1,assignCount:10}
                             var assignCountArr = [];
@@ -225,12 +226,18 @@
                                 }
                                 var single = count / total;
 
+                                var hadAssignedCount = 0;//已写入groups中分配字段的数量 
+                                
                                 for (var i = 0; i < groups.length; i++) {
                                     if (count <= 0) break;
                                     var group = groups[i];
-                                    var assignCount = Math.ceil(single * group.userCount);
+
+                                    var reminedAssignCount = tatoalResourceCount - hadAssignedCount;//剩余可分配（tatoalResourceCount-hadAssignedCount）
+                                    var assignCount = Math.min(reminedAssignCount, Math.ceil(single * group.userCount));
                                     assignCountArr.push({ groupId: group.id, assignCount: assignCount });
                                     count = count - assignCount;
+
+                                    hadAssignedCount += assignCount;
                                 }
                             }
                             $('#btnAssign').removeAttr("disabled");
@@ -283,6 +290,7 @@
         * @@assignType 分配方式(1=平均分配，2=等比例分配)
         */
         function generateGroupAssignTable(groups, assignCountArr, assignType) {
+            debugger;
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i];
                 var html = '';

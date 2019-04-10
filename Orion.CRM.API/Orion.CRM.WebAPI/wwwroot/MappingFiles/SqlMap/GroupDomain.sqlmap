@@ -50,7 +50,7 @@
     <SqlMapDetail>
       <SqlName>GetGroupsByProjectId</SqlName>
       <OriginalSqlString>
-        select A.Id,A.GroupName,A.ProjectId,A.CreateTime,A.UpdateTime,A.ManagerId,A.OrgId,C.RealName as ManagerName,D.ProjectName, count(A.Id) as UserCount from [Group] A
+        select A.Id,A.GroupName,A.ProjectId,A.CreateTime,A.UpdateTime,A.ManagerId,A.OrgId,C.RealName as ManagerName,D.ProjectName, (select count(1) from [UserGroup] where GroupId=A.Id) UserCount from [Group] A
         left join [UserGroup] B on A.Id=B.GroupId
         left join AppUser C on A.ManagerId=C.Id
         left join Project D on A.ProjectId=D.Id
